@@ -16,8 +16,7 @@ public class MemberService {
 
     @Transactional
     public Member create(Member member) {
-        memberRepository.save(member);
-        return member;
+        return memberRepository.save(member);
     }
 
     public List<Member> findAllByNickname(String nickname) {
