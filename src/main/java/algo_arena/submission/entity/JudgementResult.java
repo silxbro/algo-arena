@@ -1,5 +1,7 @@
 package algo_arena.submission.entity;
 
+import java.util.Arrays;
+
 public enum JudgementResult {
 
     RIGHT("정답"),
@@ -16,6 +18,12 @@ public enum JudgementResult {
 
     JudgementResult(String description) {
         this.description = description;
+    }
+
+    public static JudgementResult fromDescription(String description) {
+        return Arrays.stream(values())
+            .filter(result -> result.description.equals(description))
+            .findAny().orElse(null);
     }
 
     public String getDescription() {

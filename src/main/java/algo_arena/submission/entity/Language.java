@@ -1,5 +1,7 @@
 package algo_arena.submission.entity;
 
+import java.util.Arrays;
+
 public enum Language {
     PYTHON("Python"),
     JAVA("Java"),
@@ -18,6 +20,12 @@ public enum Language {
 
     Language(String name) {
         this.name = name;
+    }
+
+    public static Language fromName(String name) {
+        return Arrays.stream(values())
+            .filter(language -> language.name.equals(name))
+            .findAny().orElse(null);
     }
 
     public String getName() {
