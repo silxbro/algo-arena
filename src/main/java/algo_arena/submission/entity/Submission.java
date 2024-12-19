@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,4 +46,12 @@ public class Submission extends BaseEntity {
     @Lob
     private String solutionCode;
 
+    @Builder
+    public Submission(Problem problem, Member member, Language language, JudgementResult result, String solutionCode) {
+        this.problem = problem;
+        this.member = member;
+        this.language = language;
+        this.result = result;
+        this.solutionCode = solutionCode;
+    }
 }
