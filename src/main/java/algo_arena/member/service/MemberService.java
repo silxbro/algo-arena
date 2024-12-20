@@ -28,15 +28,17 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateImage(Long id, String imgUrl) {
+    public Member updateImage(Long id, String imgUrl) {
         Member member = memberRepository.findById(id).orElseThrow();
         member.changeImage(imgUrl);
+        return member;
     }
 
     @Transactional
-    public void changePassword(Long id, String password) {
+    public Member changePassword(Long id, String password) {
         Member member = memberRepository.findById(id).orElseThrow();
         member.changePassword(password);
+        return member;
     }
 
     @Transactional
