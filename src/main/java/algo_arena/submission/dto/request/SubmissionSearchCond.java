@@ -12,7 +12,6 @@ public class SubmissionSearchCond {
     private String resultDescription; //결과 코드
 
     @Builder
-
     public SubmissionSearchCond(Integer problemNumber, String memberNickname, String languageName,
         String resultDescription) {
         this.problemNumber = problemNumber;
