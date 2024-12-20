@@ -39,12 +39,12 @@ public class Member extends BaseEntity {
     private int problemCount; //정답 문제 개수
 
     @Builder
-    public Member(String email, String password, String nickname, String imgUrl, Role role) {
+    private Member(String email, String password, String nickname, String imgUrl, Role role) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.imgUrl = imgUrl;
-        this.role = Role.USER;
+        this.role = role;
     }
 
     public void changePassword(String password) {
