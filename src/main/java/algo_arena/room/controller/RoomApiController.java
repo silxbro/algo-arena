@@ -7,10 +7,10 @@ import algo_arena.problem.repository.ProblemRepository;
 import algo_arena.room.dto.request.RoomCreateRequest;
 import algo_arena.room.dto.request.RoomSearchCond;
 import algo_arena.room.dto.response.RoomDetailResponse;
+import algo_arena.room.dto.response.RoomDetailResponse.RoomEntrant;
 import algo_arena.room.dto.response.RoomDetailResponse.RoomHost;
-import algo_arena.room.dto.response.RoomDetailResponse.RoomParticipant;
 import algo_arena.room.dto.response.RoomListResponse;
-import algo_arena.room.entity.Participant;
+import algo_arena.room.entity.Entrant;
 import algo_arena.room.entity.Room;
 import algo_arena.room.service.RoomService;
 import java.util.List;
@@ -50,8 +50,8 @@ public class RoomApiController {
         Room room = roomService.findOneById(id);
         List<String> problemTitles = problemRepository.findAllById(room.getProblemIds()).stream().map(Problem::getTitle).toList();
         RoomHost host = convertToRoomHost(room.getHostId());
-        List<RoomParticipant> participants = room.getParticipants().stream().map(this::convertToRoomParticipant).toList();
-        return ResponseEntity.ok(RoomDetailResponse.from(room, problemTitles, host, participants));
+        List<RoomEntrant> entrants = room.getEntrants().stream().map(this::convertToRoomEntrant).toList();
+        return ResponseEntity.ok(RoomDetailResponse.from(room, problemTitles, host, entrants));
     }
 
     /**
@@ -64,7 +64,7 @@ public class RoomApiController {
     }
 
     /**
-     * 테스트방 삭제
+     * 테스트방 삭제 - 자동 삭제
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoom(@PathVariable("id") String id) {
@@ -72,12 +72,12 @@ public class RoomApiController {
         return ResponseEntity.noContent().build();
     }
 
-    private RoomParticipant convertToRoomParticipant(Participant participant) {
-        Member findParticipant = memberRepository.findById(participant.getMemberId()).orElseThrow();
-        return RoomParticipant.builder()
-            .nickname(findParticipant.getNickname())
-            .imgUrl(findParticipant.getImgUrl())
-            .isReady(participant.getIsReady())
+    private RoomEntrant convertToRoomEntrant(Entrant entrant) {
+        Member findEntrant = memberRepository.findById(entrant.getMemberId()).orElseThrow();
+        return RoomEntrant.builder()
+            .nickname(findEntrant.getNickname())
+            .imgUrl(findEntrant.getImgUrl())
+            .isReady(entrant.getIsReady())
             .build();
     }
 

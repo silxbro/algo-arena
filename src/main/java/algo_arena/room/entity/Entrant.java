@@ -3,12 +3,12 @@ package algo_arena.room.entity;
 import lombok.Getter;
 
 @Getter
-public class Participant {
+public class Entrant {
 
     private Long memberId;
     private Boolean isReady;
 
-    public Participant(Long memberId) {
+    public Entrant(Long memberId) {
         this.memberId = memberId;
         this.isReady = false;  // 초기값은 false
     }

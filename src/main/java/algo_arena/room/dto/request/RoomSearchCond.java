@@ -8,7 +8,7 @@ import lombok.Data;
 public class RoomSearchCond {
 
     private String roomName;
-    private Integer maxParticipants;
+    private Integer maxEntrants;
     private String languageName;
     private Integer minProblems;
     private Integer maxProblems;
