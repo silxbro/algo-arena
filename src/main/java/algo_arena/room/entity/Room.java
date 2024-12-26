@@ -71,7 +71,9 @@ public class Room implements Serializable {
     }
 
     public void removeEntrant(Long memberId) {
-        entrants.removeIf(entrant -> containsEntrant(entrant.getMemberId()));
+        if (containsEntrant(memberId)) {
+            entrants.removeIf(entrant -> memberId.equals(entrant.getMemberId()));
+        }
     }
 
     public boolean isHost(Long memberId) {
