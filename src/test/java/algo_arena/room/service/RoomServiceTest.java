@@ -37,7 +37,7 @@ class RoomServiceTest {
     void setUp() {
         room = Room.builder()
             .name("Test Room")
-            .maxParticipants(10)
+            .maxEntrants(10)
             .language(Language.JAVA_SCRIPT)
             .problemIds(List.of(1L, 2L, 3L))
             .hostId(10L)
