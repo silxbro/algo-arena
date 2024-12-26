@@ -71,24 +71,24 @@ public class Room implements Serializable {
     }
 
     public void removeEntrant(Long memberId) {
-        if (containsEntrant(memberId)) {
+        if (isEntrant(memberId)) {
             entrants.removeIf(entrant -> memberId.equals(entrant.getMemberId()));
         }
     }
 
-    public boolean isHost(Long memberId) {
-        return memberId.equals(hostId);
-    }
-
-    public boolean hasNoEntrants() {
-        return entrants.isEmpty();
+    public boolean hasEntrants() {
+        return !entrants.isEmpty();
     }
 
     public boolean isFull() {
         return entrants.size() == maxEntrants;
     }
 
-    public boolean containsEntrant(Long memberId) {
+    public boolean isHost(Long memberId) {
+        return memberId.equals(hostId);
+    }
+
+    public boolean isEntrant(Long memberId) {
         return entrants.stream()
             .anyMatch(entrant -> memberId.equals(entrant.getMemberId()));
     }
