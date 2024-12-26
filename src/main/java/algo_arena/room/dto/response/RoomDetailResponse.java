@@ -12,23 +12,23 @@ import lombok.Getter;
 public class RoomDetailResponse {
 
     private String roomName;
-    private Integer maxParticipants;
+    private Integer maxEntrants;
     private RoomProblems problemInfo;
     private RoomHost hostInfo;
-    private RoomParticipants participantsInfo;
+    private RoomEntrants entrantsInfo;
     private Integer timeLimit;
     private Language language;
 
-    public static RoomDetailResponse from(Room room, List<String> problemTitles, RoomHost host, List<RoomParticipant> participants) {
-        RoomProblems roomProblems = RoomProblems.builder().problemNumber(problemTitles.size()).problemNames(problemTitles).build();
+    public static RoomDetailResponse from(Room room, List<String> problemTitles, RoomHost host, List<RoomEntrant> entrants) {
+        RoomProblems roomProblems = RoomProblems.builder().number(problemTitles.size()).problemNames(problemTitles).build();
         RoomHost roomHost = RoomHost.builder().nickname(host.getNickname()).imgUrl(host.getImgUrl()).build();
-        RoomParticipants roomParticipants = RoomParticipants.builder().participantNumber(participants.size()).participants(participants).build();
+        RoomEntrants roomEntrants = RoomEntrants.builder().number(entrants.size()).entrants(entrants).build();
         return RoomDetailResponse.builder()
             .roomName(room.getName())
-            .maxParticipants(room.getMaxParticipants())
+            .maxEntrants(room.getMaxEntrants())
             .problemInfo(roomProblems)
             .hostInfo(roomHost)
-            .participantsInfo(roomParticipants)
+            .entrantsInfo(roomEntrants)
             .timeLimit(room.getTimeLimit())
             .language(room.getLanguage())
             .build();
@@ -37,7 +37,7 @@ public class RoomDetailResponse {
     @Getter
     @Builder
     public static class RoomProblems {
-        private Integer problemNumber;
+        private Integer number;
         private List<String> problemNames;
     }
 
@@ -50,14 +50,14 @@ public class RoomDetailResponse {
 
     @Getter
     @Builder
-    public static class RoomParticipants {
-        private Integer participantNumber;
-        private List<RoomParticipant> participants;
+    public static class RoomEntrants {
+        private Integer number;
+        private List<RoomEntrant> entrants;
     }
 
     @Getter
     @Builder
-    public static class RoomParticipant {
+    public static class RoomEntrant {
         private String nickname;
         private String imgUrl;
         private Boolean isReady;

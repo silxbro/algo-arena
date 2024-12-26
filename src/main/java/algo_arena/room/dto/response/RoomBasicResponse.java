@@ -8,18 +8,18 @@ import lombok.Data;
 @Builder
 public class RoomBasicResponse {
     private String name;
-    private Integer maxParticipants;
+    private Integer maxEntrants;
     private Integer problemNumber;
-    private Integer participantNumber;
+    private Integer entrantNumber;
     private String languageName;
     private Integer timeLimit; //분 단위
 
     public static RoomBasicResponse from(Room room) {
         return RoomBasicResponse.builder()
             .name(room.getName())
-            .maxParticipants(room.getMaxParticipants())
+            .maxEntrants(room.getMaxEntrants())
             .problemNumber(room.getProblemIds().size())
-            .participantNumber(room.getParticipants().size())
+            .entrantNumber(room.getEntrants().size())
             .languageName(room.getLanguage().getName())
             .timeLimit(room.getTimeLimit())
             .build();

@@ -24,10 +24,10 @@ public class Room implements Serializable {
     private String id = UUID.randomUUID().toString();
 
     private String name;
-    private Integer maxParticipants;
+    private Integer maxEntrants;
     private List<Long> problemIds;
     private Long hostId;
-    private List<Participant> participants = new ArrayList<>();
+    private List<Entrant> entrants = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Language language;
@@ -38,9 +38,9 @@ public class Room implements Serializable {
     private Long ttl;
 
     @Builder
-    public Room(String name, Integer maxParticipants, List<Long> problemIds, Long hostId, Language language, Integer timeLimit, Long ttl) {
+    public Room(String name, Integer maxEntrants, List<Long> problemIds, Long hostId, Language language, Integer timeLimit, Long ttl) {
         this.name = name;
-        this.maxParticipants = maxParticipants;
+        this.maxEntrants = maxEntrants;
         this.problemIds = problemIds;
         this.hostId = hostId;
         this.language = language;

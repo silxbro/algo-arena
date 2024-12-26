@@ -62,7 +62,7 @@ public class RoomRedisRepository {
 
     private Predicate<Room> matches(RoomSearchCond searchCond) {
         return roomName(searchCond.getRoomName())
-            .and(maxParticipants(searchCond.getMaxParticipants()))
+            .and(maxEntrants(searchCond.getMaxEntrants()))
             .and(language(searchCond.getLanguageName()))
             .and(problemCount(searchCond.getMinProblems(), searchCond.getMaxProblems()))
             .and(timeLimit(searchCond.getMinTimeLimit(), searchCond.getMaxTimeLimit()));
@@ -72,8 +72,8 @@ public class RoomRedisRepository {
         return room -> roomName == null || room.getName().toUpperCase().contains(roomName.toUpperCase());
     }
 
-    private Predicate<Room> maxParticipants(Integer maxParticipants) {
-        return room -> maxParticipants == null || room.getMaxParticipants() <= maxParticipants;
+    private Predicate<Room> maxEntrants(Integer maxEntrants) {
+        return room -> maxEntrants == null || room.getMaxEntrants() <= maxEntrants;
     }
 
     private Predicate<Room> language(String languageName) {

@@ -9,7 +9,7 @@ import lombok.Data;
 public class RoomCreateRequest {
 
     private String name;
-    private Integer maxGuests;
+    private Integer maxEntrants;
     private List<Long> problemIds;
     private Long hostId;
     private String languageName;
@@ -18,7 +18,7 @@ public class RoomCreateRequest {
     public Room toEntity() {
         return Room.builder()
             .name(name)
-            .maxParticipants(maxGuests)
+            .maxEntrants(maxEntrants)
             .problemIds(problemIds)
             .hostId(hostId)
             .language(Language.fromName(languageName))
