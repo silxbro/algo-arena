@@ -1,7 +1,10 @@
 package algo_arena.room.service;
 
+import lombok.Getter;
+
 public class RoomUpdateResult {
 
+    @Getter
     private final State state;
     private String nickname;
 
@@ -18,11 +21,12 @@ public class RoomUpdateResult {
         return String.format(state.getMessageFormat(), nickname);
     }
 
+    @Getter
     public enum State {
         ROOM_UPDATED("테스트방 변경이 완료되었습니다."),
         ENTRANT_ENTERED("[%s]님이 입장했습니다."),
         FULL_ROOM("정원이 초과되어 입장할 수 없습니다."),
-        ROOM_DELETED("방이 삭제되었습니다."),
+        ROOM_DELETED("테스트방이 삭제되었습니다."),
         HOST_CHANGED("방장이 [%s]님으로 변경되었습니다."),
         ENTRANT_EXITED("[%s]님이 퇴장했습니다."),
         ;
@@ -31,10 +35,6 @@ public class RoomUpdateResult {
 
         State(String messageFormat) {
             this.messageFormat = messageFormat;
-        }
-
-        public String getMessageFormat() {
-            return messageFormat;
         }
     }
 }
