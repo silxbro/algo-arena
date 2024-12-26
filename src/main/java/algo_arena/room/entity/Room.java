@@ -47,4 +47,47 @@ public class Room implements Serializable {
         this.timeLimit = timeLimit;
         this.ttl = ttl;
     }
+
+    public void update(Room updateInfo) {
+        this.name = updateInfo.getName();
+        this.maxEntrants = updateInfo.getMaxEntrants();
+        this.problemIds = updateInfo.getProblemIds();
+        this.language = updateInfo.getLanguage();
+        this.timeLimit = updateInfo.getTimeLimit();
+    }
+
+    public void changeHost() {
+        Entrant forHost = entrants.remove(0);
+        hostId = forHost.getMemberId();
+    }
+
+    public boolean addEntrant(Long memberId) {
+        //TODO: 이미 소속된 테스트방이 존재하는 경우: 예외처리 / 불가능한 경우인데, 예외처리가 필요할까?
+        if (isFull()) {
+            return false;
+        }
+        entrants.add(new Entrant(memberId));
+        return true;
+    }
+
+    public void removeEntrant(Long memberId) {
+        entrants.removeIf(entrant -> containsEntrant(entrant.getMemberId()));
+    }
+
+    public boolean isHost(Long memberId) {
+        return memberId.equals(hostId);
+    }
+
+    public boolean hasNoEntrants() {
+        return entrants.isEmpty();
+    }
+
+    public boolean isFull() {
+        return entrants.size() == maxEntrants;
+    }
+
+    public boolean containsEntrant(Long memberId) {
+        return entrants.stream()
+            .anyMatch(entrant -> memberId.equals(entrant.getMemberId()));
+    }
 }
