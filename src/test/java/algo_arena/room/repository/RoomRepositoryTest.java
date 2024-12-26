@@ -112,7 +112,7 @@ class RoomRepositoryTest {
     void findAllBySearch_complexCondition() {
         //given
         RoomSearchCond complexCond1 = RoomSearchCond.builder().languageName("Python").minTimeLimit(70).build();
-        RoomSearchCond complexCond2 = RoomSearchCond.builder().maxParticipants(15).roomName("코딩").build();
+        RoomSearchCond complexCond2 = RoomSearchCond.builder().maxEntrants(15).roomName("코딩").build();
         RoomSearchCond complexCond3 = RoomSearchCond.builder().minProblems(3).maxTimeLimit(60).build();
 
         // when
@@ -129,7 +129,7 @@ class RoomRepositoryTest {
     private Room createRoom(String roomName, int maxParticipants, List<Long> problemIds, Language language, int timeLimit) {
         Room room = Room.builder()
             .name(roomName)
-            .maxParticipants(maxParticipants)
+            .maxEntrants(maxParticipants)
             .problemIds(problemIds)
             .language(language)
             .timeLimit(timeLimit)
