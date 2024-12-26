@@ -53,7 +53,7 @@ public class RoomService {
     @Transactional
     public RoomUpdateResult exit(String id, Long memberId) {
         Room room = findOneById(id);
-        if (room.isHost(memberId) && room.hasNoEntrants()) {
+        if (room.isHost(memberId) && !room.hasEntrants()) {
             delete(id);
             return new RoomUpdateResult(ROOM_DELETED);
         }
