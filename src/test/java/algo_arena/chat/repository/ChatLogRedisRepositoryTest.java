@@ -30,14 +30,14 @@ class ChatLogRedisRepositoryTest {
     @DisplayName("채팅이 채팅방별로 알맞게 저장되며, 해당 채팅방의 채팅목록을 조회할 수 있다")
     void saveAndFindAllByRoomId() {
         //given
-        ChatLog chatLog1 = ChatLog.builder().message("hello!").senderId(1L).build();
-        ChatLog chatLog2 = ChatLog.builder().message("안녕하세요!").senderId(2L).build();
-        ChatLog chatLog3 = ChatLog.builder().message("반갑습니다^^").senderId(3L).build();
+        ChatLog chatLog1 = ChatLog.builder().message("hello!").senderNickname("member1").build();
+        ChatLog chatLog2 = ChatLog.builder().message("안녕하세요!").senderNickname("member2").build();
+        ChatLog chatLog3 = ChatLog.builder().message("반갑습니다^^").senderNickname("member3").build();
 
         //when
-        chatLogRepository.save(TEST_ROOM_ID, chatLog1);
-        chatLogRepository.save(TEST_ROOM_ID, chatLog2);
-        chatLogRepository.save(TEST_ROOM_ID, chatLog3);
+        chatLogRepository.saveByRoomId(TEST_ROOM_ID, chatLog1);
+        chatLogRepository.saveByRoomId(TEST_ROOM_ID, chatLog2);
+        chatLogRepository.saveByRoomId(TEST_ROOM_ID, chatLog3);
 
         List<ChatLog> chatLogs = chatLogRepository.findAllByRoomId(TEST_ROOM_ID);
         List<ChatLog> emptyLogs = chatLogRepository.findAllByRoomId("room");
@@ -51,11 +51,11 @@ class ChatLogRedisRepositoryTest {
     @DisplayName("채팅방 ID 및 index 로 개별 채팅을 조회할 수 있다")
     void findOneByRoomIdAndIndex() {
         //given
-        ChatLog chatLog1 = ChatLog.builder().message("hello!").senderId(1L).build();
-        ChatLog chatLog2 = ChatLog.builder().message("안녕하세요!").senderId(2L).build();
+        ChatLog chatLog1 = ChatLog.builder().message("hello!").senderNickname("member1").build();
+        ChatLog chatLog2 = ChatLog.builder().message("안녕하세요!").senderNickname("member2").build();
 
-        Long index1 = chatLogRepository.save(TEST_ROOM_ID, chatLog1);
-        Long index2 = chatLogRepository.save(TEST_ROOM_ID, chatLog2);
+        Long index1 = chatLogRepository.saveByRoomId(TEST_ROOM_ID, chatLog1);
+        Long index2 = chatLogRepository.saveByRoomId(TEST_ROOM_ID, chatLog2);
 
         //when
         ChatLog findChatLog1 = chatLogRepository.findOneByRoomIdAndIndex(TEST_ROOM_ID, index1).orElse(null);
@@ -67,34 +67,38 @@ class ChatLogRedisRepositoryTest {
     }
 
     @Test
-    @DisplayName("채팅 메시지 내용을 수정할 수 있다")
-    void updateMessage() {
+    @DisplayName("채팅방 ID 및 index 로 채팅을 수정할 수 있다")
+    void updateByRoomIdAndIndex() {
         //given
-        ChatLog chatLog = ChatLog.builder().message("hello!").senderId(1L).build();
-        chatLogRepository.save(TEST_ROOM_ID, chatLog);
+        ChatLog chatLog = ChatLog.builder().message("hello!").senderNickname("member").build();
+        Long index = chatLogRepository.saveByRoomId(TEST_ROOM_ID, chatLog);
 
         //when
-        chatLogRepository.updateMessage(TEST_ROOM_ID, 0L, "안녕하세요!!!");
-        ChatLog updatedChatLog = chatLogRepository.findOneByRoomIdAndIndex(TEST_ROOM_ID, 0L).orElse(null);
+        ChatLog newChatLog = ChatLog.builder().message("안녕하세요!!!").senderNickname("new-member").build();
+        chatLogRepository.updateByRoomIdAndIndex(TEST_ROOM_ID, index, newChatLog);
+        ChatLog updatedChatLog = chatLogRepository.findOneByRoomIdAndIndex(TEST_ROOM_ID, index).orElse(null);
 
         //then
         assertThat(updatedChatLog).isNotNull();
         assertThat(updatedChatLog.getMessage()).isEqualTo("안녕하세요!!!");
+        assertThat(updatedChatLog.getSenderNickname()).isEqualTo("new-member");
     }
 
     @Test
-    @DisplayName("채팅을 삭제할 경우, 채팅 메시지 내용이 [삭제된 메시지입니다.]로 변경된다")
-    void deleteMessage() {
+    @DisplayName("채팅방 ID 로 채팅을 삭제할 수 있다")
+    void deleteByRoomId() {
         //given
-        ChatLog chatLog = ChatLog.builder().message("hello!").senderId(1L).build();
-        chatLogRepository.save(TEST_ROOM_ID, chatLog);
+        ChatLog chatLog1 = ChatLog.builder().message("hello!").senderNickname("member1").build();
+        ChatLog chatLog2 = ChatLog.builder().message("안녕하세요!").senderNickname("member2").build();
+
+        chatLogRepository.saveByRoomId(TEST_ROOM_ID, chatLog1);
+        chatLogRepository.saveByRoomId(TEST_ROOM_ID, chatLog2);
 
         //when
-        chatLogRepository.deleteMessage(TEST_ROOM_ID, 0L);
-        ChatLog deletedChatLog = chatLogRepository.findOneByRoomIdAndIndex(TEST_ROOM_ID, 0L).orElse(null);
+        chatLogRepository.deleteByRoomId(TEST_ROOM_ID);
+        List<ChatLog> chatLogs = chatLogRepository.findAllByRoomId(TEST_ROOM_ID);
 
         //then
-        assertThat(deletedChatLog).isNotNull();
-        assertThat(deletedChatLog.getMessage()).isEqualTo("삭제된 메시지입니다.");
+        assertThat(chatLogs).isEmpty();
     }
 }

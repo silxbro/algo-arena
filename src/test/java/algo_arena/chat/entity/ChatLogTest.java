@@ -17,7 +17,7 @@ class ChatLogTest {
         chatLog = ChatLog.builder()
             .type(ClientMessageType.CHAT)
             .message("hello!")
-            .senderId(1L)
+            .senderNickname("my-member")
             .build();
     }
 
@@ -31,7 +31,7 @@ class ChatLogTest {
         //custom
         log.info("chatLog.type={}", chatLog.getType());
         log.info("chatLog.message={}", chatLog.getMessage());
-        log.info("chatLog.senderId={}", chatLog.getSenderId());
+        log.info("chatLog.senderId={}", chatLog.getSenderNickname());
     }
 
     @Test

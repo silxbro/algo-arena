@@ -29,7 +29,7 @@ public class ChatLog implements Serializable {
     private ClientMessageType type;
 
     private String message;
-    private Long senderId;
+    private String senderNickname;
 
     @Builder.Default
     private Timestamp sendTime = new Timestamp(System.currentTimeMillis());
