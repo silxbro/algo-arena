@@ -33,4 +33,12 @@ public class ChatLog implements Serializable {
 
     @Builder.Default
     private Timestamp sendTime = new Timestamp(System.currentTimeMillis());
+
+    public void updateMessage(String message) {
+        this.message = message;
+    }
+
+    public void initIndex(Long index) {
+        this.index = index;
+    }
 }
