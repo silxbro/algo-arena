@@ -25,7 +25,7 @@ public class ChatLogRedisRepository {
         opsListOperation = redisTemplate.opsForList();
     }
 
-    public Long save(String roomId, ChatLog chatLog) {
+    public Long saveByRoomId(String roomId, ChatLog chatLog) {
         String key = generateKey(roomId);
         Long index = opsListOperation.rightPush(key, chatLog) - 1;
         chatLog.initIndex(index);
@@ -47,24 +47,15 @@ public class ChatLogRedisRepository {
             .map(object -> objectMapper.convertValue(object, ChatLog.class));
     }
 
-    public void updateMessage(String roomId, Long index, String newMessage) {
-        ChatLog chatLog = findOneByRoomIdAndIndex(roomId, index).orElse(null);
-
-        if (chatLog != null) {
-            chatLog.updateMessage(newMessage);
-            opsListOperation.set(generateKey(roomId), index, chatLog);
-        }
-    }
-
-    public void deleteMessage(String roomId, Long index) {
-        updateMessage(roomId, index, "삭제된 메시지입니다.");
+    public void updateByRoomIdAndIndex(String roomId, Long index, ChatLog chatLog) {
+        String key = generateKey(roomId);
+        opsListOperation.set(key, index, chatLog);
     }
 
     public void deleteByRoomId(String roomId) {
         String key = generateKey(roomId);
         redisTemplate.delete(key);
     }
-
 
     private String generateKey(String roomId) {
         return CHAT_LOG_PREFIX + roomId;
