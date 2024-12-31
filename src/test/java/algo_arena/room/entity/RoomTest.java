@@ -2,9 +2,9 @@ package algo_arena.room.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import algo_arena.member.entity.Member;
 import algo_arena.room.dto.request.RoomUpdateRequest;
 import algo_arena.submission.entity.Language;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,12 +18,11 @@ class RoomTest {
     void init() {
         room = Room.builder()
             .name("코딩테스트")
-            .maxEntrants(3)
-            .problemIds(Arrays.asList(1L, 2L, 3L))
-            .hostId(1L)
+            .maxRoomMembers(3)
             .language(Language.KOTLIN)
             .timeLimit(60)
             .build();
+        room.initHost(createTestMember(1L));
     }
 
     @Test
@@ -32,8 +31,7 @@ class RoomTest {
         //given
         RoomUpdateRequest request = RoomUpdateRequest.builder()
             .name("Coding Test")
-            .maxEntrants(20)
-            .problemIds(Arrays.asList(2L, 3L))
+            .maxRoomMembers(20)
             .languageName("C++")
             .timeLimit(30)
             .build();
@@ -43,8 +41,7 @@ class RoomTest {
 
         //then
         assertThat(room.getName()).isEqualTo("Coding Test");
-        assertThat(room.getMaxEntrants()).isEqualTo(20);
-        assertThat(room.getProblemIds()).isEqualTo(Arrays.asList(2L, 3L));
+        assertThat(room.getMaxRoomMembers()).isEqualTo(20);
         assertThat(room.getLanguage()).isEqualTo(Language.C_PP);
         assertThat(room.getTimeLimit()).isEqualTo(30);
     }
@@ -53,47 +50,47 @@ class RoomTest {
     @DisplayName("참가자 중 가장 먼저 입장한 사람이 자동으로 방장으로 변경된다")
     void changeHost() {
         //given
-        room.addEntrant(2L);
-        room.addEntrant(3L);
-        room.addEntrant(4L);
+        room.addMember(createTestMember(2L));
+        room.addMember(createTestMember(3L));
+        room.addMember(createTestMember(4L));
 
         //when
-        room.changeHost();
+        Member changedHost = room.changeHost();
 
         //then
-        assertThat(room.getHostId()).isEqualTo(2L);
+        assertThat(changedHost.getId()).isEqualTo(2L);
     }
 
     @Test
     @DisplayName("테스트방에 참가자가 입장할 수 있다")
-    void addEntrant_success() {
+    void addMember_success() {
         //given
-        room.addEntrant(100L);
-        room.addEntrant(200L);
+        room.addMember(createTestMember(100L));
+        room.addMember(createTestMember(200L));
 
         //when
-        List<Entrant> entrants = room.getEntrants();
+        List<RoomMember> roomMembers = room.getRoomMembers();
 
         //then
-        assertThat(entrants.size()).isEqualTo(2);
-        assertThat(room.isEntrant(100L)).isTrue();
-        assertThat(room.isEntrant(200L)).isTrue();
+        assertThat(roomMembers.size()).isEqualTo(2);
+        assertThat(room.isMember(100L)).isTrue();
+        assertThat(room.isMember(200L)).isTrue();
     }
 
     @Test
     @DisplayName("정원이 최대정원만큼 차있는 경우, 테스트방에 입장할 수 없다")
-    void addEntrant_fail() {
+    void addMember_fail() {
         //given
-        boolean result1 = room.addEntrant(100L);
-        boolean result2 = room.addEntrant(200L);
-        boolean result3 = room.addEntrant(300L);
-        boolean result4 = room.addEntrant(400L);
+        boolean result1 = room.addMember(createTestMember(100L));
+        boolean result2 = room.addMember(createTestMember(200L));
+        boolean result3 = room.addMember(createTestMember(300L));
+        boolean result4 = room.addMember(createTestMember(400L));
 
         //when
-        List<Entrant> entrants = room.getEntrants();
+        List<RoomMember> roomMembers = room.getRoomMembers();
 
         //then
-        assertThat(entrants.size()).isEqualTo(room.getMaxEntrants());
+        assertThat(roomMembers.size()).isEqualTo(room.getMaxRoomMembers());
         assertThat(result1).isTrue();
         assertThat(result2).isTrue();
         assertThat(result3).isTrue();
@@ -102,28 +99,28 @@ class RoomTest {
 
     @Test
     @DisplayName("테스트방에서 참가자가 퇴장할 수 있다")
-    void removeEntrant() {
+    void removeMember() {
         //given
-        room.addEntrant(100L);
-        room.addEntrant(200L);
+        room.addMember(createTestMember(100L));
+        room.addMember(createTestMember(200L));
 
         //when
-        room.removeEntrant(200L);
-        List<Entrant> entrants = room.getEntrants();
+        room.removeMember(200L);
+        List<RoomMember> roomMembers = room.getRoomMembers();
 
         //then
-        assertThat(entrants.size()).isEqualTo(1);
-        assertThat(room.isEntrant(100L)).isTrue();
-        assertThat(room.isEntrant(200L)).isFalse();
+        assertThat(roomMembers.size()).isEqualTo(1);
+        assertThat(room.isMember(100L)).isTrue();
+        assertThat(room.isMember(200L)).isFalse();
     }
 
     @Test
     @DisplayName("테스트방에 참가자가 없을 경우, 이를 조회할 수 있다")
-    void hasEntrants_none() {
+    void existMembers_false() {
         //given
 
         //when
-        boolean result = room.hasEntrants();
+        boolean result = room.existMembers();
 
         //then
         assertThat(result).isFalse();
@@ -131,12 +128,12 @@ class RoomTest {
 
     @Test
     @DisplayName("테스트방에 참가자가 존재할 경우, 이를 조회할 수 있다")
-    void hasEntrants_exist() {
+    void existMembers_true() {
         //given
-        room.addEntrant(1L);
+        room.addMember(createTestMember(1L));
 
         //when
-        boolean result = room.hasEntrants();
+        boolean result = room.existMembers();
 
         //then
         assertThat(result).isTrue();
@@ -146,7 +143,7 @@ class RoomTest {
     @DisplayName("테스트방에 참가자가 최대 정원보다 적은 경우, 이를 조회할 수 있다")
     void isFull_no() {
         //given
-        room.addEntrant(1L);
+        room.addMember(createTestMember(1L));
 
         //when
         boolean result = room.isFull();
@@ -159,9 +156,9 @@ class RoomTest {
     @DisplayName("테스트방에 참가자가 최대 정원인 경우, 이를 조회할 수 있다")
     void isFull_yes() {
         //given
-        room.addEntrant(1L);
-        room.addEntrant(2L);
-        room.addEntrant(3L);
+        room.addMember(createTestMember(1L));
+        room.addMember(createTestMember(2L));
+        room.addMember(createTestMember(3L));
 
         //when
         boolean result = room.isFull();
@@ -186,17 +183,21 @@ class RoomTest {
 
     @Test
     @DisplayName("회원 ID로 테스트방의 참가자여부를 조회할 수 있다")
-    void isEntrant() {
+    void isMember() {
         //given
-        room.addEntrant(1L);
-        room.addEntrant(2L);
+        room.addMember(createTestMember(1L));
+        room.addMember(createTestMember(2L));
 
         //when
-        boolean result1 = room.isEntrant(1L);
-        boolean result2 = room.isEntrant(10L);
+        boolean result1 = room.isMember(1L);
+        boolean result2 = room.isMember(10L);
 
         //then
         assertThat(result1).isTrue();
         assertThat(result2).isFalse();
+    }
+
+    private Member createTestMember(Long memberId) {
+        return Member.builder().id(memberId).build();
     }
 }

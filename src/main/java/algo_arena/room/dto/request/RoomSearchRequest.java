@@ -1,14 +1,14 @@
 package algo_arena.room.dto.request;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
-public class RoomSearchCond {
+public class RoomSearchRequest {
 
     private String roomName;
-    private Integer maxEntrants;
+    private Integer maxRoomMembers;
     private String languageName;
     private Integer minProblems;
     private Integer maxProblems;

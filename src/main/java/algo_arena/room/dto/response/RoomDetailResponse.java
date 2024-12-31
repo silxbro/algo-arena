@@ -1,6 +1,8 @@
 package algo_arena.room.dto.response;
 
+import algo_arena.member.entity.Member;
 import algo_arena.room.entity.Room;
+import algo_arena.room.entity.RoomMember;
 import algo_arena.submission.entity.Language;
 import java.util.List;
 import lombok.Builder;
@@ -12,23 +14,20 @@ import lombok.Getter;
 public class RoomDetailResponse {
 
     private String roomName;
-    private Integer maxEntrants;
-    private RoomProblems problemInfo;
-    private RoomHost hostInfo;
-    private RoomEntrants entrantsInfo;
+    private Integer maxRoomMembers;
+    private RoomProblems roomProblems;
+    private RoomHost roomHost;
+    private RoomMembers roomMembers;
     private Integer timeLimit;
     private Language language;
 
-    public static RoomDetailResponse from(Room room, List<String> problemTitles, RoomHost host, List<RoomEntrant> entrants) {
-        RoomProblems roomProblems = RoomProblems.builder().number(problemTitles.size()).problemNames(problemTitles).build();
-        RoomHost roomHost = RoomHost.builder().nickname(host.getNickname()).imgUrl(host.getImgUrl()).build();
-        RoomEntrants roomEntrants = RoomEntrants.builder().number(entrants.size()).entrants(entrants).build();
+    public static RoomDetailResponse from(Room room, List<String> problemTitles) {
         return RoomDetailResponse.builder()
             .roomName(room.getName())
-            .maxEntrants(room.getMaxEntrants())
-            .problemInfo(roomProblems)
-            .hostInfo(roomHost)
-            .entrantsInfo(roomEntrants)
+            .maxRoomMembers(room.getMaxRoomMembers())
+            .roomProblems(RoomProblems.from(problemTitles))
+            .roomHost(RoomHost.from(room.getHost()))
+            .roomMembers(RoomMembers.from(room.getRoomMembers()))
             .timeLimit(room.getTimeLimit())
             .language(room.getLanguage())
             .build();
@@ -38,7 +37,11 @@ public class RoomDetailResponse {
     @Builder
     public static class RoomProblems {
         private Integer number;
-        private List<String> problemNames;
+        private List<String> problemTitles;
+
+        public static RoomProblems from(List<String> problemTitles) {
+            return RoomProblems.builder().number(problemTitles.size()).problemTitles(problemTitles).build();
+        }
     }
 
     @Getter
@@ -46,20 +49,37 @@ public class RoomDetailResponse {
     public static class RoomHost {
         private String nickname;
         private String imgUrl;
+
+        public static RoomHost from(Member member) {
+            return RoomHost.builder().nickname(member.getNickname()).imgUrl(member.getImgUrl()).build();
+        }
     }
 
     @Getter
     @Builder
-    public static class RoomEntrants {
+    public static class RoomMembers {
         private Integer number;
-        private List<RoomEntrant> entrants;
+        private List<RoomMemberResponse> roomMembers;
+
+        public static RoomMembers from(List<RoomMember> roomMembers) {
+            List<RoomMemberResponse> members = roomMembers.stream().map(RoomMemberResponse::from).toList();
+            return RoomMembers.builder().number(members.size()).roomMembers(members).build();
+        }
     }
 
     @Getter
     @Builder
-    public static class RoomEntrant {
+    public static class RoomMemberResponse {
         private String nickname;
         private String imgUrl;
         private Boolean isReady;
+
+        public static RoomMemberResponse from(RoomMember roomMember) {
+            return RoomMemberResponse.builder()
+                .nickname(roomMember.getMember().getNickname())
+                .imgUrl(roomMember.getMember().getImgUrl())
+                .isReady(roomMember.getIsReady())
+                .build();
+        }
     }
 }
