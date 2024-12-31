@@ -9,12 +9,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 public class Member extends BaseEntity {
 
@@ -30,22 +33,16 @@ public class Member extends BaseEntity {
 
     @Column(updatable = false)
     private String nickname;
-    private String imgUrl;
+
+    @Builder.Default
+    private String imgUrl = "EMPTY";
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Builder.Default
+    private Role role = Role.USER;
 
-    private int testCount; //참가 테스트 개수
-    private int problemCount; //정답 문제 개수
-
-    @Builder
-    private Member(String email, String password, String nickname, String imgUrl, Role role) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.imgUrl = imgUrl;
-        this.role = role;
-    }
+    private long testCount; //참가 테스트 개수
+    private long problemCount; //정답 문제 개수
 
     public void changePassword(String password) {
         this.password = password;
@@ -54,5 +51,4 @@ public class Member extends BaseEntity {
     public void changeImage(String imageUrl) {
         this.imgUrl = imageUrl;
     }
-
 }

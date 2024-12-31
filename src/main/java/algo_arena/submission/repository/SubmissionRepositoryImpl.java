@@ -4,7 +4,7 @@ import static algo_arena.member.entity.QMember.member;
 import static algo_arena.problem.entity.QProblem.problem;
 import static algo_arena.submission.entity.QSubmission.submission;
 
-import algo_arena.submission.dto.request.SubmissionSearchCond;
+import algo_arena.submission.dto.request.SubmissionSearchRequest;
 import algo_arena.submission.entity.JudgementResult;
 import algo_arena.submission.entity.Language;
 import algo_arena.submission.entity.Submission;
@@ -23,11 +23,11 @@ public class SubmissionRepositoryImpl implements SubmissionQueryRepository {
     }
 
     @Override
-    public List<Submission> findSubmissions(SubmissionSearchCond searchCond) {
-        Integer problemNumber = searchCond.getProblemNumber();
-        String memberNickname = searchCond.getMemberNickname();
-        String languageName = searchCond.getLanguageName();
-        String resultDescription = searchCond.getResultDescription();
+    public List<Submission> findSubmissions(SubmissionSearchRequest request) {
+        Long problemNumber = request.getProblemNumber();
+        String memberNickname = request.getMemberNickname();
+        String languageName = request.getLanguageName();
+        String resultDescription = request.getResultDescription();
 
         return query
             .select(submission)
@@ -38,7 +38,7 @@ public class SubmissionRepositoryImpl implements SubmissionQueryRepository {
             .fetch();
     }
 
-    private BooleanExpression problemEq(Integer problemNumber) {
+    private BooleanExpression problemEq(Long problemNumber) {
         if (problemNumber == null) {
             return null;
         }

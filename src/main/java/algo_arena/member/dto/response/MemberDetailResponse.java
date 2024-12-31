@@ -2,23 +2,25 @@ package algo_arena.member.dto.response;
 
 import algo_arena.member.entity.Member;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class MemberDetailResponse {
 
     private String email;
     private String nickname;
     private String imgUrl;
-    private String role;
+    private long testCount;
+    private long problemCount;
 
     public static MemberDetailResponse from(Member member) {
         return MemberDetailResponse.builder()
             .email(member.getEmail())
             .nickname(member.getNickname())
             .imgUrl(member.getImgUrl())
-            .role(member.getRole().getDescription())
+            .testCount(member.getTestCount())
+            .problemCount(member.getProblemCount())
             .build();
     }
 }

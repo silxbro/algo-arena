@@ -6,7 +6,7 @@ import algo_arena.member.entity.Member;
 import algo_arena.member.repository.MemberRepository;
 import algo_arena.problem.entity.Problem;
 import algo_arena.problem.repository.ProblemRepository;
-import algo_arena.submission.dto.request.SubmissionSearchCond;
+import algo_arena.submission.dto.request.SubmissionSearchRequest;
 import algo_arena.submission.entity.JudgementResult;
 import algo_arena.submission.entity.Language;
 import algo_arena.submission.entity.Submission;
@@ -42,8 +42,8 @@ class SubmissionServiceTest {
         memberRepository.save(member1);
         memberRepository.save(member2);
 
-        problem1 = Problem.builder().number(1).build();
-        problem2 = Problem.builder().number(2).build();
+        problem1 = Problem.builder().number(1L).build();
+        problem2 = Problem.builder().number(2L).build();
 
         problemRepository.save(problem1);
         problemRepository.save(problem2);
@@ -73,14 +73,14 @@ class SubmissionServiceTest {
         Submission submission4 = createSubmission(problem2, member2, Language.C_PP, JudgementResult.RIGHT);
         Submission submission5 = createSubmission(problem2, member2, Language.PYTHON, JudgementResult.TIME_EXCEEDED);
 
-        SubmissionSearchCond searchCond1 = SubmissionSearchCond.builder().problemNumber(1).build();
-        SubmissionSearchCond searchCond2 = SubmissionSearchCond.builder().resultDescription("정답").build();
-        SubmissionSearchCond searchCond3 = SubmissionSearchCond.builder().memberNickname("member2").languageName("Kotlin").build();
+        SubmissionSearchRequest request1 = SubmissionSearchRequest.builder().problemNumber(1L).build();
+        SubmissionSearchRequest request2 = SubmissionSearchRequest.builder().resultDescription("정답").build();
+        SubmissionSearchRequest request3 = SubmissionSearchRequest.builder().memberNickname("member2").languageName("Kotlin").build();
 
         //when
-        List<Submission> submissions1 = submissionService.findAll(searchCond1);
-        List<Submission> submissions2 = submissionService.findAll(searchCond2);
-        List<Submission> submissions3 = submissionService.findAll(searchCond3);
+        List<Submission> submissions1 = submissionService.findAll(request1);
+        List<Submission> submissions2 = submissionService.findAll(request2);
+        List<Submission> submissions3 = submissionService.findAll(request3);
 
         //then
         assertThat(submissions1).containsExactly(submission1, submission2);
