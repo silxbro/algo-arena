@@ -3,7 +3,8 @@ package algo_arena.room.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import algo_arena.config.redis.RedisConfig;
-import algo_arena.room.dto.request.RoomSearchCond;
+import algo_arena.problem.entity.Problem;
+import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.entity.Room;
 import algo_arena.submission.entity.Language;
 import java.util.Arrays;
@@ -39,8 +40,8 @@ class RoomRepositoryTest {
     }
 
     @Test
-    @DisplayName("테스트 방을 성공적으로 생성할 수 있다")
-    void create() {
+    @DisplayName("테스트 방을 성공적으로 생성 및 저장할 수 있다")
+    void save() {
         //given
         Room room = createRoom("코딩테스트 타파!!", 5, Arrays.asList(1L), Language.JAVA, 30);
 
@@ -55,7 +56,7 @@ class RoomRepositoryTest {
     @DisplayName("아무 조건 없이 검색할 경우, 모든 테스트 방이 조회된다")
     void findAllBySearch_noCondition() {
         //given
-        RoomSearchCond noCondition = RoomSearchCond.builder().build();
+        RoomSearchRequest noCondition = RoomSearchRequest.builder().build();
 
         // when
         List<Room> findRooms = roomRepository.findAllBySearch(noCondition);
@@ -69,9 +70,9 @@ class RoomRepositoryTest {
     @DisplayName("방 이름으로 검색할 경우, 대소문자를 구분하지 않으며 해당 검색어를 포함하는 테스트 방이 조회된다")
     void findAllBySearch_roomNameCondition() {
         //given
-        RoomSearchCond roomNameCond1 = RoomSearchCond.builder().roomName("test").build();
-        RoomSearchCond roomNameCond2 = RoomSearchCond.builder().roomName("코딩왕").build();
-        RoomSearchCond roomNameCond3 = RoomSearchCond.builder().roomName("드루와!").build();
+        RoomSearchRequest roomNameCond1 = RoomSearchRequest.builder().roomName("test").build();
+        RoomSearchRequest roomNameCond2 = RoomSearchRequest.builder().roomName("코딩왕").build();
+        RoomSearchRequest roomNameCond3 = RoomSearchRequest.builder().roomName("드루와!").build();
 
         // when
         List<Room> findRooms1 = roomRepository.findAllBySearch(roomNameCond1);
@@ -89,10 +90,10 @@ class RoomRepositoryTest {
     @DisplayName("문제 수 또는 제한 시간으로 범위 검색할 경우, 해당 조건에 부합하는 테스트 방이 조회된다")
     void findAllBySearch_rangeCondition() {
         //given
-        RoomSearchCond problemCond1 = RoomSearchCond.builder().minProblems(3).maxProblems(5).build();
-        RoomSearchCond problemCond2 = RoomSearchCond.builder().maxProblems(3).build();
-        RoomSearchCond timeLimitCond1 = RoomSearchCond.builder().minTimeLimit(60).maxTimeLimit(120).build();
-        RoomSearchCond timeLimitCond2 = RoomSearchCond.builder().maxTimeLimit(30).build();
+        RoomSearchRequest problemCond1 = RoomSearchRequest.builder().minProblems(3).maxProblems(5).build();
+        RoomSearchRequest problemCond2 = RoomSearchRequest.builder().maxProblems(3).build();
+        RoomSearchRequest timeLimitCond1 = RoomSearchRequest.builder().minTimeLimit(60).maxTimeLimit(120).build();
+        RoomSearchRequest timeLimitCond2 = RoomSearchRequest.builder().maxTimeLimit(30).build();
 
         // when
         List<Room> findRooms1 = roomRepository.findAllBySearch(problemCond1);
@@ -111,9 +112,9 @@ class RoomRepositoryTest {
     @DisplayName("복합 조건으로 테스트방을 검색할 경우, 해당 조건에 부합하는 테스트 방이 조회된다")
     void findAllBySearch_complexCondition() {
         //given
-        RoomSearchCond complexCond1 = RoomSearchCond.builder().languageName("Python").minTimeLimit(70).build();
-        RoomSearchCond complexCond2 = RoomSearchCond.builder().maxEntrants(15).roomName("코딩").build();
-        RoomSearchCond complexCond3 = RoomSearchCond.builder().minProblems(3).maxTimeLimit(60).build();
+        RoomSearchRequest complexCond1 = RoomSearchRequest.builder().languageName("Python").minTimeLimit(70).build();
+        RoomSearchRequest complexCond2 = RoomSearchRequest.builder().maxRoomMembers(15).roomName("코딩").build();
+        RoomSearchRequest complexCond3 = RoomSearchRequest.builder().minProblems(3).maxTimeLimit(60).build();
 
         // when
         List<Room> findRooms1 = roomRepository.findAllBySearch(complexCond1);
@@ -126,15 +127,14 @@ class RoomRepositoryTest {
         assertThat(findRooms3).contains(room1, room3);
     }
 
-    private Room createRoom(String roomName, int maxParticipants, List<Long> problemIds, Language language, int timeLimit) {
+    private Room createRoom(String roomName, int maxRoomMembers, List<Long> problemIds, Language language, int timeLimit) {
         Room room = Room.builder()
             .name(roomName)
-            .maxEntrants(maxParticipants)
-            .problemIds(problemIds)
+            .maxRoomMembers(maxRoomMembers)
             .language(language)
             .timeLimit(timeLimit)
             .build();
-        roomRepository.save(room);
-        return room;
+        room.initProblems(problemIds.stream().map(problemId -> Problem.builder().id(problemId).build()).toList());
+        return roomRepository.save(room);
     }
 }
