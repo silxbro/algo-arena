@@ -75,9 +75,6 @@ public class Room extends BaseEntity implements Serializable {
         this.timeLimit = updateInfo.getTimeLimit();
     }
 
-    public void initHost(Member host) {
-        this.host = host;
-    }
     public void initProblems(List<Problem> problems) {
         this.roomProblems = problems.stream()
             .map(problem -> RoomProblem.from(this, problem))
