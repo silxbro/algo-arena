@@ -1,5 +1,6 @@
 package algo_arena.room.dto.request;
 
+import algo_arena.member.entity.Member;
 import algo_arena.room.entity.Room;
 import algo_arena.submission.entity.Language;
 import java.util.List;
@@ -13,14 +14,14 @@ public class RoomCreateRequest {
     private String name;
     private Integer maxRoomMembers;
     private List<Long> problemIds;
-    private Long hostId;
     private String languageName;
     private Integer timeLimit; //분 단위
 
-    public Room toEntity() {
+    public Room toEntity(Member host) {
         return Room.builder()
             .name(name)
             .maxRoomMembers(maxRoomMembers)
+            .host(host)
             .language(Language.fromName(languageName))
             .timeLimit(timeLimit)
             .build();

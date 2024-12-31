@@ -19,10 +19,10 @@ class RoomTest {
         room = Room.builder()
             .name("코딩테스트")
             .maxRoomMembers(3)
+            .host(Member.builder().id(1L).build())
             .language(Language.KOTLIN)
             .timeLimit(60)
             .build();
-        room.initHost(createTestMember(1L));
     }
 
     @Test
