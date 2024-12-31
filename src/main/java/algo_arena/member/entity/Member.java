@@ -44,6 +44,10 @@ public class Member extends BaseEntity {
     private long testCount; //참가 테스트 개수
     private long problemCount; //정답 문제 개수
 
+    public boolean equalsId(Long id) {
+        return this.id.equals(id);
+    }
+
     public void changePassword(String password) {
         this.password = password;
     }
