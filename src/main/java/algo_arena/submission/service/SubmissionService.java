@@ -1,6 +1,6 @@
 package algo_arena.submission.service;
 
-import algo_arena.submission.dto.request.SubmissionSearchCond;
+import algo_arena.submission.dto.request.SubmissionSearchRequest;
 import algo_arena.submission.entity.Submission;
 import algo_arena.submission.repository.SubmissionRepository;
 import java.util.List;
@@ -24,7 +24,7 @@ public class SubmissionService {
         return submissionRepository.findById(id).orElseThrow();
     }
 
-    public List<Submission> findAll(SubmissionSearchCond searchCond) {
-        return submissionRepository.findSubmissions(searchCond);
+    public List<Submission> findAll(SubmissionSearchRequest request) {
+        return submissionRepository.findSubmissions(request);
     }
 }

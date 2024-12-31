@@ -6,7 +6,7 @@ import algo_arena.member.entity.Member;
 import algo_arena.member.repository.MemberRepository;
 import algo_arena.problem.entity.Problem;
 import algo_arena.problem.repository.ProblemRepository;
-import algo_arena.submission.dto.request.SubmissionSearchCond;
+import algo_arena.submission.dto.request.SubmissionSearchRequest;
 import algo_arena.submission.entity.JudgementResult;
 import algo_arena.submission.entity.Language;
 import algo_arena.submission.entity.Submission;
@@ -35,8 +35,8 @@ class SubmissionRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Problem problem1 = Problem.builder().number(10).build();
-        Problem problem2 = Problem.builder().number(20).build();
+        Problem problem1 = Problem.builder().number(10L).build();
+        Problem problem2 = Problem.builder().number(20L).build();
 
         problemRepository.save(problem1);
         problemRepository.save(problem2);
@@ -60,19 +60,19 @@ class SubmissionRepositoryTest {
     @DisplayName("검색 조건에 맞는 제출 목록을 조회할 수 있다")
     void findSubmission_SearchCondition() {
         //given
-        SubmissionSearchCond searchCond1 = SubmissionSearchCond.builder()
+        SubmissionSearchRequest request1 = SubmissionSearchRequest.builder()
             .memberNickname("member1")
             .languageName("Java")
             .build();
-        SubmissionSearchCond searchCond2 = SubmissionSearchCond.builder()
-            .problemNumber(10)
+        SubmissionSearchRequest request2 = SubmissionSearchRequest.builder()
+            .problemNumber(10L)
             .resultDescription("컴파일 오류")
             .build();
 
         //when
-        List<Submission> submissions1 = submissionRepository.findSubmissions(searchCond1);
-        List<Submission> submissions2 = submissionRepository.findSubmissions(searchCond2);
-        List<Submission> all = submissionRepository.findSubmissions(SubmissionSearchCond.builder().build());
+        List<Submission> submissions1 = submissionRepository.findSubmissions(request1);
+        List<Submission> submissions2 = submissionRepository.findSubmissions(request2);
+        List<Submission> all = submissionRepository.findSubmissions(SubmissionSearchRequest.builder().build());
 
         //then
         assertThat(submissions1).containsExactly(submission1, submission3);
@@ -88,5 +88,4 @@ class SubmissionRepositoryTest {
             .result(result)
             .build();
     }
-
 }

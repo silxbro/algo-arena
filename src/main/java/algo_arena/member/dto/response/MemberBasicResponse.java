@@ -2,15 +2,15 @@ package algo_arena.member.dto.response;
 
 import algo_arena.member.entity.Member;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class MemberBasicResponse {
 
     private String email;
     private String nickname;
-    private int problemCount;
+    private long problemCount;
 
     public static MemberBasicResponse from(Member member) {
         return MemberBasicResponse.builder()

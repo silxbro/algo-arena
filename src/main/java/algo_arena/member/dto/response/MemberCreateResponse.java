@@ -1,10 +1,10 @@
 package algo_arena.member.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Builder
 public class MemberCreateResponse {
 
     private final static String DEFAULT_MESSAGE = "회원가입이 완료되었습니다.";

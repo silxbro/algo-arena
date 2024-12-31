@@ -1,11 +1,11 @@
 package algo_arena.member.dto.response;
 
 import algo_arena.member.entity.Member;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Builder
 public class MemberUpdateResponse {
 
     private final static String DEFAULT_MESSAGE = "회원정보가 변경되었습니다.";
