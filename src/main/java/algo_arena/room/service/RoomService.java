@@ -2,10 +2,18 @@ package algo_arena.room.service;
 
 import static algo_arena.room.service.RoomUpdateResult.State.*;
 
+import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
-import algo_arena.room.dto.request.RoomSearchCond;
+import algo_arena.problem.entity.Problem;
+import algo_arena.problem.repository.ProblemRepository;
+import algo_arena.room.dto.request.RoomCreateRequest;
+import algo_arena.room.dto.request.RoomSearchRequest;
+import algo_arena.room.dto.request.RoomUpdateRequest;
 import algo_arena.room.entity.Room;
+import algo_arena.room.repository.RoomMemberRepository;
+import algo_arena.room.repository.RoomProblemRepository;
 import algo_arena.room.repository.RoomRedisRepository;
+import algo_arena.room.repository.RoomRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,59 +24,84 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RoomService {
 
-    private final RoomRedisRepository roomRepository;
+    private final RoomRepository roomRepository;
+    private final RoomRedisRepository roomRedisRepository;
+    private final ProblemRepository problemRepository;
     private final MemberService memberService;
 
     @Transactional
-    public Room create(Room room) {
-        return roomRepository.save(room);
+    public Room createRoom(RoomCreateRequest request, Long hostId) {
+        Member host = memberService.findOneById(hostId);
+        List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
+        return createNewRoom(request, host, problems);
     }
 
-    public Room findOneById(String id) {
+    public Room findRoomById(String id) {
         return roomRepository.findById(id).orElseThrow();
     }
 
-    public List<Room> findAll(RoomSearchCond searchCond) {
-        return roomRepository.findAllBySearch(searchCond);
+    public List<Room> findRooms(RoomSearchRequest request) {
+        return roomRepository.findRoomsBySearch(request);
     }
 
     @Transactional
-    public RoomUpdateResult update(String id, Room updateInfo) {
-        Room room = findOneById(id);
-        room.update(updateInfo);
+    public RoomUpdateResult updateRoom(String id, RoomUpdateRequest request) {
+        Room room = findRoomById(id);
+        List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
+        updateRoom(room, request, problems);
         return new RoomUpdateResult(ROOM_UPDATED);
     }
 
     @Transactional
-    public RoomUpdateResult enter(String id, Long memberId) {
-        Room room = findOneById(id);
-        boolean success = room.addEntrant(memberId);
+    public RoomUpdateResult enterRoom(String id, Long memberId) {
+        Room room = findRoomById(id);
+        Member member = memberService.findOneById(memberId);
+        boolean success = room.addMember(member);
         if (!success) {
             return new RoomUpdateResult(FULL_ROOM);
         }
-        String enteredEntrantNickname = memberService.findOneById(memberId).getNickname();
-        return new RoomUpdateResult(ENTRANT_ENTERED, enteredEntrantNickname);
+        return new RoomUpdateResult(ENTRANT_ENTERED, member.getNickname());
     }
 
     @Transactional
-    public RoomUpdateResult exit(String id, Long memberId) {
-        Room room = findOneById(id);
-        if (room.isHost(memberId) && !room.hasEntrants()) {
+    public RoomUpdateResult exitRoom(String id, Long memberId) {
+        Room room = findRoomById(id);
+        if (room.isHost(memberId) && !room.existMembers()) {
             delete(id);
             return new RoomUpdateResult(ROOM_DELETED);
         }
         if (room.isHost(memberId)) {
-            room.changeHost();
-            String changedHostNickname = memberService.findOneById(room.getHostId()).getNickname();
-            return new RoomUpdateResult(HOST_CHANGED, changedHostNickname);
+            Member changedHost = room.changeHost();
+            return new RoomUpdateResult(HOST_CHANGED, changedHost.getNickname());
         }
-        room.removeEntrant(memberId);
-        String exitedEntrantNickname = memberService.findOneById(memberId).getNickname();
-        return new RoomUpdateResult(ENTRANT_EXITED, exitedEntrantNickname);
+        Member removedMember = room.removeMember(memberId);
+        if (removedMember == null) {
+            //TODO: 예외처리
+        }
+        return new RoomUpdateResult(ENTRANT_EXITED, removedMember.getNickname());
     }
 
     @Transactional
     public void delete(String id) {
         roomRepository.deleteById(id);
+        roomRedisRepository.deleteById(id);
+    }
+
+    private Room createNewRoom(RoomCreateRequest request, Member host, List<Problem> problems) {
+        Room newRoom = request.toEntity(host);
+        newRoom.initProblems(problems);
+        saveRoom(newRoom);
+        return newRoom;
+    }
+
+    private void updateRoom(Room room, RoomUpdateRequest request, List<Problem> problems) {
+        Room updateInfo = request.toEntity();
+        updateInfo.initProblems(problems);
+        room.update(updateInfo);
+    }
+
+    private void saveRoom(Room room) {
+        roomRepository.save(room);
+        roomRedisRepository.save(room);
     }
 }
