@@ -1,6 +1,6 @@
 package algo_arena.room.repository;
 
-import algo_arena.room.dto.request.RoomSearchCond;
+import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.entity.Room;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
@@ -34,10 +34,10 @@ public class RoomRedisRepository {
         return room;
     }
 
-    public List<Room> findAllBySearch(RoomSearchCond searchCond) {
+    public List<Room> findAllBySearch(RoomSearchRequest request) {
         return redisTemplate.keys(ROOM_KEY_PREFIX + "*").stream()
             .map(this::getRoomFromCache)
-            .filter(matches(searchCond))
+            .filter(matches(request))
             .collect(Collectors.toList());
     }
 
@@ -60,32 +60,32 @@ public class RoomRedisRepository {
         return objectMapper.convertValue(roomObject, Room.class);
     }
 
-    private Predicate<Room> matches(RoomSearchCond searchCond) {
-        return roomName(searchCond.getRoomName())
-            .and(maxEntrants(searchCond.getMaxEntrants()))
-            .and(language(searchCond.getLanguageName()))
-            .and(problemCount(searchCond.getMinProblems(), searchCond.getMaxProblems()))
-            .and(timeLimit(searchCond.getMinTimeLimit(), searchCond.getMaxTimeLimit()));
+    private Predicate<Room> matches(RoomSearchRequest request) {
+        return roomNameContains(request.getRoomName())
+            .and(maxRoomMembersEq(request.getMaxRoomMembers()))
+            .and(languageEq(request.getLanguageName()))
+            .and(problemsBetween(request.getMinProblems(), request.getMaxProblems()))
+            .and(timeLimitBetween(request.getMinTimeLimit(), request.getMaxTimeLimit()));
     }
 
-    private Predicate<Room> roomName(String roomName) {
+    private Predicate<Room> roomNameContains(String roomName) {
         return room -> roomName == null || room.getName().toUpperCase().contains(roomName.toUpperCase());
     }
 
-    private Predicate<Room> maxEntrants(Integer maxEntrants) {
-        return room -> maxEntrants == null || room.getMaxEntrants() <= maxEntrants;
+    private Predicate<Room> maxRoomMembersEq(Integer maxRoomMembers) {
+        return room -> maxRoomMembers == null || room.getMaxRoomMembers() <= maxRoomMembers;
     }
 
-    private Predicate<Room> language(String languageName) {
+    private Predicate<Room> languageEq(String languageName) {
         return room -> languageName == null || room.getLanguage().getName().equals(languageName);
     }
 
-    private Predicate<Room> problemCount(Integer minProblems, Integer maxProblems) {
-        return room -> (minProblems == null || room.getProblemIds().size() >= minProblems) &&
-            (maxProblems == null || room.getProblemIds().size() <= maxProblems);
+    private Predicate<Room> problemsBetween(Integer minProblems, Integer maxProblems) {
+        return room -> (minProblems == null || room.getRoomProblems().size() >= minProblems) &&
+            (maxProblems == null || room.getRoomProblems().size() <= maxProblems);
     }
 
-    private Predicate<Room> timeLimit(Integer minTimeLimit, Integer maxTimeLimit) {
+    private Predicate<Room> timeLimitBetween(Integer minTimeLimit, Integer maxTimeLimit) {
         return room -> (minTimeLimit == null || room.getTimeLimit() >= minTimeLimit) &&
             (maxTimeLimit == null || room.getTimeLimit() <= maxTimeLimit);
     }
