@@ -4,14 +4,14 @@ import algo_arena.room.entity.Room;
 import algo_arena.submission.entity.Language;
 import java.util.List;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class RoomUpdateRequest {
 
     private String name;
-    private Integer maxEntrants;
+    private Integer maxRoomMembers;
     private List<Long> problemIds;
     private String languageName;
     private Integer timeLimit;
@@ -19,8 +19,7 @@ public class RoomUpdateRequest {
     public Room toEntity() {
         return Room.builder()
             .name(name)
-            .maxEntrants(maxEntrants)
-            .problemIds(problemIds)
+            .maxRoomMembers(maxRoomMembers)
             .language(Language.fromName(languageName))
             .timeLimit(timeLimit)
             .build();

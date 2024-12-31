@@ -3,13 +3,15 @@ package algo_arena.room.dto.request;
 import algo_arena.room.entity.Room;
 import algo_arena.submission.entity.Language;
 import java.util.List;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Getter
+@Builder
 public class RoomCreateRequest {
 
     private String name;
-    private Integer maxEntrants;
+    private Integer maxRoomMembers;
     private List<Long> problemIds;
     private Long hostId;
     private String languageName;
@@ -18,9 +20,7 @@ public class RoomCreateRequest {
     public Room toEntity() {
         return Room.builder()
             .name(name)
-            .maxEntrants(maxEntrants)
-            .problemIds(problemIds)
-            .hostId(hostId)
+            .maxRoomMembers(maxRoomMembers)
             .language(Language.fromName(languageName))
             .timeLimit(timeLimit)
             .build();
