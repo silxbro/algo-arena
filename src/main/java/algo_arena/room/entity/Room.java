@@ -57,7 +57,7 @@ public class Room extends BaseEntity implements Serializable {
     private Member host = Member.builder().build();
 
     @Builder.Default
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomMember> roomMembers = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
