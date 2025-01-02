@@ -5,17 +5,17 @@ import algo_arena.member.repository.MemberRepository;
 import algo_arena.problem.entity.Problem;
 import algo_arena.problem.repository.ProblemRepository;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
+@Profile("dev")
+@RequiredArgsConstructor
 public class TestDataInitializer {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private ProblemRepository problemRepository;
+    private final MemberRepository memberRepository;
+    private final ProblemRepository problemRepository;
 
     @PostConstruct
     public void init() {
@@ -31,6 +31,5 @@ public class TestDataInitializer {
         problemRepository.save(problem1);
         problemRepository.save(problem2);
         problemRepository.save(problem3);
-
     }
 }
