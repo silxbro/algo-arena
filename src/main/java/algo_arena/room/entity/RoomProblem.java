@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
 public class RoomProblem extends BaseEntity implements Serializable {
 
     @Id
@@ -35,10 +36,12 @@ public class RoomProblem extends BaseEntity implements Serializable {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
+    @EqualsAndHashCode.Include
     private Room room;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
+    @EqualsAndHashCode.Include
     private Problem problem;
 
     public static RoomProblem from(Room room, Problem problem) {

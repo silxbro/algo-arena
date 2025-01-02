@@ -10,8 +10,6 @@ import algo_arena.room.dto.request.RoomCreateRequest;
 import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.dto.request.RoomUpdateRequest;
 import algo_arena.room.entity.Room;
-import algo_arena.room.repository.RoomMemberRepository;
-import algo_arena.room.repository.RoomProblemRepository;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
 import java.util.List;
@@ -48,7 +46,7 @@ public class RoomService {
     public RoomUpdateResult updateRoom(String id, RoomUpdateRequest request) {
         Room room = findRoomById(id);
         List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
-        updateRoom(room, request, problems);
+        updateExistingRoom(room, request, problems);
         return new RoomUpdateResult(ROOM_UPDATED);
     }
 
@@ -89,15 +87,14 @@ public class RoomService {
 
     private Room createNewRoom(RoomCreateRequest request, Member host, List<Problem> problems) {
         Room newRoom = request.toEntity(host);
-        newRoom.initProblems(problems);
+        newRoom.setProblems(problems);
         saveRoom(newRoom);
         return newRoom;
     }
 
-    private void updateRoom(Room room, RoomUpdateRequest request, List<Problem> problems) {
-        Room updateInfo = request.toEntity();
-        updateInfo.initProblems(problems);
-        room.update(updateInfo);
+    private void updateExistingRoom(Room room, RoomUpdateRequest request, List<Problem> problems) {
+        room.update(request.toEntity());
+        room.setProblems(problems);
     }
 
     private void saveRoom(Room room) {
