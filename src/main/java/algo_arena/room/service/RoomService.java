@@ -35,15 +35,7 @@ public class RoomService {
     }
 
     public Room findRoomById(String id) {
-        // Redis 캐시에서 조회
-        Room redisRoom = roomRedisRepository.findById(id).orElse(null);
-        if (redisRoom != null) {
-            return redisRoom;
-        }
-        Room room = roomRepository.findById(id).orElseThrow();
-        // 조회된 데이터를 Redis 캐시에 저장
-        roomRedisRepository.save(room);
-        return room;
+        return roomRepository.findById(id).orElseThrow();
     }
 
     public List<Room> findRooms(RoomSearchRequest request) {
@@ -56,7 +48,6 @@ public class RoomService {
         List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
         updateExistingRoom(room, request, problems);
 
-        roomRedisRepository.save(room);
         return new RoomUpdateResult(ROOM_UPDATED);
     }
 
@@ -92,7 +83,6 @@ public class RoomService {
     @Transactional
     public void delete(String id) {
         roomRepository.deleteById(id);
-        roomRedisRepository.deleteById(id);
     }
 
     private Room createNewRoom(RoomCreateRequest request, Member host, List<Problem> problems) {
@@ -100,7 +90,6 @@ public class RoomService {
         newRoom.setProblems(problems);
 
         roomRepository.save(newRoom);
-        roomRedisRepository.save(newRoom);
         return newRoom;
     }
 
