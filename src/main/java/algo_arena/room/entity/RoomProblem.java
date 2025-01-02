@@ -1,5 +1,6 @@
 package algo_arena.room.entity;
 
+import algo_arena.common.entity.BaseEntity;
 import algo_arena.problem.entity.Problem;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -11,9 +12,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class RoomProblem {
+public class RoomProblem extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
