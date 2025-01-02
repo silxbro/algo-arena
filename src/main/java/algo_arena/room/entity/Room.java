@@ -17,7 +17,9 @@ import jakarta.persistence.OneToOne;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,7 +57,7 @@ public class Room extends BaseEntity implements Serializable {
     private Member host = Member.builder().build();
 
     @Builder.Default
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     private List<RoomMember> roomMembers = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -70,15 +72,22 @@ public class Room extends BaseEntity implements Serializable {
     public void update(Room updateInfo) {
         this.name = updateInfo.getName();
         this.maxRoomMembers = updateInfo.getMaxRoomMembers();
-        this.roomProblems = updateInfo.getRoomProblems();
         this.language = updateInfo.getLanguage();
         this.timeLimit = updateInfo.getTimeLimit();
     }
 
-    public void initProblems(List<Problem> problems) {
-        this.roomProblems = problems.stream()
+    public void setProblems(List<Problem> problems) {
+        Set<RoomProblem> newRoomProblems = problems.stream()
             .map(problem -> RoomProblem.from(this, problem))
-            .toList();
+            .collect(Collectors.toSet());
+
+        roomProblems.removeIf(existing -> !newRoomProblems.contains(existing));
+
+        newRoomProblems.forEach(newItem -> {
+            if (!roomProblems.contains(newItem)) {
+                roomProblems.add(newItem);
+            }
+        });
     }
 
     public Member changeHost() {

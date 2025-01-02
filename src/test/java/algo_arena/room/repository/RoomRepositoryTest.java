@@ -134,7 +134,7 @@ class RoomRepositoryTest {
             .language(language)
             .timeLimit(timeLimit)
             .build();
-        room.initProblems(problemIds.stream().map(problemId -> Problem.builder().id(problemId).build()).toList());
+        room.setProblems(problemIds.stream().map(problemId -> Problem.builder().id(problemId).build()).toList());
         return roomRepository.save(room);
     }
 }
