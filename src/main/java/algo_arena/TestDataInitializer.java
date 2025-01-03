@@ -21,6 +21,7 @@ public class TestDataInitializer {
     public void init() {
         Member member1 = Member.builder().nickname("member 1").build();
         Member member2 = Member.builder().nickname("member 2").build();
+        Member member3 = Member.builder().nickname("member 3").build();
 
         Problem problem1 = Problem.builder().title("problem 1").build();
         Problem problem2 = Problem.builder().title("problem 2").build();
@@ -28,6 +29,8 @@ public class TestDataInitializer {
 
         memberRepository.save(member1);
         memberRepository.save(member2);
+        memberRepository.save(member3);
+
         problemRepository.save(problem1);
         problemRepository.save(problem2);
         problemRepository.save(problem3);
