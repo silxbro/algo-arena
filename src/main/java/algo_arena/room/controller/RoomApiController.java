@@ -7,8 +7,10 @@ import algo_arena.room.dto.response.RoomDetailResponse;
 import algo_arena.room.dto.response.RoomListResponse;
 import algo_arena.room.dto.response.RoomUpdateResponse;
 import algo_arena.room.entity.Room;
-import algo_arena.room.service.RoomService;
-import algo_arena.room.service.RoomUpdateResult;
+import algo_arena.room.dto.response.RoomUpdateResult;
+import algo_arena.room.service.RoomFindService;
+import algo_arena.room.service.RoomIOService;
+import algo_arena.room.service.RoomLifeService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +28,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RoomApiController {
 
-    private final RoomService roomService;
+    private final RoomLifeService roomLifeService;
+    private final RoomFindService roomFindService;
+    private final RoomIOService roomIOService;
 
     /**
      * 테스트방 생성
      */
     @PostMapping
     public ResponseEntity<String> createRoom(@RequestBody RoomCreateRequest request) {
-        Room newRoom = roomService.createRoom(request, 1L);
+        Room newRoom = roomLifeService.createRoom(request, 1L);
         return ResponseEntity.ok(newRoom.getId());
     }
 
@@ -42,7 +46,7 @@ public class RoomApiController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<RoomDetailResponse> findRoom(@PathVariable("id") String id) {
-        Room room = roomService.findRoomById(id);
+        Room room = roomFindService.findRoomById(id);
         return ResponseEntity.ok(RoomDetailResponse.from(room));
     }
 
@@ -51,7 +55,7 @@ public class RoomApiController {
      */
     @GetMapping
     public ResponseEntity<RoomListResponse> findRoomsBySearch(@RequestBody RoomSearchRequest request) {
-        List<Room> rooms = roomService.findRooms(request);
+        List<Room> rooms = roomFindService.findRoomsBySearch(request);
         return ResponseEntity.ok(RoomListResponse.from(rooms));
     }
 
@@ -60,7 +64,7 @@ public class RoomApiController {
      */
     @PatchMapping("/{id}")
     public ResponseEntity<RoomUpdateResponse> updateRoom(@PathVariable("id") String id, @RequestBody RoomUpdateRequest request) {
-        RoomUpdateResult result = roomService.updateRoom(id, request);
+        RoomUpdateResult result = roomLifeService.updateRoom(id, request);
         return ResponseEntity.ok(new RoomUpdateResponse(id, result.getMessage()));
     }
 
@@ -69,7 +73,7 @@ public class RoomApiController {
      */
     @PatchMapping("/{id}/enter/{memberId}")
     public ResponseEntity<RoomUpdateResponse> enterRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
-        RoomUpdateResult result = roomService.enterRoom(id, memberId);
+        RoomUpdateResult result = roomIOService.enterRoom(id, memberId);
         return ResponseEntity.ok(new RoomUpdateResponse(id, result.getMessage()));
     }
 
@@ -78,7 +82,7 @@ public class RoomApiController {
      */
     @PatchMapping("/{id}/exit/{memberId}")
     public ResponseEntity<RoomUpdateResponse> exitRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
-        RoomUpdateResult result = roomService.exitRoom(id, memberId);
+        RoomUpdateResult result = roomIOService.exitRoom(id, memberId);
         return ResponseEntity.ok(new RoomUpdateResponse(id, result.getMessage()));
     }
 
@@ -87,7 +91,7 @@ public class RoomApiController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoom(@PathVariable("id") String id) {
-        roomService.delete(id);
+        roomLifeService.deleteRoomById(id);
         return ResponseEntity.noContent().build();
     }
 }
