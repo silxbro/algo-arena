@@ -35,7 +35,13 @@ public class RoomService {
     }
 
     public Room findRoomById(String id) {
-        return roomRepository.findById(id).orElseThrow();
+        Room redisRoom = roomRedisRepository.findById(id).orElse(null);
+        if (redisRoom != null) {
+            return redisRoom;
+        }
+        Room room = roomRepository.findById(id).orElseThrow();
+        roomRedisRepository.save(room);
+        return room;
     }
 
     public List<Room> findRooms(RoomSearchRequest request) {
@@ -44,45 +50,47 @@ public class RoomService {
 
     @Transactional
     public RoomUpdateResult updateRoom(String id, RoomUpdateRequest request) {
-        Room room = findRoomById(id);
+        roomRedisRepository.deleteById(id);
+        Room room = roomRepository.findById(id).orElseThrow();
         List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
         updateExistingRoom(room, request, problems);
+
+        roomRedisRepository.save(room);
 
         return new RoomUpdateResult(ROOM_UPDATED);
     }
 
     @Transactional
     public RoomUpdateResult enterRoom(String id, Long memberId) {
-        Room room = findRoomById(id);
+        roomRedisRepository.deleteById(id);
+        Room room = roomRepository.findById(id).orElseThrow();
         Member member = memberService.findOneById(memberId);
-        boolean success = room.addMember(member);
-        if (!success) {
-            return new RoomUpdateResult(FULL_ROOM);
-        }
+        room.addMember(member);
         return new RoomUpdateResult(ENTRANT_ENTERED, member.getNickname());
     }
 
     @Transactional
     public RoomUpdateResult exitRoom(String id, Long memberId) {
-        Room room = findRoomById(id);
+        roomRedisRepository.deleteById(id);
+        Room room = roomRepository.findById(id).orElseThrow();
         if (room.isHost(memberId) && !room.existMembers()) {
             delete(id);
             return new RoomUpdateResult(ROOM_DELETED);
         }
         if (room.isHost(memberId)) {
             Member changedHost = room.changeHost();
+            roomRedisRepository.save(room);
             return new RoomUpdateResult(HOST_CHANGED, changedHost.getNickname());
         }
         Member removedMember = room.removeMember(memberId);
-        if (removedMember == null) {
-            //TODO: 예외처리
-        }
+        roomRedisRepository.save(room);
         return new RoomUpdateResult(ENTRANT_EXITED, removedMember.getNickname());
     }
 
     @Transactional
     public void delete(String id) {
         roomRepository.deleteById(id);
+        roomRedisRepository.deleteById(id);
     }
 
     private Room createNewRoom(RoomCreateRequest request, Member host, List<Problem> problems) {
@@ -90,6 +98,7 @@ public class RoomService {
         newRoom.setProblems(problems);
 
         roomRepository.save(newRoom);
+        roomRedisRepository.save(newRoom);
         return newRoom;
     }
 
