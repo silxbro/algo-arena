@@ -4,6 +4,7 @@ import algo_arena.common.entity.BaseEntity;
 import algo_arena.member.entity.Member;
 import algo_arena.problem.entity.Problem;
 import algo_arena.submission.entity.Language;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,7 +54,7 @@ public class Room extends BaseEntity implements Serializable {
 
     @Builder.Default
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "host_id")
     private Member host = Member.builder().build();
 
     @Builder.Default
