@@ -94,13 +94,8 @@ public class Room extends BaseEntity implements Serializable {
         return host;
     }
 
-    public boolean addMember(Member member) {
-        //TODO: 이미 소속된 테스트방이 존재하는 경우: 예외처리 / 불가능한 경우인데, 예외처리가 필요할까?
-        if (isFull()) {
-            return false;
-        }
+    public void addMember(Member member) {
         roomMembers.add(RoomMember.from(this, member));
-        return true;
     }
 
     public Member removeMember(Long memberId) {
