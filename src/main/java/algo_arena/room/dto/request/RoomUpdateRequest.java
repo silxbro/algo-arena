@@ -10,7 +10,6 @@ import lombok.Getter;
 @Builder
 public class RoomUpdateRequest {
 
-    private String name;
     private Integer maxRoomMembers;
     private List<Long> problemIds;
     private String languageName;
@@ -18,7 +17,6 @@ public class RoomUpdateRequest {
 
     public Room toEntity() {
         return Room.builder()
-            .name(name)
             .maxRoomMembers(maxRoomMembers)
             .language(Language.fromName(languageName))
             .timeLimit(timeLimit)
