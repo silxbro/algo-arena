@@ -16,6 +16,7 @@ import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
 public class RoomMember extends BaseEntity implements Serializable {
 
     @Id
@@ -34,10 +36,12 @@ public class RoomMember extends BaseEntity implements Serializable {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
+    @EqualsAndHashCode.Include
     private Room room;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @EqualsAndHashCode.Include
     private Member member;
 
     @Builder.Default
