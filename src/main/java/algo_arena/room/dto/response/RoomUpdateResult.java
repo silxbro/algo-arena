@@ -1,4 +1,4 @@
-package algo_arena.room.service;
+package algo_arena.room.dto.response;
 
 import lombok.Getter;
 
