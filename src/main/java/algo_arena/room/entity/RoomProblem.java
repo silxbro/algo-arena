@@ -11,7 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import java.io.Serializable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -39,7 +38,7 @@ public class RoomProblem extends BaseEntity implements Serializable {
     @EqualsAndHashCode.Include
     private Room room;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
     @EqualsAndHashCode.Include
     private Problem problem;
