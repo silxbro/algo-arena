@@ -43,9 +43,7 @@ public class RoomApiController {
     @GetMapping("/{id}")
     public ResponseEntity<RoomDetailResponse> findRoom(@PathVariable("id") String id) {
         Room room = roomService.findRoomById(id);
-        List<String> problemTitles = room.getRoomProblems().stream()
-            .map(roomProblem -> roomProblem.getProblem().getTitle()).toList();
-        return ResponseEntity.ok(RoomDetailResponse.from(room, problemTitles));
+        return ResponseEntity.ok(RoomDetailResponse.from(room));
     }
 
     /**
