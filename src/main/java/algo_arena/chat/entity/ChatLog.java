@@ -1,5 +1,6 @@
 package algo_arena.chat.entity;
 
+import algo_arena.chat.enums.ClientMessageType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.io.Serializable;
@@ -40,5 +41,13 @@ public class ChatLog implements Serializable {
 
     public void initIndex(Long index) {
         this.index = index;
+    }
+
+    public static ChatLog create(ClientMessageType type, String message, String senderNickname) {
+        return ChatLog.builder()
+            .type(type)
+            .message(message)
+            .senderNickname(senderNickname)
+            .build();
     }
 }
