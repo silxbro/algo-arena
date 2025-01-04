@@ -9,16 +9,20 @@ import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Controller
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ChatMessageController {
 
     private final ChattingService chattingService;
     private final MemberService memberService;
     private final SocketMessageFactory socketMessageFactory;
 
+    @MessageMapping("/chat/room")
     public void message(ClientMessage message,
         @Header("roomId") String roomId,
         @Header("type") ClientMessageType type) {
@@ -32,7 +36,9 @@ public class ChatMessageController {
         chattingService.send(chatSendRequest);
     }
 
-    private ChatSendRequest createChatSendRequest(ClientMessage message, String roomId, ClientMessageType type, Long memberId) {
+    private ChatSendRequest createChatSendRequest(
+        ClientMessage message, String roomId, ClientMessageType type, Long memberId) {
+
         return ChatSendRequest.builder()
             .roomId(roomId)
             .type(type)
