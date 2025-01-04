@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class ChatLogRedisRepository {
 
-    private static final String CHAT_LOG_PREFIX = "room:chatLog:";
+    private static final String CHAT_LOG_PREFIX = "room:chatLogs:";
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private ListOperations<String, Object> opsListOperation;
