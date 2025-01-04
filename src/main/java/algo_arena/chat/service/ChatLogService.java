@@ -15,21 +15,21 @@ public class ChatLogService {
     private final ChatLogRedisRepository chatLogRepository;
 
     @Transactional
-    public Long save(String roomId, ChatLog chatLog) {
+    public Long saveChatLog(String roomId, ChatLog chatLog) {
         return chatLogRepository.saveByRoomId(roomId, chatLog);
     }
 
-    public ChatLog findOne(String roomId, Long index) {
+    public ChatLog findChatLogByRoomIdAndIndex(String roomId, Long index) {
         return chatLogRepository.findOneByRoomIdAndIndex(roomId, index).orElseThrow();
     }
 
-    public List<ChatLog> findAllByRoomId(String roomId) {
+    public List<ChatLog> findChatLogsByRoomId(String roomId) {
         return chatLogRepository.findAllByRoomId(roomId);
     }
 
     @Transactional
     public void updateMessage(String roomId, Long index, String newMessage) {
-        ChatLog chatLog = findOne(roomId, index);
+        ChatLog chatLog = findChatLogByRoomIdAndIndex(roomId, index);
         if (chatLog != null) {
             chatLog.updateMessage(newMessage);
             chatLogRepository.updateByRoomIdAndIndex(roomId, index, chatLog);
