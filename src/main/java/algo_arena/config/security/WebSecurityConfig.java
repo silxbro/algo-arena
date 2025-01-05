@@ -28,6 +28,7 @@ public class WebSecurityConfig {
 
     private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     //전역 인증 설정 (userDetailsService와 비밀번호 인코더를 설정)
     @Autowired
@@ -44,6 +45,9 @@ public class WebSecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register").permitAll() //인증 없이 접근 허용
                 .anyRequest().authenticated() //기타 요청은 인증 필요
+            )
+            .exceptionHandling(exceptionConfigurer -> exceptionConfigurer
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint) //미인증 처리
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //세션 생성 비활성화(상태 비저장 정책, JWT 사용)
