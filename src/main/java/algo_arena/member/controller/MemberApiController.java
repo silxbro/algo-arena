@@ -1,7 +1,5 @@
 package algo_arena.member.controller;
 
-import algo_arena.member.dto.request.MemberCreateRequest;
-import algo_arena.member.dto.response.MemberCreateResponse;
 import algo_arena.member.dto.response.MemberDetailResponse;
 import algo_arena.member.dto.response.MemberListResponse;
 import algo_arena.member.dto.response.MemberUpdateResponse;
@@ -32,23 +30,12 @@ public class MemberApiController {
     private final MemberService memberService;
 
     /**
-     * 회원 가입
-     */
-    @PostMapping
-    public ResponseEntity<MemberCreateResponse> register(@RequestBody MemberCreateRequest request) {
-
-        Member newMember = memberService.saveMember(request.toEntity());
-
-        return ResponseEntity.ok(MemberCreateResponse.from(newMember.getEmail()));
-    }
-
-    /**
      * 회원 정보 조회 (검색)
      */
     @GetMapping
-    public ResponseEntity<MemberListResponse> findAllByNickname(@RequestParam("nickname") String nickname) {
+    public ResponseEntity<MemberListResponse> findMembersByNickname(@RequestParam("nickname") String nickname) {
 
-        List<Member> members = memberService.findMembersNickname(nickname);
+        List<Member> members = memberService.findMembersByNickname(nickname);
 
         return ResponseEntity.ok(MemberListResponse.from(members));
     }
@@ -57,7 +44,7 @@ public class MemberApiController {
      * 회원 정보 조회 (프로필)
      */
     @GetMapping("/{id}")
-    public ResponseEntity<MemberDetailResponse> findOne(@PathVariable("id") Long id) {
+    public ResponseEntity<MemberDetailResponse> findMember(@PathVariable("id") Long id) {
 
         Member member = memberService.findMemberById(id);
 
