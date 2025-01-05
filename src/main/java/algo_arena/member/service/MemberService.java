@@ -2,6 +2,7 @@ package algo_arena.member.service;
 
 import algo_arena.member.entity.Member;
 import algo_arena.member.repository.MemberRepository;
+import algo_arena.utils.jwt.service.JwtTokenUtil;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -37,6 +39,14 @@ public class MemberService {
 
     public Member findMemberByNickname(String nickname) {
         return memberRepository.findByNickname(nickname).orElseThrow();
+    }
+
+    public String authenticate(String email, String password) {
+        final Member member = findMemberByEmail(email);
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new IllegalStateException();
+        }
+        return jwtTokenUtil.generateToken(member.getNickname());
     }
 
     @Transactional

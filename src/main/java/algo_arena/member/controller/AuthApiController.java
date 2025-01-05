@@ -1,7 +1,9 @@
 package algo_arena.member.controller;
 
 import algo_arena.member.dto.request.MemberCreateRequest;
+import algo_arena.member.dto.request.MemberLoginRequest;
 import algo_arena.member.dto.response.MemberCreateResponse;
+import algo_arena.member.dto.response.MemberLoginResponse;
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -27,4 +29,14 @@ public class AuthApiController {
         return ResponseEntity.ok(MemberCreateResponse.from(newMember.getEmail()));
     }
 
+    /**
+     * 로그인
+     */
+    @PostMapping("/login")
+    public ResponseEntity<MemberLoginResponse> login(@RequestBody MemberLoginRequest request) {
+
+        final String token = memberService.authenticate(request.getEmail(), request.getPassword());
+
+        return ResponseEntity.ok(MemberLoginResponse.from(token));
+    }
 }
