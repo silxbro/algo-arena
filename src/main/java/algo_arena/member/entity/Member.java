@@ -1,6 +1,7 @@
 package algo_arena.member.entity;
 
 import algo_arena.common.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -32,6 +33,7 @@ public class Member extends BaseEntity {
     @Column(updatable = false)
     private String email;
 
+    @JsonIgnore
     private String password;
 
     @Column(updatable = false)
