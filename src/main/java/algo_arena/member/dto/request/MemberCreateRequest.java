@@ -2,9 +2,11 @@ package algo_arena.member.dto.request;
 
 import algo_arena.member.entity.Member;
 import algo_arena.member.entity.Role;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Getter
+@Builder
 public class MemberCreateRequest {
 
     private String email;
