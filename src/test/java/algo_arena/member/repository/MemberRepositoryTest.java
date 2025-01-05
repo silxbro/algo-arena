@@ -105,7 +105,7 @@ class MemberRepositoryTest {
         memberRepository.save(benjamin);
 
         //when
-        List<Member> members = memberRepository.findByNickname("jam");
+        List<Member> members = memberRepository.findAllByNickname("jam");
 
         //then
         assertThat(members).containsExactly(james, benjamin);
