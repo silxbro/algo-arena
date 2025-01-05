@@ -15,16 +15,20 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Member create(Member member) {
+    public Member saveMember(Member member) {
         return memberRepository.save(member);
     }
 
-    public List<Member> findAllByNickname(String nickname) {
-        return memberRepository.findByNickname(nickname);
+    public List<Member> findMembersNickname(String nickname) {
+        return memberRepository.findAllByNickname(nickname);
     }
 
-    public Member findOneById(Long id) {
+    public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow();
+    }
+
+    public Member findMemberByNickname(String nickname) {
+        return memberRepository.findByNickname(nickname).orElseThrow();
     }
 
     @Transactional

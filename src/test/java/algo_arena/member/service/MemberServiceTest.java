@@ -55,7 +55,7 @@ class MemberServiceTest {
         //given
 
         //when
-        List<Member> members = memberService.findAllByNickname("swan");
+        List<Member> members = memberService.findMembersNickname("swan");
 
         //then
         assertThat(members).containsExactly(member);

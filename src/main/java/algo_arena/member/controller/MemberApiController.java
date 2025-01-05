@@ -37,7 +37,7 @@ public class MemberApiController {
     @PostMapping
     public ResponseEntity<MemberCreateResponse> register(@RequestBody MemberCreateRequest request) {
 
-        Member newMember = memberService.create(request.toEntity());
+        Member newMember = memberService.saveMember(request.toEntity());
 
         return ResponseEntity.ok(MemberCreateResponse.from(newMember.getEmail()));
     }
@@ -48,7 +48,7 @@ public class MemberApiController {
     @GetMapping
     public ResponseEntity<MemberListResponse> findAllByNickname(@RequestParam("nickname") String nickname) {
 
-        List<Member> members = memberService.findAllByNickname(nickname);
+        List<Member> members = memberService.findMembersNickname(nickname);
 
         return ResponseEntity.ok(MemberListResponse.from(members));
     }
@@ -59,7 +59,7 @@ public class MemberApiController {
     @GetMapping("/{id}")
     public ResponseEntity<MemberDetailResponse> findOne(@PathVariable("id") Long id) {
 
-        Member member = memberService.findOneById(id);
+        Member member = memberService.findMemberById(id);
 
         return ResponseEntity.ok(MemberDetailResponse.from(member));
     }
