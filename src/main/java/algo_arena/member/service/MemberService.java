@@ -4,6 +4,7 @@ import algo_arena.member.entity.Member;
 import algo_arena.member.repository.MemberRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Member saveMember(Member member) {
+        String encodedPassword = passwordEncoder.encode(member.getPassword());
+        member.changePassword(encodedPassword);
         return memberRepository.save(member);
     }
 
-    public List<Member> findMembersNickname(String nickname) {
+    public List<Member> findMembersByNickname(String nickname) {
         return memberRepository.findAllByNickname(nickname);
     }
 

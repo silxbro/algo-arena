@@ -28,7 +28,7 @@ public class ChatMessageController {
         @Header("type") ClientMessageType type) {
 
         Long memberId = 1L;
-        Member member = memberService.findOneById(memberId);
+        Member member = memberService.findMemberById(memberId);
         if (type.isChat() || type.isEnter() || type.isExit()) {
             socketMessageFactory.updateMessage(roomId, type, message, member);
         }
