@@ -19,18 +19,17 @@ class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
-    private Member createMember(String nickname) {
-        return Member.builder().nickname(nickname).build();
-    }
+    String email = "my-member@algoarena.com";
+    String nickname = "my-member";
 
     @Test
     @DisplayName("새로운 회원 정보를 저장할 경우, 해당 정보가 정확히 저장된다")
     void save() {
         //given
-        Member member = createMember("myMember");
-        Member savedMember = memberRepository.save(member);
+        Member member = createMember(email, nickname);
 
         //when
+        Member savedMember = memberRepository.save(member);
 
         //then
         assertThat(savedMember).isEqualTo(member);
@@ -40,9 +39,9 @@ class MemberRepositoryTest {
     @DisplayName("모든 회원을 조회할 수 있다")
     void findAll() {
         //given
-        Member member1 = createMember("member1");
-        Member member2 = createMember("member2");
-        Member member3 = createMember("member3");
+        Member member1 = createMember(email, "member1");
+        Member member2 = createMember(email, "member2");
+        Member member3 = createMember(email, "member3");
 
         memberRepository.save(member1);
         memberRepository.save(member2);
@@ -59,7 +58,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 아이디로 회원 정보를 조회할 수 있다")
     void findById() {
         //given
-        Member member = createMember("idMember");
+        Member member = createMember(email, nickname);
         memberRepository.save(member);
 
         //when
@@ -73,32 +72,31 @@ class MemberRepositoryTest {
     @DisplayName("회원 아이디로 해당 회원을 삭제할 수 있다")
     void deleteById() {
         //given
-        Member member1 = createMember("member1");
-        Member member2 = createMember("member2");
-        Member member3 = createMember("member3");
+        Member member1 = createMember(email, "member1");
+        Member member2 = createMember(email, "member2");
+        Member member3 = createMember(email, "member3");
 
         memberRepository.save(member1);
         memberRepository.save(member2);
         memberRepository.save(member3);
 
-        memberRepository.deleteById(member2.getId());
-
         //when
+        memberRepository.deleteById(member2.getId());
         List<Member> members = memberRepository.findAll();
 
         //then
-        assertThatThrownBy(() -> memberRepository.findById(member2.getId()).get())
+        assertThatThrownBy(() -> memberRepository.findById(member2.getId()).orElseThrow())
             .isInstanceOf(NoSuchElementException.class);
         assertThat(members).containsExactly(member1, member3);
     }
 
     @Test
     @DisplayName("회원을 닉네임으로 조회할 때, 대소문자를 구분하지 않고 해당 닉네임을 포함하는 모든 회원이 조회되어야 한다")
-    void findByNickname() {
+    void findAllByNickname() {
         //given
-        Member james = createMember("James");
-        Member jane = createMember("Jane");
-        Member benjamin = createMember("Benjamin");
+        Member james = createMember(email, "James");
+        Member jane = createMember(email, "Jane");
+        Member benjamin = createMember(email, "Benjamin");
 
         memberRepository.save(james);
         memberRepository.save(jane);
@@ -109,5 +107,9 @@ class MemberRepositoryTest {
 
         //then
         assertThat(members).containsExactly(james, benjamin);
+    }
+
+    private Member createMember(String email, String nickname) {
+        return Member.builder().email(email).nickname(nickname).build();
     }
 }
