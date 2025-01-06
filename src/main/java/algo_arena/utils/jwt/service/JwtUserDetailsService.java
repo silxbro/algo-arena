@@ -1,7 +1,7 @@
 package algo_arena.utils.jwt.service;
 
 import algo_arena.member.entity.Member;
-import algo_arena.member.service.MemberService;
+import algo_arena.member.repository.MemberRepository;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
-        Member member = memberService.findMemberByNickname(nickname);
+        Member member = memberRepository.findByNickname(nickname).orElseThrow();
         return new User(nickname, member.getPassword(), new ArrayList<>());
     }
 }
