@@ -61,8 +61,8 @@ public class JwtTokenUtil {
     }
 
     // 사용자 이름으로 토큰 생성
-    public String generateToken(String username) {
-        return createToken(username, new HashMap<>());
+    public String generateToken(UserDetails userDetails) {
+        return createToken(userDetails.getUsername(), new HashMap<>());
     }
 
     // 토큰 생성
