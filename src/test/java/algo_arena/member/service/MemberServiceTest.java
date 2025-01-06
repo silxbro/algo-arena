@@ -1,6 +1,7 @@
 package algo_arena.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import algo_arena.member.entity.Member;
 import java.util.List;
@@ -63,6 +64,32 @@ class MemberServiceTest {
 
         //then
         assertThat(members).containsExactly(member);
+    }
+
+    @Test
+    @DisplayName("로그인 정보가 올바를 때, 토큰이 발급된다")
+    void authenticate_Success() {
+        //given
+        String rightPassword = "bella!!!";
+
+        //when
+        String token = memberService.authenticate(member.getEmail(), rightPassword);
+
+        //then
+        assertThat(token).isNotNull();
+    }
+
+    @Test
+    @DisplayName("로그인 정보가 올바르지 않을 때, 예외가 발생한다")
+    void authenticate_Fail() {
+        //given
+        String wrongPassword = "wrong password";
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> memberService.authenticate(member.getEmail(), wrongPassword))
+            .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
