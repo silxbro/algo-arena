@@ -109,6 +109,34 @@ class MemberRepositoryTest {
         assertThat(members).containsExactly(james, benjamin);
     }
 
+    @Test
+    @DisplayName("회원 닉네임으로 회원 정보를 조회할 수 있다")
+    void findByNickname() {
+        //given
+        Member member = createMember(email, nickname);
+        memberRepository.save(member);
+
+        //when
+        Member findMember = memberRepository.findByNickname(nickname).orElseThrow();
+
+        //then
+        assertThat(findMember).isEqualTo(member);
+    }
+
+    @Test
+    @DisplayName("회원 이메일로 회원 정보를 조회할 수 있다")
+    void findByEmail() {
+        //given
+        Member member = createMember(email, nickname);
+        memberRepository.save(member);
+
+        //when
+        Member findMember = memberRepository.findByEmail(email).orElseThrow();
+
+        //then
+        assertThat(findMember).isEqualTo(member);
+    }
+
     private Member createMember(String email, String nickname) {
         return Member.builder().email(email).nickname(nickname).build();
     }
