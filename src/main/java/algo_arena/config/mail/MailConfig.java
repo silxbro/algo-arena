@@ -1,4 +1,4 @@
-package algo_arena.config.email;
+package algo_arena.config.mail;
 
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
-public class EmailConfig {
+public class MailConfig {
 
     @Value("${spring.mail.host}")
     private String host;
