@@ -40,10 +40,10 @@ class MemberServiceTest {
     void create() {
         //given
         Member member = Member.builder().nickname("hello").build();
-        Member createdMember = memberService.create(member);
+        Member createdMember = memberService.saveMember(member);
 
         //when
-        Member findMember = memberService.findOneById(createdMember.getId());
+        Member findMember = memberService.findMemberById(createdMember.getId());
 
         //then
         assertThat(findMember).isEqualTo(member);
@@ -55,7 +55,7 @@ class MemberServiceTest {
         //given
 
         //when
-        List<Member> members = memberService.findMembersNickname("swan");
+        List<Member> members = memberService.findMembersByNickname("swan");
 
         //then
         assertThat(members).containsExactly(member);
@@ -68,7 +68,7 @@ class MemberServiceTest {
         memberService.updateImage(member.getId(), "https://update-image.com/bella.png");
 
         //when
-        Member findMember = memberService.findOneById(member.getId());
+        Member findMember = memberService.findMemberById(member.getId());
 
         //then
         assertThat(findMember.getImgUrl()).isEqualTo("https://update-image.com/bella.png");
@@ -81,7 +81,7 @@ class MemberServiceTest {
         memberService.changePassword(member.getId(), "!!!bella");
 
         //when
-        Member findMember = memberService.findOneById(member.getId());
+        Member findMember = memberService.findMemberById(member.getId());
 
         //then
         assertThat(findMember.getPassword()).isEqualTo("!!!bella");

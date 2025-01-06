@@ -28,7 +28,7 @@ public class RoomLifeService {
 
     @Transactional
     public Room createRoom(RoomCreateRequest request, Long hostId) {
-        Member host = memberService.findOneById(hostId);
+        Member host = memberService.findMemberById(hostId);
         List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
         return createNewRoom(request, host, problems);
     }

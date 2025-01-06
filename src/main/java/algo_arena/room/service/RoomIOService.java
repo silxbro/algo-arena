@@ -26,7 +26,7 @@ public class RoomIOService {
     @Transactional
     public RoomUpdateResult enterRoom(String id, Long memberId) {
         Room room = getRoomFromDB(id);
-        Member member = memberService.findOneById(memberId);
+        Member member = memberService.findMemberById(memberId);
         room.addMember(member);
         return new RoomUpdateResult(ENTRANT_ENTERED, member.getNickname());
     }

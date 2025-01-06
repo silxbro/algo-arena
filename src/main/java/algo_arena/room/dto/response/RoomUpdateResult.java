@@ -8,11 +8,11 @@ public class RoomUpdateResult {
     private final State state;
     private String nickname;
 
-    RoomUpdateResult(State state) {
+    public RoomUpdateResult(State state) {
         this.state = state;
     }
 
-    RoomUpdateResult(State state, String nickname) {
+    public RoomUpdateResult(State state, String nickname) {
         this.state = state;
         this.nickname = nickname;
     }
