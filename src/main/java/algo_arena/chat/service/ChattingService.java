@@ -48,7 +48,7 @@ public class ChattingService {
     }
 
     private Member findSender(Long senderId) {
-        return memberService.findOneById(senderId);
+        return memberService.findMemberById(senderId);
     }
 
     private List<Member> findReceivers(Room room) {
