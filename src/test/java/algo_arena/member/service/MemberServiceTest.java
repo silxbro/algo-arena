@@ -3,13 +3,13 @@ package algo_arena.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import algo_arena.member.entity.Member;
-import algo_arena.member.repository.MemberRepository;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -20,7 +20,7 @@ class MemberServiceTest {
     MemberService memberService;
 
     @Autowired
-    MemberRepository memberRepository;
+    PasswordEncoder passwordEncoder;
 
     Member member;
 
@@ -32,21 +32,25 @@ class MemberServiceTest {
             .password("bella!!!")
             .imgUrl("https://my-image.com/bella.png")
             .build();
-        memberRepository.save(member);
+        memberService.register(member);
     }
 
     @Test
     @DisplayName("회원 가입을 할 수 있다")
-    void create() {
+    void register() {
         //given
-        Member member = Member.builder().nickname("hello").build();
-        Member createdMember = memberService.saveMember(member);
+        Member newMember = Member.builder()
+            .email("new@google.com")
+            .nickname("new")
+            .password("new!!!")
+            .imgUrl("https://my-image.com/new.png")
+            .build();
 
         //when
-        Member findMember = memberService.findMemberById(createdMember.getId());
+        Member registeredMember = memberService.register(newMember);
 
         //then
-        assertThat(findMember).isEqualTo(member);
+        assertThat(registeredMember).isEqualTo(newMember);
     }
 
     @Test
@@ -65,25 +69,27 @@ class MemberServiceTest {
     @DisplayName("회원의 이미지를 변경할 수 있다")
     void updateImage() {
         //given
-        memberService.updateImage(member.getId(), "https://update-image.com/bella.png");
+        String imageUrl = "https://update-image.com/bella.png";
+        memberService.updateImage(member.getId(), imageUrl);
 
         //when
         Member findMember = memberService.findMemberById(member.getId());
 
         //then
-        assertThat(findMember.getImgUrl()).isEqualTo("https://update-image.com/bella.png");
+        assertThat(findMember.getImgUrl()).isEqualTo(imageUrl);
     }
 
     @Test
     @DisplayName("회원의 비밀번호를 변경할 수 있다")
     void changePassword() {
         //given
-        memberService.changePassword(member.getId(), "!!!bella");
+        String password = "!!!bella";
+        memberService.changePassword(member.getId(), password);
 
         //when
         Member findMember = memberService.findMemberById(member.getId());
 
         //then
-        assertThat(findMember.getPassword()).isEqualTo("!!!bella");
+        assertThat(passwordEncoder.matches(password, findMember.getPassword())).isTrue();
     }
 }
