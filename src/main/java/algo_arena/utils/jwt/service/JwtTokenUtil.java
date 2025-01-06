@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtTokenUtil {
 
-    private static final String SECRET_KEY = "your-256-bit-secret"; // 256비트 비밀 키
+    private static final String SECRET_KEY = "algo-arena-token-secret-key-256-bit"; // 256비트 비밀 키
     private static final Long EXPIRATION_TIME = 1000 * 10 * 60L; // 10분
 
     private final Key key;
@@ -69,7 +69,7 @@ public class JwtTokenUtil {
     private String createToken(String subject, Map<String, Object> claims) {
         return Jwts.builder()
             .setSubject(subject)
-            .setClaims(claims)
+            .addClaims(claims)
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(key, SignatureAlgorithm.HS256)
