@@ -24,7 +24,7 @@ public class AuthApiController {
     @PostMapping("/register")
     public ResponseEntity<MemberCreateResponse> register(@RequestBody MemberCreateRequest request) {
 
-        Member newMember = memberService.saveMember(request.toEntity());
+        Member newMember = memberService.register(request.toEntity());
 
         return ResponseEntity.ok(MemberCreateResponse.from(newMember.getEmail()));
     }

@@ -22,7 +22,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Member saveMember(Member member) {
+    public Member register(Member member) {
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.changePassword(encodedPassword);
         return memberRepository.save(member);
