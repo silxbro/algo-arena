@@ -63,7 +63,8 @@ public class MemberService {
     @Transactional
     public Member changePassword(Long id, String password) {
         Member member = memberRepository.findById(id).orElseThrow();
-        member.changePassword(password);
+        String encodedPassword = passwordEncoder.encode(password);
+        member.changePassword(encodedPassword);
         return member;
     }
 
