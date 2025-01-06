@@ -46,7 +46,7 @@ public class WebSecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) //CORS 설정 적용
             .csrf(AbstractHttpConfigurer::disable) //CSRF 보호 비활성화
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register").permitAll() //인증 없이 접근 허용
+                .requestMatchers("/login", "/register", "/email-auth/**").permitAll() //인증 없이 접근 허용
                 .anyRequest().authenticated() //기타 요청은 인증 필요
             )
             .exceptionHandling(exceptionConfigurer -> exceptionConfigurer
