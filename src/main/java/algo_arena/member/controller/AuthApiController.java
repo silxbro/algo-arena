@@ -59,7 +59,7 @@ public class AuthApiController {
     @PostMapping("/login")
     public ResponseEntity<MemberLoginResponse> login(@RequestBody MemberLoginRequest request) {
 
-        final String token = memberService.authenticate(request.getEmail(), request.getPassword());
+        final String token = memberService.login(request.getEmail(), request.getPassword());
 
         return ResponseEntity.ok(MemberLoginResponse.from(token));
     }
