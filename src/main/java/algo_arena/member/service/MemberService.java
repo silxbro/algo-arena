@@ -58,7 +58,7 @@ public class MemberService {
         return memberRepository.findByNickname(nickname).orElseThrow();
     }
 
-    public String authenticate(String email, String password) {
+    public String login(String email, String password) {
         final Member member = findMemberByEmail(email);
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(member.getNickname());
         if (!passwordEncoder.matches(password, member.getPassword())) {
@@ -86,7 +86,7 @@ public class MemberService {
     public void verifyAuthCode(String email, String enteredCode) {
         String code = codeAuthService.getAuthCode(email);
         if (code == null) {
-            throw new IllegalStateException("이메일 인증을 먼저 시도해 주세요.");
+            throw new IllegalStateException("이메일 인증을 시도해 주세요.");
         }
         if (!code.equals(enteredCode)) {
             throw new IllegalStateException("이메일 인증코드가 일치하지 않습니다.");
