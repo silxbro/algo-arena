@@ -34,6 +34,9 @@ public class MemberService {
 
     @Transactional
     public Member register(Member member) {
+        if (!codeAuthService.isAuthCompleted(member.getEmail())) {
+            throw new IllegalStateException("인증되지 않은 이메일 입니다. 이메일 인증을 완료해주세요.");
+        }
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.changePassword(encodedPassword);
         return memberRepository.save(member);
