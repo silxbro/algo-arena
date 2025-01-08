@@ -28,23 +28,10 @@ public class ChatMessageController {
         @DestinationVariable final String roomId,
         @Header("type") ClientMessageType type) {
 
-        Long memberId = 1L;
-        Member member = memberService.findMemberById(memberId);
-        if (type.isChat() || type.isEnter() || type.isExit()) {
-            socketMessageFactory.updateMessage(roomId, type, message, member);
-        }
-        ChatSendRequest chatSendRequest = createChatSendRequest(message, roomId, type, memberId);
-        chattingService.send(chatSendRequest);
-    }
+        Member member = memberService.findMemberByNickname("username");
 
-    private ChatSendRequest createChatSendRequest(
-        ClientMessage message, String roomId, ClientMessageType type, Long memberId) {
+        socketMessageFactory.insertMessage(message, type, roomId, member);
 
-        return ChatSendRequest.builder()
-            .roomId(roomId)
-            .type(type)
-            .message(message.getMessage())
-            .senderId(memberId)
-            .build();
+        chattingService.send(message.getMessage(), type, roomId, member);
     }
 }

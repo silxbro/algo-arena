@@ -6,6 +6,6 @@ import algo_arena.member.entity.Member;
 @FunctionalInterface
 public interface MessageInsertTemplate {
 
-    void insertMessage(String roomId, ClientMessage clientMessage, Member member);
+    void insertMessage(ClientMessage message, String roomId, Member member);
 
 }
