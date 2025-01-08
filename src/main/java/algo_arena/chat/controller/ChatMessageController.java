@@ -1,6 +1,6 @@
 package algo_arena.chat.controller;
 
-import algo_arena.chat.dto.ClientMessage;
+import algo_arena.chat.dto.request.ClientMessage;
 import algo_arena.chat.dto.request.ChatSendRequest;
 import algo_arena.chat.enums.ClientMessageType;
 import algo_arena.chat.factory.SocketMessageFactory;

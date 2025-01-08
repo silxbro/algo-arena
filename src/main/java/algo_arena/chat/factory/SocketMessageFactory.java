@@ -2,7 +2,7 @@ package algo_arena.chat.factory;
 
 import static algo_arena.chat.enums.ClientMessageType.*;
 
-import algo_arena.chat.dto.ClientMessage;
+import algo_arena.chat.dto.request.ClientMessage;
 import algo_arena.chat.enums.ClientMessageType;
 import algo_arena.chat.template.MessageInsertTemplate;
 import algo_arena.member.entity.Member;

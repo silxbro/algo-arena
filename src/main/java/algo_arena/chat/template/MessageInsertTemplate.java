@@ -1,6 +1,6 @@
 package algo_arena.chat.template;
 
-import algo_arena.chat.dto.ClientMessage;
+import algo_arena.chat.dto.request.ClientMessage;
 import algo_arena.member.entity.Member;
 
 @FunctionalInterface
