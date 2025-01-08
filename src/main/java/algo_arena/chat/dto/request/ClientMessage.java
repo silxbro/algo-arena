@@ -1,4 +1,4 @@
-package algo_arena.chat.dto;
+package algo_arena.chat.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

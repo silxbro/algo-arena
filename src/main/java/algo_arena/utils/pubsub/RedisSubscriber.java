@@ -1,6 +1,6 @@
 package algo_arena.utils.pubsub;
 
-import algo_arena.chat.dto.ChatMessage;
+import algo_arena.chat.dto.response.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,7 @@ public class RedisSubscriber implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
+            // Redis에서 메시지를 받고 채팅방에 전달
             String messageBody = new String(message.getBody());
             ChatMessage chatMessage = objectMapper.readValue(messageBody, ChatMessage.class);
             messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);

@@ -1,4 +1,4 @@
-package algo_arena.chat.dto;
+package algo_arena.chat.dto.response;
 
 import algo_arena.chat.enums.SocketServerMessageType;
 import algo_arena.member.entity.Member;
