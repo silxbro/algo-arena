@@ -30,7 +30,7 @@ public class ChatLog implements Serializable {
     private ClientMessageType type;
 
     private String message;
-    private String senderNickname;
+    private String senderName;
 
     @Builder.Default
     private Timestamp sendTime = new Timestamp(System.currentTimeMillis());
@@ -43,11 +43,11 @@ public class ChatLog implements Serializable {
         this.index = index;
     }
 
-    public static ChatLog create(ClientMessageType type, String message, String senderNickname) {
+    public static ChatLog create(ClientMessageType type, String message, String senderName) {
         return ChatLog.builder()
             .type(type)
             .message(message)
-            .senderNickname(senderNickname)
+            .senderName(senderName)
             .build();
     }
 }
