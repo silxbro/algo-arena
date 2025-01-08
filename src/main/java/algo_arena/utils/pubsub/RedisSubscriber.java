@@ -23,7 +23,7 @@ public class RedisSubscriber implements MessageListener {
             // Redis에서 메시지를 받고 채팅방에 전달
             String messageBody = new String(message.getBody());
             ChatMessage chatMessage = objectMapper.readValue(messageBody, ChatMessage.class);
-            messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
+            messagingTemplate.convertAndSend("/sub/rooms/" + chatMessage.getRoomId() + "/chat", chatMessage);
         } catch (Exception e) {
             log.error("error in sendMessage = {}", e.getMessage());
         }

@@ -1,15 +1,16 @@
 package algo_arena.chat.controller;
 
 import algo_arena.chat.dto.request.ClientMessage;
-import algo_arena.chat.dto.request.ChatSendRequest;
 import algo_arena.chat.enums.ClientMessageType;
 import algo_arena.chat.factory.SocketMessageFactory;
 import algo_arena.chat.service.ChattingService;
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -22,9 +23,9 @@ public class ChatMessageController {
     private final MemberService memberService;
     private final SocketMessageFactory socketMessageFactory;
 
-    @MessageMapping("/chat/room")
-    public void message(ClientMessage message,
-        @Header("roomId") String roomId,
+    @MessageMapping("/rooms/{roomId}/chat")
+    public void chat(@Payload ClientMessage message,
+        @DestinationVariable final String roomId,
         @Header("type") ClientMessageType type) {
 
         Long memberId = 1L;
