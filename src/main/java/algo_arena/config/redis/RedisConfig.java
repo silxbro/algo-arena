@@ -43,7 +43,7 @@ public class RedisConfig {
 
     @Bean
     public ChannelTopic channelTopic() {
-        return new ChannelTopic("testRoom");
+        return new ChannelTopic("chat");
     }
 
     @Bean
