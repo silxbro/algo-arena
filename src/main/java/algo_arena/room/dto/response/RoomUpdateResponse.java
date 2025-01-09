@@ -1,10 +1,10 @@
 package algo_arena.room.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Builder
 public class RoomUpdateResponse {
 
     private String roomId;
