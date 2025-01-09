@@ -47,7 +47,7 @@ public class ChatLogRedisRepository {
             .map(object -> objectMapper.convertValue(object, ChatLog.class));
     }
 
-    public void updateByRoomIdAndIndex(String roomId, Long index, ChatLog chatLog) {
+    public void setByRoomIdAndIndex(String roomId, Long index, ChatLog chatLog) {
         String key = generateKey(roomId);
         opsListOperation.set(key, index, chatLog);
     }
