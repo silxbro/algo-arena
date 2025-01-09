@@ -2,7 +2,7 @@ package algo_arena.chat.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import algo_arena.chat.enums.ClientMessageType;
+import algo_arena.chat.enums.MessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +15,7 @@ class ChatLogTest {
 
     @BeforeEach
     void setUp() {
-        chatLog = ChatLog.create(ClientMessageType.CHAT, "hello!", "my-member");
+        chatLog = ChatLog.create(MessageType.CHAT, "hello!", "my-member");
     }
 
     @Test
@@ -28,7 +28,7 @@ class ChatLogTest {
         //custom
         log.info("chatLog.type={}", chatLog.getType());
         log.info("chatLog.message={}", chatLog.getMessage());
-        log.info("chatLog.senderId={}", chatLog.getSenderNickname());
+        log.info("chatLog.senderId={}", chatLog.getSenderName());
     }
 
     @Test
