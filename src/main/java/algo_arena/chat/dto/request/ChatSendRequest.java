@@ -2,14 +2,11 @@ package algo_arena.chat.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
-public class ClientMessage {
+public class ChatSendRequest {
 
-    private String senderNickname;
     private String message;
 
 }
