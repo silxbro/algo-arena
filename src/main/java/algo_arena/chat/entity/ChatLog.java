@@ -1,6 +1,6 @@
 package algo_arena.chat.entity;
 
-import algo_arena.chat.enums.ClientMessageType;
+import algo_arena.chat.enums.MessageType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import java.io.Serializable;
@@ -23,14 +23,14 @@ public class ChatLog implements Serializable {
     @Builder.Default
     private String id = UUID.randomUUID().toString();
 
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
+
     @Builder.Default
     private Long index = 0L;
 
-    @Enumerated(EnumType.STRING)
-    private ClientMessageType type;
-
-    private String message;
     private String senderName;
+    private String message;
 
     @Builder.Default
     private Timestamp sendTime = new Timestamp(System.currentTimeMillis());
@@ -43,11 +43,11 @@ public class ChatLog implements Serializable {
         this.index = index;
     }
 
-    public static ChatLog create(ClientMessageType type, String message, String senderName) {
+    public static ChatLog create(MessageType type, String senderName, String message) {
         return ChatLog.builder()
             .type(type)
-            .message(message)
             .senderName(senderName)
+            .message(message)
             .build();
     }
 }

@@ -1,6 +1,6 @@
 package algo_arena.chat.dto.response;
 
-import algo_arena.chat.enums.ClientMessageType;
+import algo_arena.chat.enums.MessageType;
 import java.sql.Timestamp;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class ChatMessage {
 
-    private ClientMessageType type;
+    private MessageType type;
     private String roomId;
     private Long index;
     private String senderName;
