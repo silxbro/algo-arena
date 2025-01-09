@@ -6,15 +6,20 @@ import jakarta.persistence.Enumerated;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @Builder
 @RedisHash("chatLog")
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ChatLog implements Serializable {
 
