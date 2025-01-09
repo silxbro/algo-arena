@@ -1,16 +1,20 @@
 package algo_arena.room.controller;
 
+import static algo_arena.room.dto.response.RoomEvent.CHANGE_HOST;
+import static algo_arena.room.dto.response.RoomEvent.EXIT;
+
 import algo_arena.room.dto.request.RoomCreateRequest;
 import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.dto.request.RoomUpdateRequest;
 import algo_arena.room.dto.response.RoomDetailResponse;
+import algo_arena.room.dto.response.RoomEvent;
+import algo_arena.room.dto.response.RoomEventResponse;
 import algo_arena.room.dto.response.RoomListResponse;
-import algo_arena.room.dto.response.RoomUpdateResponse;
 import algo_arena.room.entity.Room;
-import algo_arena.room.dto.response.RoomUpdateResult;
 import algo_arena.room.service.RoomFindService;
 import algo_arena.room.service.RoomIOService;
 import algo_arena.room.service.RoomLifeService;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +40,11 @@ public class RoomApiController {
      * 테스트방 생성
      */
     @PostMapping
-    public ResponseEntity<String> createRoom(@RequestBody RoomCreateRequest request) {
-        Room newRoom = roomLifeService.createRoom(request, 1L);
-        return ResponseEntity.ok(newRoom.getId());
+    public ResponseEntity<RoomEventResponse> createRoom(@RequestBody RoomCreateRequest request) {
+        List<RoomEvent> roomEvents = new ArrayList<>();
+        RoomEvent create = roomLifeService.createRoom(request, 1L);
+        roomEvents.add(create);
+        return ResponseEntity.ok(RoomEventResponse.from(roomEvents));
     }
 
     /**
@@ -63,34 +69,43 @@ public class RoomApiController {
      * 테스트방 정보 수정 - 방장
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<RoomUpdateResponse> updateRoom(@PathVariable("id") String id, @RequestBody RoomUpdateRequest request) {
-        RoomUpdateResult result = roomLifeService.updateRoom(id, request);
-        return ResponseEntity.ok(new RoomUpdateResponse(id, result.getMessage()));
+    public ResponseEntity<RoomEventResponse> updateRoom(@PathVariable("id") String id, @RequestBody RoomUpdateRequest request) {
+        List<RoomEvent> roomEvents = new ArrayList<>();
+        RoomEvent update = roomLifeService.updateRoom(id, request);
+        roomEvents.add(update);
+        return ResponseEntity.ok(RoomEventResponse.from(roomEvents));
     }
 
     /**
      * 테스트방 참가자 입장
      */
     @PatchMapping("/{id}/enter/{memberId}")
-    public ResponseEntity<RoomUpdateResponse> enterRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
-        RoomUpdateResult result = roomIOService.enterRoom(id, memberId);
-        return ResponseEntity.ok(new RoomUpdateResponse(id, result.getMessage()));
+    public ResponseEntity<RoomEventResponse> enterRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
+        List<RoomEvent> roomEvents = new ArrayList<>();
+        RoomEvent enter = roomIOService.enterRoom(id, memberId);
+        roomEvents.add(enter);
+        return ResponseEntity.ok(RoomEventResponse.from(roomEvents));
     }
 
     /**
      * 테스트방 참가자 퇴장
      */
     @PatchMapping("/{id}/exit/{memberId}")
-    public ResponseEntity<RoomUpdateResponse> exitRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
-        RoomUpdateResult result = roomIOService.exitRoom(id, memberId);
-        return ResponseEntity.ok(new RoomUpdateResponse(id, result.getMessage()));
+    public ResponseEntity<RoomEventResponse> exitRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
+        List<RoomEvent> roomEvents = new ArrayList<>();
+        RoomEvent result = roomIOService.exitRoom(id, memberId);
+        roomEvents.add(result);
+        if (result == CHANGE_HOST) {
+            roomEvents.addFirst(EXIT);
+        }
+        return ResponseEntity.ok(RoomEventResponse.from(roomEvents));
     }
 
     /**
      * 테스트방 삭제 - 자동 삭제
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable("id") String id) {
+    public ResponseEntity<RoomEventResponse> deleteRoom(@PathVariable("id") String id) {
         roomLifeService.deleteRoomById(id);
         return ResponseEntity.noContent().build();
     }
