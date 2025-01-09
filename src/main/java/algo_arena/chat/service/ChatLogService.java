@@ -32,7 +32,7 @@ public class ChatLogService {
         ChatLog chatLog = findChatLogByRoomIdAndIndex(roomId, index);
         if (chatLog != null) {
             chatLog.updateMessage(newMessage);
-            chatLogRepository.updateByRoomIdAndIndex(roomId, index, chatLog);
+            chatLogRepository.setByRoomIdAndIndex(roomId, index, chatLog);
         }
     }
 
