@@ -1,13 +1,10 @@
 package algo_arena.room.service;
 
-import static algo_arena.room.dto.response.RoomUpdateResult.State.ENTRANT_ENTERED;
-import static algo_arena.room.dto.response.RoomUpdateResult.State.ENTRANT_EXITED;
-import static algo_arena.room.dto.response.RoomUpdateResult.State.HOST_CHANGED;
-import static algo_arena.room.dto.response.RoomUpdateResult.State.ROOM_DELETED;
+import static algo_arena.room.dto.response.RoomEvent.*;
 
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
-import algo_arena.room.dto.response.RoomUpdateResult;
+import algo_arena.room.dto.response.RoomEvent;
 import algo_arena.room.entity.Room;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
@@ -24,15 +21,15 @@ public class RoomIOService {
     private final MemberService memberService;
 
     @Transactional
-    public RoomUpdateResult enterRoom(String id, Long memberId) {
+    public RoomEvent enterRoom(String id, Long memberId) {
         Room room = getRoomFromDB(id);
         Member member = memberService.findMemberById(memberId);
-        room.addMember(member);
-        return new RoomUpdateResult(ENTRANT_ENTERED, member.getNickname());
+        room.enter(member);
+        return ENTER;
     }
 
     @Transactional
-    public RoomUpdateResult exitRoom(String id, Long memberId) {
+    public RoomEvent exitRoom(String id, Long memberId) {
         Room room = getRoomFromDB(id);
         if (room.isHost(memberId) && !room.existMembers()) {
             return deleteRoom(id);
@@ -48,21 +45,20 @@ public class RoomIOService {
         return roomRepository.findById(id).orElseThrow();
     }
 
-    private RoomUpdateResult memberExitRoom(Room room, Long memberId) {
-        Member removedMember = room.removeMember(memberId);
+    private RoomEvent memberExitRoom(Room room, Long memberId) {
+        room.exit(memberId);
         roomRedisRepository.save(room);
-        return new RoomUpdateResult(ENTRANT_EXITED, removedMember.getNickname());
+        return EXIT;
     }
 
-    private RoomUpdateResult changeRoomHost(Room room) {
-        Member changedHost = room.changeHost();
+    private RoomEvent changeRoomHost(Room room) {
         roomRedisRepository.save(room);
-        return new RoomUpdateResult(HOST_CHANGED, changedHost.getNickname());
+        return CHANGE_HOST;
     }
 
-    private RoomUpdateResult deleteRoom(String roomId) {
+    private RoomEvent deleteRoom(String roomId) {
         roomRepository.deleteById(roomId);
         roomRedisRepository.deleteById(roomId);
-        return new RoomUpdateResult(ROOM_DELETED);
+        return DELETE;
     }
 }
