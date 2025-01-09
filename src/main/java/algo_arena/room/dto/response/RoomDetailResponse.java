@@ -7,10 +7,9 @@ import algo_arena.room.entity.RoomProblem;
 import algo_arena.submission.entity.Language;
 import java.util.List;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class RoomDetailResponse {
 
