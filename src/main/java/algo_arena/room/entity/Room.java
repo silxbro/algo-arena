@@ -88,25 +88,23 @@ public class Room extends BaseEntity implements Serializable {
         });
     }
 
-    public Member changeHost() {
-        RoomMember firstEntered = roomMembers.remove(0);
-        host = firstEntered.getMember();
-        return host;
+    public void changeHost() {
+        RoomMember front = roomMembers.remove(0);
+        host = front.getMember();
     }
 
-    public void addMember(Member member) {
+    public void enter(Member member) {
         roomMembers.add(RoomMember.from(this, member));
     }
 
-    public Member removeMember(Long memberId) {
+    public void exit(Long memberId) {
         for (RoomMember roomMember : roomMembers) {
             Member member = roomMember.getMember();
             if (member.equalsId(memberId)) {
                 roomMembers.remove(roomMember);
-                return member;
+                return;
             }
         }
-        return null;
     }
 
     public boolean existMembers() {
