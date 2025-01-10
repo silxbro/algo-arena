@@ -11,7 +11,7 @@ import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StringMessageFactory {
+public class SystemMessageFactory {
 
     private final Map<MessageType, MessageTemplate> messageTemplateMap = new HashMap<>();
 
@@ -27,10 +27,7 @@ public class StringMessageFactory {
             "[알림] 방장이 " + room.getHost().getNickname() + " 님으로 변경되었습니다.");
     }
 
-    public String createStringMessage(MessageType type, Room room, String memberName, String message) {
-        if (type.isChatType()) {
-            return message;
-        }
+    public String create(MessageType type, Room room, String memberName) {
         return messageTemplateMap.get(type).getMessage(room, memberName);
     }
 }
