@@ -3,7 +3,6 @@ package algo_arena.chat.service;
 import algo_arena.chat.dto.response.ChatMessage;
 import algo_arena.chat.entity.ChatLog;
 import algo_arena.chat.enums.MessageType;
-import algo_arena.chat.factory.ChatMessageFactory;
 import algo_arena.room.entity.Room;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,7 +15,6 @@ public class ChattingService {
 
     private final ChannelTopic channelTopic;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final ChatMessageFactory chatMessageFactory;
     private final ChatLogService chatLogService;
 
     /**
@@ -25,8 +23,7 @@ public class ChattingService {
     public void send(MessageType type, Room room, String senderName, String message) {
         Long index = saveChatLog(type, room.getId(), senderName, message);
 
-        ChatMessage chatMessage = chatMessageFactory.createMessage(
-            type, room.getId(), index, senderName, message);
+        ChatMessage chatMessage = ChatMessage.create(type, room.getId(), index, senderName, message);
 
         sendToRedis(chatMessage);
     }

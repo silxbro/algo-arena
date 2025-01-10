@@ -17,4 +17,15 @@ public class ChatMessage {
 
     @Builder.Default
     private Timestamp sendTime = new Timestamp(System.currentTimeMillis());
+
+    public static ChatMessage create(
+        MessageType type, String roomId, Long index, String senderName, String message) {
+        return ChatMessage.builder()
+            .type(type)
+            .roomId(roomId)
+            .index(index)
+            .senderName(senderName)
+            .message(message)
+            .build();
+    }
 }
