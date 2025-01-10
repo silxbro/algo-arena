@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import algo_arena.chat.dto.response.ChatMessage;
 import algo_arena.chat.entity.ChatLog;
 import algo_arena.chat.enums.MessageType;
-import algo_arena.chat.factory.ChatMessageFactory;
 import algo_arena.room.entity.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,13 +22,6 @@ import org.springframework.data.redis.listener.ChannelTopic;
 
 class ChattingServiceTest {
 
-    MessageType type = MessageType.CHAT;
-    String roomId = "chatRoom";
-    String senderName = "sender";
-    String message = "hello!";
-    Long chatLogIndex = 0L;
-
-
     @InjectMocks
     ChattingService chattingService;
 
@@ -40,16 +32,14 @@ class ChattingServiceTest {
     RedisTemplate<String, Object> redisTemplate;
 
     @Mock
-    ChatMessageFactory chatMessageFactory;
-
-    @Mock
     ChatLogService chatLogService;
 
-    @Mock
-    ChatMessage mockChatMessage;
+    MessageType type = MessageType.CHAT;
+    String roomId = "chatRoom";
+    String senderName = "sender";
+    String message = "hello!";
+    Long chatLogIndex = 0L;
 
-    @Mock
-    Room room;
 
     @BeforeEach
     void setUp() {
@@ -61,16 +51,14 @@ class ChattingServiceTest {
     @DisplayName("채팅 메시지를 Redis 에 발행하고 로그를 저장한다")
     void send_Success() {
         //given
-        when(room.getId()).thenReturn(roomId);
+        Room room = Room.builder().id(roomId).build();
         when(chatLogService.saveChatLog(eq(roomId), any(ChatLog.class))).thenReturn(chatLogIndex);
-        when(chatMessageFactory.createMessage(type, roomId, chatLogIndex, senderName, message))
-            .thenReturn(mockChatMessage);
 
         //when
         chattingService.send(type, room, senderName, message);
 
         //then
-        //ChatLog 저장 호출 확인
+        //ChatLog 검증
         ArgumentCaptor<ChatLog> chatLogCaptor = ArgumentCaptor.forClass(ChatLog.class);
         verify(chatLogService).saveChatLog(eq(roomId), chatLogCaptor.capture());
         ChatLog capturedChatLog = chatLogCaptor.getValue();
@@ -78,10 +66,14 @@ class ChattingServiceTest {
         assertThat(capturedChatLog.getSenderName()).isEqualTo(senderName);
         assertThat(capturedChatLog.getMessage()).isEqualTo(message);
 
-        //ChatMessage 생성 확인
-        verify(chatMessageFactory).createMessage(type, roomId, chatLogIndex, senderName, message);
-
-        //Redis 발행 확인
-        verify(redisTemplate).convertAndSend(eq(channelTopic.getTopic()), eq(mockChatMessage));
+        //Redis 메시지 검증
+        ArgumentCaptor<ChatMessage> messageCaptor = ArgumentCaptor.forClass(ChatMessage.class);
+        verify(redisTemplate).convertAndSend(eq(channelTopic.getTopic()), messageCaptor.capture());
+        ChatMessage capturedMessage = messageCaptor.getValue();
+        assertThat(capturedMessage.getType()).isEqualTo(type);
+        assertThat(capturedMessage.getRoomId()).isEqualTo(roomId);
+        assertThat(capturedMessage.getSenderName()).isEqualTo(senderName);
+        assertThat(capturedMessage.getMessage()).isEqualTo(message);
+        assertThat(capturedMessage.getIndex()).isEqualTo(chatLogIndex);
     }
 }
