@@ -12,9 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthApiController {
 
@@ -23,7 +25,7 @@ public class AuthApiController {
     /**
      * 인증코드 이메일 전송
      */
-    @PostMapping("/email-auth/send")
+    @PostMapping("/email/send")
     public ResponseEntity<Void> sendAuthEmail(@RequestBody SendAuthEmailRequest request) {
 
         memberService.sendAuthEmail(request.getEmail());
@@ -34,7 +36,7 @@ public class AuthApiController {
     /**
      * 인증코드 확인(이메일 인증)
      */
-    @PostMapping("/email-auth/verify")
+    @PostMapping("/email/verify")
     public ResponseEntity<Void> verifyAuthCode(@RequestBody VerifyAuthCodeRequest request) {
 
         memberService.verifyAuthCode(request.getEmail(), request.getAuthCode());
