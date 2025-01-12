@@ -26,7 +26,7 @@ public class ChatMessageController {
 
     @MessageMapping("/rooms/{roomId}/chat")
     public void chat(ChatSendRequest request,
-        @DestinationVariable("roomId") final String roomId,
+        @DestinationVariable("roomId") String roomId,
         @Header("type") MessageType type,
         @Header("token") String token) {
 
