@@ -7,6 +7,7 @@ import algo_arena.problem.repository.ProblemRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,12 +17,13 @@ public class TestDataInitializer {
 
     private final MemberRepository memberRepository;
     private final ProblemRepository problemRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init() {
-        Member member1 = Member.builder().nickname("member 1").build();
-        Member member2 = Member.builder().nickname("member 2").build();
-        Member member3 = Member.builder().nickname("member 3").build();
+        Member member1 = Member.builder().email("member1@gmail.com").nickname("member 1").password(passwordEncoder.encode("member1")).build();
+        Member member2 = Member.builder().email("member2@gmail.com").nickname("member 2").password(passwordEncoder.encode("member2")).build();
+        Member member3 = Member.builder().email("member3@gmail.com").nickname("member 3").password(passwordEncoder.encode("member3")).build();
 
         Problem problem1 = Problem.builder().title("problem 1").build();
         Problem problem2 = Problem.builder().title("problem 2").build();
