@@ -2,6 +2,7 @@ package algo_arena.config.security;
 
 import algo_arena.utils.jwt.service.JwtRequestFilter;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +33,7 @@ public class WebSecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PasswordEncoder passwordEncoder;
 
-    //전역 인증 설정 (userDetailsService와 비밀번호 인코더를 설정)
+    //전역 인증 설정 (userDetailsService 와 비밀번호 인코더를 설정)
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(jwtUserDetailsService)
@@ -64,12 +65,12 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*"); // 모든 출처 허용
+        configuration.setAllowedOriginPatterns(List.of("*")); // 모든 출처 허용
         configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용
         configuration.addAllowedHeader("*"); // 모든 헤더 허용
         configuration.setAllowCredentials(true); // 자격 증명 허용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); //모든 URL에 대해 CORS 설정 적용
+        source.registerCorsConfiguration("/**", configuration); //모든 URL 에 대해 CORS 설정 적용
         return source;
     }
 
