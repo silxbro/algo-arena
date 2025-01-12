@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class RedisRoom implements Serializable {
-
+    private String id;
     private String name;
     private Integer maxRoomMembers;
     private List<RedisRoomProblem> roomProblems;
@@ -30,6 +30,7 @@ public class RedisRoom implements Serializable {
 
     public static RedisRoom from(Room room) {
         return RedisRoom.builder()
+            .id(room.getId())
             .name(room.getName())
             .maxRoomMembers(room.getMaxRoomMembers())
             .roomProblems(room.getRoomProblems().stream().map(RedisRoomProblem::from).toList())
@@ -63,6 +64,7 @@ public class RedisRoom implements Serializable {
         Member host = Member.builder().nickname(redisRoomHost.getNickname()).imgUrl(redisRoomHost.getImgUrl()).build();
 
         return Room.builder()
+            .id(redisRoom.getId())
             .name(redisRoom.getName())
             .maxRoomMembers(redisRoom.getMaxRoomMembers())
             .roomProblems(roomProblems)
