@@ -2,8 +2,8 @@ package algo_arena.member.controller;
 
 import algo_arena.member.dto.request.MemberCreateRequest;
 import algo_arena.member.dto.request.MemberLoginRequest;
-import algo_arena.member.dto.request.SendAuthEmailRequest;
-import algo_arena.member.dto.request.VerifyAuthCodeRequest;
+import algo_arena.member.dto.request.AuthEmailSendRequest;
+import algo_arena.member.dto.request.AuthCodeVerifyRequest;
 import algo_arena.member.dto.response.MemberCreateResponse;
 import algo_arena.member.dto.response.MemberLoginResponse;
 import algo_arena.member.entity.Member;
@@ -26,7 +26,7 @@ public class AuthApiController {
      * 인증코드 이메일 전송
      */
     @PostMapping("/email/send")
-    public ResponseEntity<Void> sendAuthEmail(@RequestBody SendAuthEmailRequest request) {
+    public ResponseEntity<Void> sendAuthEmail(@RequestBody AuthEmailSendRequest request) {
 
         memberService.sendAuthEmail(request.getEmail());
 
@@ -37,7 +37,7 @@ public class AuthApiController {
      * 인증코드 확인(이메일 인증)
      */
     @PostMapping("/email/verify")
-    public ResponseEntity<Void> verifyAuthCode(@RequestBody VerifyAuthCodeRequest request) {
+    public ResponseEntity<Void> verifyAuthCode(@RequestBody AuthCodeVerifyRequest request) {
 
         memberService.verifyAuthCode(request.getEmail(), request.getAuthCode());
 
