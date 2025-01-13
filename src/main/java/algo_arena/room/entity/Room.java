@@ -50,10 +50,9 @@ public class Room extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomProblem> roomProblems = new ArrayList<>();
 
-    @Builder.Default
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_id")
-    private Member host = Member.builder().build();
+    private Member host;
 
     @Builder.Default
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
