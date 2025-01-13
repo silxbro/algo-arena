@@ -33,7 +33,8 @@ public class RoomRedisRepository {
 
     public Optional<Room> findById(String id) {
         String key = generateKey(id);
-        return Optional.ofNullable(RedisRoom.toRoom(getRoomFromCache(key)));
+        return Optional.ofNullable(getRoomFromCache(key))
+            .map(RedisRoom::toRoom);
     }
 
     public void deleteById(String id) {
