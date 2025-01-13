@@ -68,8 +68,8 @@ public class JwtTokenUtil {
     // 토큰 생성
     private String createToken(String subject, Map<String, Object> claims) {
         return Jwts.builder()
+            .setClaims(claims)
             .setSubject(subject)
-            .addClaims(claims)
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
             .signWith(key, SignatureAlgorithm.HS256)
