@@ -3,9 +3,8 @@ package algo_arena.member.dto.request;
 import lombok.Getter;
 
 @Getter
-public class VerifyAuthCodeRequest {
+public class AuthEmailSendRequest {
 
     private String email;
-    private String authCode;
 
 }
