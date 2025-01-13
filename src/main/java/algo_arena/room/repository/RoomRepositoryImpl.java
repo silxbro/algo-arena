@@ -33,7 +33,7 @@ public class RoomRepositoryImpl implements RoomQueryRepository {
             .selectFrom(room)
             .where(
                 roomNameContains(roomName),
-                maxRoomMembersEq(maxRoomMembers),
+                maxRoomMembers(maxRoomMembers),
                 languageEq(languageName),
                 problemsBetween(minProblems, maxProblems),
                 timeLimitBetween(minTimeLimit, maxTimeLimit)
@@ -48,11 +48,11 @@ public class RoomRepositoryImpl implements RoomQueryRepository {
         return room.name.toUpperCase().contains(roomName.toUpperCase());
     }
 
-    private BooleanExpression maxRoomMembersEq(Integer maxRoomMembers) {
+    private BooleanExpression maxRoomMembers(Integer maxRoomMembers) {
         if (maxRoomMembers == null) {
             return null;
         }
-        return room.maxRoomMembers.eq(maxRoomMembers);
+        return room.maxRoomMembers.loe(maxRoomMembers);
     }
 
     private BooleanExpression languageEq(String languageName) {
