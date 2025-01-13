@@ -52,6 +52,7 @@ public class RoomIOService {
     }
 
     private RoomEvent changeRoomHost(Room room) {
+        room.changeHost();
         roomRedisRepository.save(room);
         return CHANGE_HOST;
     }
