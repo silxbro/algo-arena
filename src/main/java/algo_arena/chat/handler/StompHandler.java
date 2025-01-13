@@ -4,9 +4,7 @@ import static org.springframework.messaging.simp.stomp.StompCommand.CONNECT;
 
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
-import java.nio.file.AccessDeniedException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -22,7 +20,6 @@ public class StompHandler implements ChannelInterceptor {
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService jwtUserDetailsService;
 
-    @SneakyThrows
     @Override
     // WebSocket 을 통해 들어온 요청이 처리되기 전에 실행됨
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -30,25 +27,16 @@ public class StompHandler implements ChannelInterceptor {
         final StompCommand command = accessor.getCommand();
 
         if (isConnectCommand(command)) {
-            if (!isValidUser(accessor)) {
-                throw new AccessDeniedException("유효하지 않은 토큰이거나 사용자를 찾을 수 없습니다.");
-            }
+            String jwtToken = getJwtToken(accessor);
+            validateToken(jwtToken);
         }
         return message;
     }
 
-    private boolean isValidUser(StompHeaderAccessor accessor) {
-        String jwtToken = getJwtToken(accessor);
-        if (jwtToken == null) {
-            return false;
-        }
-        return isExistingUser(jwtToken);
-    }
-
-    private boolean isExistingUser(String jwtToken) {
-        String username = jwtTokenUtil.extractUsername(jwtToken);
+    private void validateToken(String token) {
+        String username = jwtTokenUtil.extractUsername(token);
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
-        return jwtTokenUtil.validateToken(jwtToken, userDetails);
+        jwtTokenUtil.validateToken(token, userDetails);
     }
 
     private String getJwtToken(StompHeaderAccessor accessor) {
