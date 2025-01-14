@@ -32,7 +32,8 @@ class MemberRepositoryTest {
         Member savedMember = memberRepository.save(member);
 
         //then
-        assertThat(savedMember).isEqualTo(member);
+        assertThat(savedMember.getEmail()).isEqualTo(email);
+        assertThat(savedMember.getNickname()).isEqualTo(nickname);
     }
 
     @Test
@@ -56,7 +57,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("회원 아이디로 회원 정보를 조회할 수 있다")
-    void findById() {
+    void findById_Found() {
         //given
         Member member = createMember(email, nickname);
         memberRepository.save(member);
@@ -69,25 +70,34 @@ class MemberRepositoryTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 회원 아이디로 회원 정보를 조회할 때 예외가 발생한다")
+    void findById_NotFound() {
+        //given
+        Long notExistId = 1L;
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> memberRepository.findById(notExistId).orElseThrow())
+            .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
     @DisplayName("회원 아이디로 해당 회원을 삭제할 수 있다")
     void deleteById() {
         //given
         Member member1 = createMember(email, "member1");
         Member member2 = createMember(email, "member2");
-        Member member3 = createMember(email, "member3");
 
         memberRepository.save(member1);
         memberRepository.save(member2);
-        memberRepository.save(member3);
 
         //when
         memberRepository.deleteById(member2.getId());
         List<Member> members = memberRepository.findAll();
 
         //then
-        assertThatThrownBy(() -> memberRepository.findById(member2.getId()).orElseThrow())
-            .isInstanceOf(NoSuchElementException.class);
-        assertThat(members).containsExactly(member1, member3);
+        assertThat(members).containsExactly(member1);
     }
 
     @Test
@@ -111,7 +121,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("회원 닉네임으로 회원 정보를 조회할 수 있다")
-    void findByNickname() {
+    void findByNickname_Found() {
         //given
         Member member = createMember(email, nickname);
         memberRepository.save(member);
@@ -124,8 +134,21 @@ class MemberRepositoryTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 회원 닉네임으로 회원 정보를 조회할 때 예외가 발생한다")
+    void findByNickname_NotFound() {
+        //given
+        String notExistNickname = "not-exist-nickname";
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> memberRepository.findByNickname(notExistNickname).orElseThrow())
+            .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
     @DisplayName("회원 이메일로 회원 정보를 조회할 수 있다")
-    void findByEmail() {
+    void findByEmail_Found() {
         //given
         Member member = createMember(email, nickname);
         memberRepository.save(member);
@@ -135,6 +158,19 @@ class MemberRepositoryTest {
 
         //then
         assertThat(findMember).isEqualTo(member);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회원 이메일로 회원 정보를 조회할 때 예외가 발생한다")
+    void findByEmail_NotFound() {
+        //given
+        String notExistEmail = "not-exist-email@example.com";
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> memberRepository.findByEmail(notExistEmail).orElseThrow())
+            .isInstanceOf(NoSuchElementException.class);
     }
 
     private Member createMember(String email, String nickname) {
