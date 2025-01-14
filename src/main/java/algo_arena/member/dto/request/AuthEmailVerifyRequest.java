@@ -1,13 +1,11 @@
 package algo_arena.member.dto.request;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
-public class MemberLoginRequest {
+public class AuthEmailVerifyRequest {
 
     private String email;
-    private String password;
+    private String authCode;
 
 }

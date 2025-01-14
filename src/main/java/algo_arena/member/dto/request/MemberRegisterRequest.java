@@ -1,13 +1,11 @@
 package algo_arena.member.dto.request;
 
 import algo_arena.member.entity.Member;
-import algo_arena.member.entity.Role;
-import lombok.Builder;
+import algo_arena.member.enums.Role;
 import lombok.Getter;
 
 @Getter
-@Builder
-public class MemberCreateRequest {
+public class MemberRegisterRequest {
 
     private String email;
     private String password;
@@ -19,7 +17,6 @@ public class MemberCreateRequest {
             .email(email)
             .password(password)
             .nickname(nickname)
-            //TODO: 기본 프로필 이미지 설정
             .imgUrl(imgUrl == null ? "default" : imgUrl)
             .role(Role.USER)
             .build();

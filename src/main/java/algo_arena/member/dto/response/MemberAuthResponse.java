@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class MemberLoginResponse {
+public class MemberAuthResponse {
 
     private String token;
 
-    public static MemberLoginResponse from(String token) {
-        return MemberLoginResponse.builder()
+    public static MemberAuthResponse from(String token) {
+        return MemberAuthResponse.builder()
             .token(token)
             .build();
     }
