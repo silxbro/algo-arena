@@ -1,5 +1,7 @@
 package algo_arena.utils.jwt.service;
 
+import static io.jsonwebtoken.SignatureAlgorithm.HS256;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenUtil {
+
+    private final SignatureAlgorithm signatureAlgorithm = HS256;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -78,7 +82,7 @@ public class JwtTokenUtil {
             .setSubject(subject)
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis() + accessDuration))
-            .signWith(key, SignatureAlgorithm.HS256)
+            .signWith(key, signatureAlgorithm)
             .compact();
     }
 }

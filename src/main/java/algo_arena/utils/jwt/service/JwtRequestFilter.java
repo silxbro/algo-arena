@@ -1,6 +1,5 @@
 package algo_arena.utils.jwt.service;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +19,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    private static final String AUTH_HEADER_NAME = "Authorization";
+    private static final String AUTH_HEADER_VALUE_PREFIX = "Bearer ";
+
+
     private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
 
@@ -28,21 +31,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
+        final String authorizationHeader = request.getHeader(AUTH_HEADER_NAME);
 
         String username = null;
         String jwt = null;
 
         //Authorization 헤더에서 JWT 토큰 추출
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            try {
-                username = jwtTokenUtil.extractUsername(jwt);
-            } catch (IllegalArgumentException e) {
-                log.error("JWT 토큰을 추출할 수 없습니다.");
-            } catch (ExpiredJwtException e) {
-                log.error("JWT 토큰이 만료되었습니다.");
-            }
+        if (authorizationHeader != null && authorizationHeader.startsWith(AUTH_HEADER_VALUE_PREFIX)) {
+            jwt = authorizationHeader.substring(AUTH_HEADER_VALUE_PREFIX.length());
+            username = jwtTokenUtil.extractUsername(jwt);
         }
 
         //추출한 토큰에서 사용자 이름이 존재하고, 현재 SecurityContext에 인증 정보가 없는 경우
