@@ -4,24 +4,30 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenUtil {
 
-    private static final String SECRET_KEY = "algo-arena-token-secret-key-256-bit"; // 256비트 비밀 키
-    private static final Long EXPIRATION_TIME = 1000 * 10 * 60L; // 10분
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
-    private final Key key;
+    @Value("${jwt.access-duration}")
+    private Long accessDuration;
 
-    public JwtTokenUtil() {
-        this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    private Key key;
+
+    @PostConstruct
+    private void init() {
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     // JWT에서 사용자 이름 추출
@@ -71,7 +77,7 @@ public class JwtTokenUtil {
             .setClaims(claims)
             .setSubject(subject)
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .setExpiration(new Date(System.currentTimeMillis() + accessDuration))
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
     }
