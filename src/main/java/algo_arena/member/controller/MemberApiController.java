@@ -23,10 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MemberApiController {
 
-    private static final String UPDATE_IMAGE_MESSAGE = "프로필 이미지가 변경되었습니다";
-    private static final String CHANGE_PASSWORD_MESSAGE = "비밀번호가 변경되었습니다.";
-    private static final String WITHDRAW_MESSAGE = "회원 탈퇴가 완료되었습니다.";
-
     private final MemberService memberService;
 
     /**
@@ -59,7 +55,7 @@ public class MemberApiController {
             @PathVariable("id") Long id,
             @RequestBody String imgUrl) {
         Member updatedMember = memberService.updateImage(id, imgUrl);
-        return ResponseEntity.ok(MemberUpdateResponse.from(UPDATE_IMAGE_MESSAGE, updatedMember));
+        return ResponseEntity.ok(MemberUpdateResponse.from(updatedMember));
     }
 
     /**
@@ -70,15 +66,15 @@ public class MemberApiController {
         @PathVariable("id") Long id,
         @RequestBody String password) {
         Member updatedMember = memberService.changePassword(id, password);
-        return ResponseEntity.ok(MemberUpdateResponse.from(CHANGE_PASSWORD_MESSAGE, updatedMember));
+        return ResponseEntity.ok(MemberUpdateResponse.from(updatedMember));
     }
 
     /**
      * 회원 탈퇴
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> withdraw(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> withdraw(@PathVariable("id") Long id) {
         memberService.delete(id);
-        return ResponseEntity.ok(WITHDRAW_MESSAGE);
+        return ResponseEntity.ok().build();
     }
 }

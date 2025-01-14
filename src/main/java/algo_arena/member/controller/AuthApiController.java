@@ -1,13 +1,13 @@
 package algo_arena.member.controller;
 
-import algo_arena.member.dto.request.MemberCreateRequest;
-import algo_arena.member.dto.request.MemberLoginRequest;
+import algo_arena.member.dto.request.MemberRegisterRequest;
+import algo_arena.member.dto.request.MemberAuthRequest;
 import algo_arena.member.dto.request.AuthEmailSendRequest;
-import algo_arena.member.dto.request.AuthCodeVerifyRequest;
-import algo_arena.member.dto.response.MemberCreateResponse;
-import algo_arena.member.dto.response.MemberLoginResponse;
+import algo_arena.member.dto.request.AuthEmailVerifyRequest;
+import algo_arena.member.dto.response.MemberRegisterResponse;
+import algo_arena.member.dto.response.MemberAuthResponse;
 import algo_arena.member.entity.Member;
-import algo_arena.member.service.MemberService;
+import algo_arena.member.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthApiController {
 
-    private final MemberService memberService;
+    private final AuthService authService;
 
     /**
      * 인증코드 이메일 전송
@@ -28,7 +28,7 @@ public class AuthApiController {
     @PostMapping("/email/send")
     public ResponseEntity<Void> sendAuthEmail(@RequestBody AuthEmailSendRequest request) {
 
-        memberService.sendAuthEmail(request.getEmail());
+        authService.sendAuthEmail(request.getEmail());
 
         return ResponseEntity.ok().build();
     }
@@ -37,9 +37,9 @@ public class AuthApiController {
      * 인증코드 확인(이메일 인증)
      */
     @PostMapping("/email/verify")
-    public ResponseEntity<Void> verifyAuthCode(@RequestBody AuthCodeVerifyRequest request) {
+    public ResponseEntity<Void> verifyAuthEmail(@RequestBody AuthEmailVerifyRequest request) {
 
-        memberService.verifyAuthCode(request.getEmail(), request.getAuthCode());
+        authService.verifyAuthEmail(request.getEmail(), request.getAuthCode());
 
         return ResponseEntity.ok().build();
     }
@@ -48,21 +48,21 @@ public class AuthApiController {
      * 회원 가입
      */
     @PostMapping("/register")
-    public ResponseEntity<MemberCreateResponse> register(@RequestBody MemberCreateRequest request) {
+    public ResponseEntity<MemberRegisterResponse> register(@RequestBody MemberRegisterRequest request) {
 
-        Member newMember = memberService.register(request.toEntity());
+        Member newMember = authService.register(request.toEntity());
 
-        return ResponseEntity.ok(MemberCreateResponse.from(newMember.getEmail()));
+        return ResponseEntity.ok(MemberRegisterResponse.from(newMember));
     }
 
     /**
      * 로그인
      */
     @PostMapping("/login")
-    public ResponseEntity<MemberLoginResponse> login(@RequestBody MemberLoginRequest request) {
+    public ResponseEntity<MemberAuthResponse> login(@RequestBody MemberAuthRequest request) {
 
-        final String token = memberService.login(request.getEmail(), request.getPassword());
+        final String token = authService.login(request.getEmail(), request.getPassword());
 
-        return ResponseEntity.ok(MemberLoginResponse.from(token));
+        return ResponseEntity.ok(MemberAuthResponse.from(token));
     }
 }
