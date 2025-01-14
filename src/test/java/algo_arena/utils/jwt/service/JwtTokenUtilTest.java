@@ -6,17 +6,20 @@ import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@SpringBootTest
 class JwtTokenUtilTest {
 
+    @Autowired
     JwtTokenUtil jwtTokenUtil;
     UserDetails userDetails;
 
     @BeforeEach
     void setUp() {
-        jwtTokenUtil = new JwtTokenUtil();
         userDetails = User.withUsername("testUser")
             .password("password!!!")
             .build();
