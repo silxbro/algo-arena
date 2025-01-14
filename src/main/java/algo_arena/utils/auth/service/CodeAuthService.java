@@ -41,7 +41,7 @@ public class CodeAuthService {
         hashOperations.put(key, STATUS.name(), COMPLETED.name());
     }
 
-    public void clearAuthHistory(String key) {
+    public void clearAll(String key) {
         hashOperations.delete(key, CODE.name());
         hashOperations.delete(key, STATUS.name());
     }
