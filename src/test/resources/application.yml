@@ -17,6 +17,8 @@ spring:
     port: 587
     username: silbroeh@gmail.com
     password: chrh hewg obwh axmm
+    auth-code-length: 10
+    auth-code-expiration-millis: 300000
     properties:
       mail:
         smtp:
@@ -29,8 +31,6 @@ spring:
           connection-timeout: 5000
           timeout: 5000
           write-timeout: 5000
-
-    auth-code-expiration-millis: 300000
 
   profiles:
     active: test

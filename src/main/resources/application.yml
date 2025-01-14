@@ -23,6 +23,7 @@ spring:
     port: 587
     username: silbroeh@gmail.com
     password: chrh hewg obwh axmm
+    auth-code-length: 10
     auth-code-expiration-millis: 300000
     properties:
       mail:
