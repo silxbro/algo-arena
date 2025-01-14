@@ -1,4 +1,4 @@
-package algo_arena.member.entity;
+package algo_arena.member.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
