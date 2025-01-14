@@ -25,6 +25,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
 public class Member extends BaseEntity {
 
+    private static final String DEFAULT_IMAGE_URL = "";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -41,7 +43,7 @@ public class Member extends BaseEntity {
     private String nickname;
 
     @Builder.Default
-    private String imgUrl = "EMPTY";
+    private String imgUrl = DEFAULT_IMAGE_URL;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
