@@ -21,11 +21,10 @@ public class RoomIOService {
     private final MemberService memberService;
 
     @Transactional
-    public RoomEvent enterRoom(String id, Long memberId) {
+    public void enterRoom(String id, Long memberId) {
         Room room = getRoomFromDB(id);
         Member member = memberService.findMemberById(memberId);
         room.enter(member);
-        return ENTER;
     }
 
     @Transactional
