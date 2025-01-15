@@ -23,6 +23,9 @@ public class RoomIOService {
     @Transactional
     public void enterRoom(String id, Long memberId) {
         Room room = getRoomFromDB(id);
+        if (room.isFull()) {
+            throw new RuntimeException();
+        }
         Member member = memberService.findMemberById(memberId);
         room.enter(member);
     }
