@@ -1,4 +1,4 @@
-package algo_arena.room.dto.response;
+package algo_arena.room.dto.redis;
 
 import algo_arena.member.entity.Member;
 import algo_arena.problem.entity.Problem;

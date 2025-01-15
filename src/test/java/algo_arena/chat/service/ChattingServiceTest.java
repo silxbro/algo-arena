@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import algo_arena.chat.dto.response.ChatMessage;
+import algo_arena.chat.dto.ChatMessage;
 import algo_arena.chat.entity.ChatLog;
 import algo_arena.chat.enums.MessageType;
 import algo_arena.room.entity.Room;

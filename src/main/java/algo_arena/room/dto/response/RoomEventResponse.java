@@ -1,5 +1,6 @@
 package algo_arena.room.dto.response;
 
+import algo_arena.room.enums.RoomEvent;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;

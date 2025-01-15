@@ -1,6 +1,6 @@
 package algo_arena.chat.service;
 
-import algo_arena.chat.dto.response.ChatMessage;
+import algo_arena.chat.dto.ChatMessage;
 import algo_arena.chat.entity.ChatLog;
 import algo_arena.chat.enums.MessageType;
 import algo_arena.room.entity.Room;
