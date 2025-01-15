@@ -1,7 +1,6 @@
 package algo_arena.room.controller;
 
-import static algo_arena.room.dto.response.RoomEvent.CHANGE_HOST;
-import static algo_arena.room.dto.response.RoomEvent.EXIT;
+import static algo_arena.room.dto.response.RoomEvent.*;
 
 import algo_arena.room.dto.request.RoomCreateRequest;
 import algo_arena.room.dto.request.RoomSearchRequest;
@@ -41,10 +40,8 @@ public class RoomApiController {
      */
     @PostMapping
     public ResponseEntity<RoomEventResponse> createRoom(@RequestBody RoomCreateRequest request) {
-        List<RoomEvent> roomEvents = new ArrayList<>();
-        RoomEvent create = roomLifeService.createRoom(request, 1L);
-        roomEvents.add(create);
-        return ResponseEntity.ok(RoomEventResponse.from(roomEvents));
+        Room createdRoom = roomLifeService.createRoom(request, 1L);
+        return ResponseEntity.ok(RoomEventResponse.from(createdRoom.getId(), List.of(CREATE)));
     }
 
     /**
@@ -70,10 +67,8 @@ public class RoomApiController {
      */
     @PatchMapping("/{id}")
     public ResponseEntity<RoomEventResponse> updateRoom(@PathVariable("id") String id, @RequestBody RoomUpdateRequest request) {
-        List<RoomEvent> roomEvents = new ArrayList<>();
-        RoomEvent update = roomLifeService.updateRoom(id, request);
-        roomEvents.add(update);
-        return ResponseEntity.ok(RoomEventResponse.from(roomEvents));
+        roomLifeService.updateRoom(id, request);
+        return ResponseEntity.ok(RoomEventResponse.from(id, List.of(UPDATE)));
     }
 
     /**
@@ -81,10 +76,8 @@ public class RoomApiController {
      */
     @PatchMapping("/{id}/enter/{memberId}")
     public ResponseEntity<RoomEventResponse> enterRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
-        List<RoomEvent> roomEvents = new ArrayList<>();
-        RoomEvent enter = roomIOService.enterRoom(id, memberId);
-        roomEvents.add(enter);
-        return ResponseEntity.ok(RoomEventResponse.from(roomEvents));
+        roomIOService.enterRoom(id, memberId);
+        return ResponseEntity.ok(RoomEventResponse.from(id, List.of(ENTER)));
     }
 
     /**
@@ -98,7 +91,7 @@ public class RoomApiController {
         if (result == CHANGE_HOST) {
             roomEvents.addFirst(EXIT);
         }
-        return ResponseEntity.ok(RoomEventResponse.from(roomEvents));
+        return ResponseEntity.ok(RoomEventResponse.from(id, roomEvents));
     }
 
     /**
