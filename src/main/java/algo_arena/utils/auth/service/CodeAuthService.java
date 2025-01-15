@@ -24,7 +24,7 @@ public class CodeAuthService {
 
     public boolean isAuthCompleted(String key) {
         String authStatus = hashOperations.get(key, STATUS.name());
-        return authStatus.equals(COMPLETED.name());
+        return authStatus != null && authStatus.equals(COMPLETED.name());
     }
 
     public String getAuthCode(String key) {
@@ -38,10 +38,13 @@ public class CodeAuthService {
     }
 
     public void markAuthAsCompleted(String key) {
+        if (!redisTemplate.hasKey(key)) {
+            throw new RuntimeException();
+        }
         hashOperations.put(key, STATUS.name(), COMPLETED.name());
     }
 
-    public void clearAll(String key) {
+    public void clearAuthHistory(String key) {
         hashOperations.delete(key, CODE.name());
         hashOperations.delete(key, STATUS.name());
     }
