@@ -1,13 +1,13 @@
 package algo_arena.room.service;
 
-import static algo_arena.room.dto.response.RoomEvent.*;
+import static algo_arena.room.enums.RoomEvent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import algo_arena.member.entity.Member;
 import algo_arena.member.repository.MemberRepository;
 import algo_arena.member.service.MemberService;
-import algo_arena.room.dto.response.RoomEvent;
+import algo_arena.room.enums.RoomEvent;
 import algo_arena.room.entity.Room;
 import algo_arena.room.entity.RoomMember;
 import algo_arena.room.repository.RoomRedisRepository;

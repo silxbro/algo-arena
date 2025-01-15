@@ -1,6 +1,6 @@
 package algo_arena.room.repository;
 
-import algo_arena.room.dto.response.RedisRoom;
+import algo_arena.room.dto.redis.RedisRoom;
 import algo_arena.room.entity.Room;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;

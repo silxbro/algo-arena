@@ -1,4 +1,4 @@
-package algo_arena.chat.dto.response;
+package algo_arena.chat.dto;
 
 import algo_arena.chat.enums.MessageType;
 import lombok.Builder;

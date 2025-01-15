@@ -1,12 +1,12 @@
 package algo_arena.room.controller;
 
-import static algo_arena.room.dto.response.RoomEvent.*;
+import static algo_arena.room.enums.RoomEvent.*;
 
 import algo_arena.room.dto.request.RoomCreateRequest;
 import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.dto.request.RoomUpdateRequest;
 import algo_arena.room.dto.response.RoomDetailResponse;
-import algo_arena.room.dto.response.RoomEvent;
+import algo_arena.room.enums.RoomEvent;
 import algo_arena.room.dto.response.RoomEventResponse;
 import algo_arena.room.dto.response.RoomListResponse;
 import algo_arena.room.entity.Room;
