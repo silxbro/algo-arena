@@ -8,11 +8,13 @@ import lombok.Getter;
 @Builder
 public class RoomEventResponse {
 
-    private List<RoomEvent> roomEvents;
+    private String roomId;
+    private List<RoomEvent> events;
 
-    public static RoomEventResponse from(List<RoomEvent> roomEvents) {
+    public static RoomEventResponse from(String roomId, List<RoomEvent> roomEvents) {
         return RoomEventResponse.builder()
-            .roomEvents(roomEvents)
+            .roomId(roomId)
+            .events(roomEvents)
             .build();
     }
 }
