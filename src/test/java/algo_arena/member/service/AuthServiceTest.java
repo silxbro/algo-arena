@@ -51,7 +51,7 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         memberRepository.deleteAll();
-        codeAuthService.clearAll(email);
+        codeAuthService.clearAuthHistory(email);
 
         member = Member.builder().email(email).password(password).nickname(nickname).build();
     }
