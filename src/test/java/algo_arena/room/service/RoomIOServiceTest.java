@@ -2,94 +2,112 @@ package algo_arena.room.service;
 
 import static algo_arena.room.dto.response.RoomEvent.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import algo_arena.member.entity.Member;
+import algo_arena.member.repository.MemberRepository;
 import algo_arena.member.service.MemberService;
 import algo_arena.room.dto.response.RoomEvent;
 import algo_arena.room.entity.Room;
+import algo_arena.room.entity.RoomMember;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
 import algo_arena.submission.entity.Language;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class RoomIOServiceTest {
 
-    @InjectMocks
+    @Autowired
     RoomIOService roomIOService;
 
-    @Mock
+    @Autowired
     RoomRepository roomRepository;
 
-    @Mock
+    @Autowired
     RoomRedisRepository roomRedisRepository;
 
-    @Mock
+    @Autowired
     MemberService memberService;
+
+    @Autowired
+    MemberRepository memberRepository;
 
     private Room room;
     private Member host, member;
 
     @BeforeEach
     void setUp() {
-        host = createMember(1L, "host-member");
-        member = createMember(2L, "room-member");
-        room = createRoom("test-room", 5, host, Language.PYTHON, 60);
+        host = createMember("host-member");
+        member = createMember("room-member");
+        room = createRoom("test-room", 2, host, Language.PYTHON, 60);
     }
 
     @Test
-    @DisplayName("테스트룸에 입장 시, 해당 회원을 목록에 추가하고 ENTER 이벤트를 반환한다")
-    void enterRoom() {
+    @DisplayName("테스트룸의 정원이 최대 정원 미만일 때 입장할 경우, 성공적으로 입장한다")
+    void enterRoom_Success() {
         //given
-        when(roomRepository.findById(room.getId())).thenReturn(Optional.of(room));
-        when(memberService.findMemberById(member.getId())).thenReturn(member);
 
         //when
-        RoomEvent roomEvent = roomIOService.enterRoom(room.getId(), member.getId());
+        roomIOService.enterRoom(room.getId(), member.getId());
+        List<Member> members = room.getRoomMembers().stream().map(RoomMember::getMember).toList();
 
         //then
-        assertThat(roomEvent).isEqualTo(ENTER);
-        verify(roomRedisRepository).deleteById(room.getId());
-        verify(roomRepository).findById(room.getId());
-        verify(memberService).findMemberById(member.getId());
+        assertThat(members).containsExactly(member);
+    }
+
+    @Test
+    @DisplayName("테스트룸의 정원이 최대 정원일 때 입장할 경우, 입장이 실패하여 예외가 발생한다")
+    void enterRoom_Fail() {
+        //given
+        Member member1 = createMember("member1");
+        Member member2 = createMember("member2");
+
+        room.enter(member);
+        room.enter(member1);
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> roomIOService.enterRoom(room.getId(), member2.getId()))
+            .isInstanceOf(RuntimeException.class);
+
+        List<Member> members = room.getRoomMembers().stream().map(RoomMember::getMember).toList();
+        assertThat(members).containsExactly(member, member1);
     }
 
     @Test
     @DisplayName("호스트가 테스트룸에서 퇴장할 경우, 멤버가 없으면 테스트룸이 삭제되고 DELETE 이벤트를 반환한다")
-    void exitRoom_HostAndNoMembers_delete() {
+    void exitRoom_HostAndNoMember_Delete() {
         //given
-        when(roomRepository.findById(room.getId())).thenReturn(Optional.of(room));
+        String roomId = room.getId();
 
         //when
         RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), host.getId());
 
         //then
         assertThat(roomEvent).isEqualTo(DELETE);
-        verify(roomRepository).findById(room.getId());
-        verify(roomRedisRepository, times(2)).deleteById(room.getId());
-        verify(roomRepository).deleteById(room.getId());
+        assertThat(roomRepository.findById(roomId)).isEqualTo(Optional.empty());
+        assertThat(roomRedisRepository.findById(roomId)).isEqualTo(Optional.empty());
     }
 
     @Test
-    @DisplayName("호스트가 테스트룸에서 퇴장할 경우, 멤버가 있으면 가장 먼저 입장한 멤버가 방장이 되고 CHANGE_HOST 이벤트를 반환한다")
-    void exitRoom_HostAndExistMembers_changeHost() {
+    @DisplayName("호스트가 테스트룸에서 퇴장할 경우, 멤버가 존재하면 가장 먼저 입장한 멤버가 방장이 되고 CHANGE_HOST 이벤트를 반환한다")
+    void exitRoom_HostAndExistMembers_ChangeHost() {
         //given
-        Member member1 = createMember(3L, "member1");
-        Member member2 = createMember(4L, "member2");
+        Member member1 = createMember("member1");
+        Member member2 = createMember("member2");
+
         room.enter(member1);
         room.enter(member2);
-
-        when(roomRepository.findById(room.getId())).thenReturn(Optional.of(room));
 
         //when
         RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), host.getId());
@@ -98,46 +116,37 @@ class RoomIOServiceTest {
         assertThat(roomEvent).isEqualTo(CHANGE_HOST);
         assertThat(room.getHost()).isEqualTo(member1);
         assertThat(room.getRoomMembers().size()).isEqualTo(1);
-        verify(roomRedisRepository).deleteById(room.getId());
-        verify(roomRepository).findById(room.getId());
-        verify(roomRedisRepository).save(room);
     }
 
     @Test
-    @DisplayName("테스트룸에서 퇴장 시, 해당 회원을 목록에서 삭제하고 EXIT 이벤트를 반환한다")
+    @DisplayName("호스트가 아닌 멤버가 테스트룸에서 퇴장 시, EXIT 이벤트를 반환한다")
     void exitRoom() {
         //given
-        Member member1 = createMember(3L, "member1");
-        Member member2 = createMember(4L, "member2");
-        room.enter(member1);
-        room.enter(member2);
-
-        when(roomRepository.findById(room.getId())).thenReturn(Optional.of(room));
+        room.enter(member);
 
         //when
-        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), member2.getId());
+        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), member.getId());
 
         //then
         assertThat(roomEvent).isEqualTo(EXIT);
-        assertThat(room.isMember(3L)).isTrue();
-        assertThat(room.isMember(4L)).isFalse();
-        verify(roomRedisRepository).deleteById(room.getId());
-        verify(roomRepository).findById(room.getId());
-        verify(roomRedisRepository).save(room);
+        assertThat(room.isMember(member.getId())).isFalse();
     }
 
-    private Member createMember(Long id, String nickname) {
-        return Member.builder().id(id).nickname(nickname).build();
+    private Member createMember(String nickname) {
+        Member member = Member.builder().nickname(nickname).build();
+        return memberRepository.save(member);
     }
 
     private Room createRoom(String roomName, int maxRoomMembers, Member host, Language language, int timeLimit) {
-        return Room.builder()
+        Room room = Room.builder()
             .name(roomName)
             .maxRoomMembers(maxRoomMembers)
             .host(host)
             .language(language)
             .timeLimit(timeLimit)
             .build();
+        roomRedisRepository.save(room);
+        return roomRepository.save(room);
     }
 
 }
