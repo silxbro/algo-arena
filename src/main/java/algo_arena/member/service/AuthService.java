@@ -38,9 +38,12 @@ public class AuthService {
     private long authCodeExpirationMillis;
 
     @Transactional
-    public Member register(Member member) {
+    public Member register(Member member, String confirmPassword) {
         if (!codeAuthService.isAuthCompleted(member.getEmail())) {
             throw new RuntimeException("인증되지 않은 이메일 입니다. 이메일 인증을 완료해주세요.");
+        }
+        if (!member.getPassword().equals(confirmPassword)) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다. 다시 입력해 주세요.");
         }
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.changePassword(encodedPassword);
