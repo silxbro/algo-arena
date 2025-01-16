@@ -17,7 +17,6 @@ class MemberTest {
             .email("test@example.com")
             .password("password")
             .nickname("tester")
-            .imgUrl("https://my-image.com/original.png")
             .build();
     }
 
@@ -46,18 +45,5 @@ class MemberTest {
 
         //then
         assertThat(member.getPassword()).isEqualTo(newPassword);
-    }
-
-    @Test
-    @DisplayName("회원 entity 프로필 이미지 URL 을 변경할 수 있다")
-    void changeImage() {
-        //given
-        String newImgUrl = "https://my-image.com/new.png";
-
-        //when
-        member.changeImage(newImgUrl);
-
-        //then
-        assertThat(member.getImgUrl()).isEqualTo(newImgUrl);
     }
 }
