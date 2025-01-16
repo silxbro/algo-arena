@@ -55,8 +55,8 @@ public class Member extends BaseEntity {
     private long outputExceedCount; //출력 초과 문제 개수
     private long formatErrorCount; //출력 형식 오류 개수
 
-    public boolean equalsId(Long id) {
-        return this.id.equals(id);
+    public boolean isName(String name) {
+        return nickname.equals(name);
     }
 
     public void changePassword(String password) {
