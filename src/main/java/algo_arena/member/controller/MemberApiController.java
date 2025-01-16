@@ -31,20 +31,20 @@ public class MemberApiController {
      * 회원 정보 조회 (검색)
      */
     @GetMapping
-    public ResponseEntity<MemberListResponse> findMembersByNickname(@RequestParam("nickname") String nickname) {
+    public ResponseEntity<MemberListResponse> findMembersByName(@RequestParam("memberName") String memberName) {
 
-        List<Member> members = memberService.findMembersByNickname(nickname);
+        List<Member> members = memberService.findMembersByName(memberName);
 
         return ResponseEntity.ok(MemberListResponse.from(members));
     }
 
     /**
-     * 회원 정보 조회 By Nickname (타인 조회용)
+     * 회원 정보 조회 By Name (타인 조회용)
      */
-    @GetMapping("/{nickname}")
-    public ResponseEntity<MemberPerformanceResponse> findMember(@PathVariable("nickname") String nickname) {
+    @GetMapping("/{memberName}")
+    public ResponseEntity<MemberPerformanceResponse> findMember(@PathVariable("memberName") String memberName) {
 
-        Member member = memberService.findMemberByNickname(nickname);
+        Member member = memberService.findMemberByName(memberName);
 
         return ResponseEntity.ok(MemberPerformanceResponse.from(member));
     }
@@ -56,7 +56,7 @@ public class MemberApiController {
     public ResponseEntity<MemberProfileResponse> findMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
 
         String username = userDetails.getUsername();
-        Member member = memberService.findMemberByNickname(username);
+        Member member = memberService.findMemberByName(username);
 
         return ResponseEntity.ok(MemberProfileResponse.from(member));
     }

@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    //검색어 포함(대소문자 무시) 닉네임 모두 검색
-    @Query("select m from Member m where lower(m.nickname) like lower(concat('%', :keyword, '%'))")
-    List<Member> findAllByNickname(@Param("keyword") String keyword);
+    //검색어 포함(대소문자 무시) 이름 모두 검색
+    @Query("select m from Member m where lower(m.name) like lower(concat('%', :name, '%'))")
+    List<Member> findAllByName(@Param("name") String name);
 
-    Optional<Member> findByNickname(String nickname);
+    Optional<Member> findByName(String name);
 
     Optional<Member> findByEmail(String email);
 }

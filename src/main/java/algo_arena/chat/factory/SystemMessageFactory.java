@@ -24,7 +24,7 @@ public class SystemMessageFactory {
         messageTemplateMap.put(CREATE, (room, memberName) ->
             "[알림] " + memberName + " 님이 <" + room.getName() + "> 방을 생성했습니다.");
         messageTemplateMap.put(CHANGE_HOST, (room, memberName) ->
-            "[알림] 방장이 " + room.getHost().getNickname() + " 님으로 변경되었습니다.");
+            "[알림] 방장이 " + room.getHost().getName() + " 님으로 변경되었습니다.");
     }
 
     public String create(MessageType type, Room room, String memberName) {

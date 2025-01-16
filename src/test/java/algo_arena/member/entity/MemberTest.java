@@ -16,18 +16,18 @@ class MemberTest {
             .id(1L)
             .email("test@example.com")
             .password("password")
-            .nickname("tester")
+            .name("tester")
             .build();
     }
 
     @Test
-    @DisplayName("회원 entity id 동등여부를 조회할 수 있다")
-    void equalsId() {
+    @DisplayName("회원 entity 의 이름 여부를 조회할 수 있다")
+    void isName() {
         //given
 
         //when
-        boolean equalResult = member.equalsId(member.getId());
-        boolean notEqualResult = member.equalsId(member.getId() + 1);
+        boolean equalResult = member.isName(member.getName());
+        boolean notEqualResult = member.isName("name");
 
         //then
         assertThat(equalResult).isTrue();

@@ -19,8 +19,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String nickname) throws UsernameNotFoundException {
-        Member member = memberRepository.findByNickname(nickname).orElseThrow();
-        return new User(nickname, member.getPassword(), new ArrayList<>());
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        Member member = memberRepository.findByName(userName).orElseThrow();
+        return new User(userName, member.getPassword(), new ArrayList<>());
     }
 }

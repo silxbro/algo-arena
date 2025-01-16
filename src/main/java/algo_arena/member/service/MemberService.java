@@ -18,21 +18,21 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<Member> findMembersByNickname(String nickname) {
-        return memberRepository.findAllByNickname(nickname);
+    public List<Member> findMembersByName(String name) {
+        return memberRepository.findAllByName(name);
     }
 
     public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow();
     }
 
-    public Member findMemberByNickname(String nickname) {
-        return memberRepository.findByNickname(nickname).orElseThrow();
+    public Member findMemberByName(String name) {
+        return memberRepository.findByName(name).orElseThrow();
     }
 
     @Transactional
-    public void changePassword(String nickname, String password, String newPassword, String confirmNewPassword) {
-        Member member = memberRepository.findByNickname(nickname)
+    public void changePassword(String name, String password, String newPassword, String confirmNewPassword) {
+        Member member = memberRepository.findByName(name)
             .orElseThrow(() -> new RuntimeException("회원 정보가 존재하지 않습니다."));
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
