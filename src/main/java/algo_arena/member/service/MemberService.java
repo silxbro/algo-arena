@@ -31,11 +31,20 @@ public class MemberService {
     }
 
     @Transactional
-    public Member changePassword(String nickname, String password) {
-        Member member = memberRepository.findByNickname(nickname).orElseThrow();
-        String encodedPassword = passwordEncoder.encode(password);
+    public void changePassword(String nickname, String password, String newPassword, String confirmNewPassword) {
+        Member member = memberRepository.findByNickname(nickname)
+            .orElseThrow(() -> new RuntimeException("회원 정보가 존재하지 않습니다."));
+
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new RuntimeException("현재 비밀번호가 일치하지 않습니다");
+        }
+
+        if (!newPassword.equals(confirmNewPassword)) {
+            throw new RuntimeException("변경 확인 비밀번호가 일치하지 않습니다.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
         member.changePassword(encodedPassword);
-        return member;
     }
 
     @Transactional
