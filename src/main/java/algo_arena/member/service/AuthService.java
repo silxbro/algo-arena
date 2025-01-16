@@ -55,7 +55,7 @@ public class AuthService {
         if (member == null) {
             throw new RuntimeException("가입되지 않은 이메일입니다.");
         }
-        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(member.getNickname());
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(member.getName());
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new RuntimeException("패스워드가 일치하지 않습니다.");
         }

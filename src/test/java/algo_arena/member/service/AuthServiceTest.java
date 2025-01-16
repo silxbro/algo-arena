@@ -46,14 +46,14 @@ class AuthServiceTest {
     Member member;
     String email = "tester@example.com";
     String password = "password!";
-    String nickname = "tester";
+    String name = "tester";
 
     @BeforeEach
     void setUp() {
         memberRepository.deleteAll();
         codeAuthService.clearAuthHistory(email);
 
-        member = Member.builder().email(email).password(password).nickname(nickname).build();
+        member = Member.builder().email(email).password(password).name(name).build();
     }
 
     @Test
@@ -107,7 +107,7 @@ class AuthServiceTest {
         //given
         completeEmailAuth(email, "code", 10000);
         authService.register(member, member.getPassword());
-        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(member.getNickname());
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(member.getName());
 
         //when
         String token = authService.login(email, password);

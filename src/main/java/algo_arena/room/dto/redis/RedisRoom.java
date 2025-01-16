@@ -54,14 +54,14 @@ public class RedisRoom implements Serializable {
         List<RoomMember> roomMembers = redisRoom.getRoomMembers()
             .stream().map(each ->
                 RoomMember.builder()
-                    .member(Member.builder().nickname(each.getNickname()).build())
+                    .member(Member.builder().name(each.getName()).build())
                     .isReady(each.getIsReady())
                     .build()
             )
             .toList();
 
         RedisRoomHost redisRoomHost = redisRoom.getRoomHost();
-        Member host = Member.builder().nickname(redisRoomHost.getNickname()).build();
+        Member host = Member.builder().name(redisRoomHost.getName()).build();
 
         return Room.builder()
             .id(redisRoom.getId())
@@ -99,11 +99,11 @@ public class RedisRoom implements Serializable {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class RedisRoomHost {
-        private String nickname;
+        private String name;
 
         public static RedisRoomHost from(Member host) {
             return RedisRoomHost.builder()
-                .nickname(host.getNickname())
+                .name(host.getName())
                 .build();
         }
     }
@@ -113,13 +113,13 @@ public class RedisRoom implements Serializable {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
     public static class RedisRoomMember {
-        private String nickname;
+        private String name;
         private Boolean isReady;
 
         public static RedisRoomMember from(RoomMember roomMember) {
             Member member = roomMember.getMember();
             return RedisRoomMember.builder()
-                .nickname(member.getNickname())
+                .name(member.getName())
                 .build();
         }
     }

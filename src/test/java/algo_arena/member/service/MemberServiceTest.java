@@ -30,14 +30,14 @@ class MemberServiceTest {
     Member member;
 
     String email = "test@example.com";
-    String nickname = "tester";
+    String name = "tester";
     String password = "password";
 
     @BeforeEach
     void setUp() {
         member = Member.builder()
             .email(email)
-            .nickname(nickname)
+            .name(name)
             .password(passwordEncoder.encode(password))
             .build();
         memberRepository.save(member);
@@ -45,12 +45,12 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("닉네임으로 회원 검색 시, 대소문자를 구분하지 않고 해당 닉네임을 포함하는 모든 회원을 검색할 수 있다")
-    void findMembersByNickname() {
+    void findMembersByName() {
         //given
-        String findNickname = "test";
+        String findName = "test";
 
         //when
-        List<Member> members = memberService.findMembersByNickname(findNickname);
+        List<Member> members = memberService.findMembersByName(findName);
 
         //then
         assertThat(members).containsExactly(member);
@@ -63,7 +63,7 @@ class MemberServiceTest {
         String newPassword = "newPassword";
 
         //when
-        memberService.changePassword(member.getNickname(), password, newPassword, newPassword);
+        memberService.changePassword(member.getName(), password, newPassword, newPassword);
         Member updatedMember = memberService.findMemberById(member.getId());
 
         //then
@@ -80,7 +80,7 @@ class MemberServiceTest {
         //when
 
         //then
-        assertThatThrownBy(() -> memberService.changePassword(member.getNickname(), wrongPassword, newPassword, newPassword))
+        assertThatThrownBy(() -> memberService.changePassword(member.getName(), wrongPassword, newPassword, newPassword))
             .isInstanceOf(RuntimeException.class);
 
         String memberPassword = memberService.findMemberById(member.getId()).getPassword();
@@ -97,7 +97,7 @@ class MemberServiceTest {
         //when
 
         //then
-        assertThatThrownBy(() -> memberService.changePassword(member.getNickname(), password, newPassword, wrongConfirmPassword))
+        assertThatThrownBy(() -> memberService.changePassword(member.getName(), password, newPassword, wrongConfirmPassword))
             .isInstanceOf(RuntimeException.class);
 
         String memberPassword = memberService.findMemberById(member.getId()).getPassword();

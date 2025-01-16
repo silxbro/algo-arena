@@ -20,20 +20,20 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
 
     String email = "my-member@algoarena.com";
-    String nickname = "my-member";
+    String name = "my-member";
 
     @Test
     @DisplayName("새로운 회원 정보를 저장할 경우, 해당 정보가 정확히 저장된다")
     void save() {
         //given
-        Member member = createMember(email, nickname);
+        Member member = createMember(email, name);
 
         //when
         Member savedMember = memberRepository.save(member);
 
         //then
         assertThat(savedMember.getEmail()).isEqualTo(email);
-        assertThat(savedMember.getNickname()).isEqualTo(nickname);
+        assertThat(savedMember.getName()).isEqualTo(name);
     }
 
     @Test
@@ -59,7 +59,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 아이디로 회원 정보를 조회할 수 있다")
     void findById_Found() {
         //given
-        Member member = createMember(email, nickname);
+        Member member = createMember(email, name);
         memberRepository.save(member);
 
         //when
@@ -102,7 +102,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("회원을 닉네임으로 조회할 때, 대소문자를 구분하지 않고 해당 닉네임을 포함하는 모든 회원이 조회되어야 한다")
-    void findAllByNickname() {
+    void findAllByName() {
         //given
         Member james = createMember(email, "James");
         Member jane = createMember(email, "Jane");
@@ -113,7 +113,7 @@ class MemberRepositoryTest {
         memberRepository.save(benjamin);
 
         //when
-        List<Member> members = memberRepository.findAllByNickname("jam");
+        List<Member> members = memberRepository.findAllByName("jam");
 
         //then
         assertThat(members).containsExactly(james, benjamin);
@@ -121,13 +121,13 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("회원 닉네임으로 회원 정보를 조회할 수 있다")
-    void findByNickname_Found() {
+    void findByName_Found() {
         //given
-        Member member = createMember(email, nickname);
+        Member member = createMember(email, name);
         memberRepository.save(member);
 
         //when
-        Member findMember = memberRepository.findByNickname(nickname).orElseThrow();
+        Member findMember = memberRepository.findByName(name).orElseThrow();
 
         //then
         assertThat(findMember).isEqualTo(member);
@@ -135,14 +135,14 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("존재하지 않는 회원 닉네임으로 회원 정보를 조회할 때 예외가 발생한다")
-    void findByNickname_NotFound() {
+    void findByNName_NotFound() {
         //given
-        String notExistNickname = "not-exist-nickname";
+        String notExistName = "not-exist-name";
 
         //when
 
         //then
-        assertThatThrownBy(() -> memberRepository.findByNickname(notExistNickname).orElseThrow())
+        assertThatThrownBy(() -> memberRepository.findByName(notExistName).orElseThrow())
             .isInstanceOf(NoSuchElementException.class);
     }
 
@@ -150,7 +150,7 @@ class MemberRepositoryTest {
     @DisplayName("회원 이메일로 회원 정보를 조회할 수 있다")
     void findByEmail_Found() {
         //given
-        Member member = createMember(email, nickname);
+        Member member = createMember(email, name);
         memberRepository.save(member);
 
         //when
@@ -173,7 +173,7 @@ class MemberRepositoryTest {
             .isInstanceOf(NoSuchElementException.class);
     }
 
-    private Member createMember(String email, String nickname) {
-        return Member.builder().email(email).nickname(nickname).build();
+    private Member createMember(String email, String name) {
+        return Member.builder().email(email).name(name).build();
     }
 }

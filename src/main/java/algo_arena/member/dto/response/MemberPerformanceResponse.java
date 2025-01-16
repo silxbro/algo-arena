@@ -8,7 +8,7 @@ import lombok.Getter;
 @Builder
 public class MemberPerformanceResponse {
 
-    private String nickname;
+    private String name;
     private long testCount; //참가 테스트 개수
     private long submissionCount; // 제출 문제 개수
     private long rightCount; //정답 문제 개수
@@ -22,7 +22,7 @@ public class MemberPerformanceResponse {
 
     public static MemberPerformanceResponse from(Member member) {
         return MemberPerformanceResponse.builder()
-            .nickname(member.getNickname())
+            .name(member.getName())
             .testCount(member.getTestCount())
             .submissionCount(member.getSubmissionCount())
             .rightCount(member.getRightCount())

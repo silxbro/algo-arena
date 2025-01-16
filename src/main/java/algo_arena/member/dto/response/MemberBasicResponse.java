@@ -8,11 +8,11 @@ import lombok.Getter;
 @Builder
 public class MemberBasicResponse {
 
-    private String nickname;
+    private String name;
 
     public static MemberBasicResponse from(Member member) {
         return MemberBasicResponse.builder()
-            .nickname(member.getNickname())
+            .name(member.getName())
             .build();
     }
 }

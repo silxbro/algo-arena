@@ -96,10 +96,10 @@ public class Room extends BaseEntity implements Serializable {
         roomMembers.add(RoomMember.from(this, member));
     }
 
-    public void exit(String memberNickname) {
+    public void exit(String memberName) {
         for (RoomMember roomMember : roomMembers) {
             Member member = roomMember.getMember();
-            if (member.isName(memberNickname)) {
+            if (member.isName(memberName)) {
                 roomMembers.remove(roomMember);
                 return;
             }
@@ -114,13 +114,13 @@ public class Room extends BaseEntity implements Serializable {
         return roomMembers.size() == maxRoomMembers;
     }
 
-    public boolean isHost(String nickname) {
-        return host.getNickname().equals(nickname);
+    public boolean isHost(String name) {
+        return host.getName().equals(name);
     }
 
-    public boolean isMember(String nickname) {
+    public boolean isMember(String name) {
         return roomMembers.stream()
-            .map(roomMember -> roomMember.getMember().getNickname())
-            .anyMatch(memberName -> memberName.equals(nickname));
+            .map(roomMember -> roomMember.getMember().getName())
+            .anyMatch(memberName -> memberName.equals(name));
     }
 }

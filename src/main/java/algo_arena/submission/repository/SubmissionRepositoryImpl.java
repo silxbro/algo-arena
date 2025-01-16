@@ -25,7 +25,7 @@ public class SubmissionRepositoryImpl implements SubmissionQueryRepository {
     @Override
     public List<Submission> findSubmissions(SubmissionSearchRequest request) {
         Long problemNumber = request.getProblemNumber();
-        String memberNickname = request.getMemberNickname();
+        String memberName = request.getMemberName();
         String languageName = request.getLanguageName();
         String resultDescription = request.getResultDescription();
 
@@ -34,7 +34,7 @@ public class SubmissionRepositoryImpl implements SubmissionQueryRepository {
             .from(submission)
             .join(submission.member, member)
             .join(submission.problem, problem)
-            .where(problemEq(problemNumber), memberEq(memberNickname), languageEq(languageName), resultEq(resultDescription))
+            .where(problemEq(problemNumber), memberEq(memberName), languageEq(languageName), resultEq(resultDescription))
             .fetch();
     }
 
@@ -45,11 +45,11 @@ public class SubmissionRepositoryImpl implements SubmissionQueryRepository {
         return problem.number.eq(problemNumber);
     }
 
-    private BooleanExpression memberEq(String memberNickname) {
-        if (!StringUtils.hasText(memberNickname)) {
+    private BooleanExpression memberEq(String memberName) {
+        if (!StringUtils.hasText(memberName)) {
             return null;
         }
-        return member.nickname.eq(memberNickname);
+        return member.name.eq(memberName);
     }
 
     private BooleanExpression languageEq(String languageName) {

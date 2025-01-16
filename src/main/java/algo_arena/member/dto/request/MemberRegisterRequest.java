@@ -9,13 +9,13 @@ public class MemberRegisterRequest {
     private String email;
     private String password;
     private String confirmPassword;
-    private String nickname;
+    private String name;
 
     public Member toEntity() {
         return Member.builder()
             .email(email)
             .password(password)
-            .nickname(nickname)
+            .name(name)
             .build();
     }
 }

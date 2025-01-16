@@ -64,10 +64,10 @@ public class RoomDetailResponse {
     @Getter
     @Builder
     public static class RoomHost {
-        private String nickname;
+        private String name;
 
         public static RoomHost from(Member member) {
-            return RoomHost.builder().nickname(member.getNickname()).build();
+            return RoomHost.builder().name(member.getName()).build();
         }
     }
 
@@ -86,12 +86,12 @@ public class RoomDetailResponse {
     @Getter
     @Builder
     public static class RoomMemberResponse {
-        private String nickname;
+        private String name;
         private Boolean isReady;
 
         public static RoomMemberResponse from(RoomMember roomMember) {
             return RoomMemberResponse.builder()
-                .nickname(roomMember.getMember().getNickname())
+                .name(roomMember.getMember().getName())
                 .isReady(roomMember.getIsReady())
                 .build();
         }

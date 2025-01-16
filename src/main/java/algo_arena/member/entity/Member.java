@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@EqualsAndHashCode(of = {"id", "email", "nickname"}, callSuper = false)
+@EqualsAndHashCode(of = {"id", "email", "name"}, callSuper = false)
 public class Member extends BaseEntity {
 
     @Id
@@ -37,7 +37,7 @@ public class Member extends BaseEntity {
     private String password;
 
     @Column(updatable = false)
-    private String nickname;
+    private String name;
 
     @Column(updatable = false)
     @Builder.Default
@@ -55,8 +55,8 @@ public class Member extends BaseEntity {
     private long outputExceedCount; //출력 초과 문제 개수
     private long formatErrorCount; //출력 형식 오류 개수
 
-    public boolean isName(String name) {
-        return nickname.equals(name);
+    public boolean isName(String memberName) {
+        return name.equals(memberName);
     }
 
     public void changePassword(String password) {
