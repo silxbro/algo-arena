@@ -1,5 +1,6 @@
 package algo_arena.member.controller;
 
+import algo_arena.member.dto.request.PasswordChangeRequest;
 import algo_arena.member.dto.response.MemberListResponse;
 import algo_arena.member.dto.response.MemberPerformanceResponse;
 import algo_arena.member.dto.response.MemberProfileResponse;
@@ -54,7 +55,8 @@ public class MemberApiController {
     @GetMapping("/profile")
     public ResponseEntity<MemberProfileResponse> myProfile(@AuthenticationPrincipal UserDetails userDetails) {
 
-        Member member = memberService.findMemberByNickname(userDetails.getUsername());
+        String username = userDetails.getUsername();
+        Member member = memberService.findMemberByNickname(username);
 
         return ResponseEntity.ok(MemberProfileResponse.from(member));
     }
@@ -62,11 +64,14 @@ public class MemberApiController {
     /**
      * 회원 비밀번호 변경
      */
-    @PostMapping("/{nickname}/password")
-    public ResponseEntity<Void> changePassword(
-        @PathVariable("nickname") String nickname,
-        @RequestBody String password) {
-        Member updatedMember = memberService.changePassword(nickname, password);
+    @PostMapping("/password")
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails userDetails,
+        @RequestBody PasswordChangeRequest request) {
+
+        String username = userDetails.getUsername();
+        memberService.changePassword(username, request.getCurrentPassword(),
+            request.getNewPassword(), request.getConfirmNewPassword());
+
         return ResponseEntity.ok().build();
     }
 
