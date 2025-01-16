@@ -1,6 +1,7 @@
 package algo_arena.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import algo_arena.member.entity.Member;
 import algo_arena.member.repository.MemberRepository;
@@ -56,16 +57,50 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원의 비밀번호를 변경할 수 있다")
+    @DisplayName("기존 비밀번호 및 확인 비밀번호가 올바를 경우, 회원의 비밀번호를 변경할 수 있다")
     void changePassword() {
         //given
         String newPassword = "newPassword";
 
         //when
-        memberService.changePassword(member.getId(), newPassword);
+        memberService.changePassword(member.getNickname(), password, newPassword, newPassword);
         Member updatedMember = memberService.findMemberById(member.getId());
 
         //then
         assertThat(passwordEncoder.matches(newPassword, updatedMember.getPassword())).isTrue();
+    }
+
+    @Test
+    @DisplayName("기존 비밀번호가 올바르지 않을 경우, 회원의 비밀번호를 변경할 수 없고 예외가 발생한다")
+    void changePassword_wrongPassword() {
+        //given
+        String wrongPassword = "wrongPassword";
+        String newPassword = "newPassword";
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> memberService.changePassword(member.getNickname(), wrongPassword, newPassword, newPassword))
+            .isInstanceOf(RuntimeException.class);
+
+        String memberPassword = memberService.findMemberById(member.getId()).getPassword();
+        assertThat(passwordEncoder.matches(newPassword, memberPassword)).isFalse();
+    }
+
+    @Test
+    @DisplayName("변경 확인용 비밀번호가 올바르지 않을 경우, 회원의 비밀번호를 변경할 수 없고 예외가 발생한다")
+    void changePassword_wrongConfirmPassword() {
+        //given
+        String newPassword = "newPassword";
+        String wrongConfirmPassword = "wrongPassword";
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> memberService.changePassword(member.getNickname(), password, newPassword, wrongConfirmPassword))
+            .isInstanceOf(RuntimeException.class);
+
+        String memberPassword = memberService.findMemberById(member.getId()).getPassword();
+        assertThat(passwordEncoder.matches(newPassword, memberPassword)).isFalse();
     }
 }
