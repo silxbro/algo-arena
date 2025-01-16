@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,17 +41,23 @@ public class RoomApiController {
      * 테스트방 생성
      */
     @PostMapping
-    public ResponseEntity<RoomEventResponse> createRoom(@RequestBody RoomCreateRequest request) {
-        Room createdRoom = roomLifeService.createRoom(request, 1L);
+    public ResponseEntity<RoomEventResponse> createRoom(@AuthenticationPrincipal UserDetails userDetails,
+        @RequestBody RoomCreateRequest request) {
+
+        String username = userDetails.getUsername();
+        Room createdRoom = roomLifeService.createRoom(request, username);
+
         return ResponseEntity.ok(RoomEventResponse.from(createdRoom.getId(), List.of(CREATE)));
     }
 
     /**
      * 테스트방 조회(입장 시)
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<RoomDetailResponse> findRoom(@PathVariable("id") String id) {
-        Room room = roomFindService.findRoomById(id);
+    @GetMapping("/{roomId}")
+    public ResponseEntity<RoomDetailResponse> findRoom(@PathVariable("roomId") String roomId) {
+
+        Room room = roomFindService.findRoomById(roomId);
+
         return ResponseEntity.ok(RoomDetailResponse.from(room));
     }
 
@@ -58,48 +66,60 @@ public class RoomApiController {
      */
     @GetMapping
     public ResponseEntity<RoomListResponse> findRoomsBySearch(@RequestBody RoomSearchRequest request) {
+
         List<Room> rooms = roomFindService.findRoomsBySearch(request);
+
         return ResponseEntity.ok(RoomListResponse.from(rooms));
     }
 
     /**
      * 테스트방 정보 수정 - 방장
      */
-    @PatchMapping("/{id}")
-    public ResponseEntity<RoomEventResponse> updateRoom(@PathVariable("id") String id, @RequestBody RoomUpdateRequest request) {
-        roomLifeService.updateRoom(id, request);
-        return ResponseEntity.ok(RoomEventResponse.from(id, List.of(UPDATE)));
+    @PatchMapping("/{roomId}")
+    public ResponseEntity<RoomEventResponse> updateRoom(@PathVariable("roomId") String roomId, @RequestBody RoomUpdateRequest request) {
+
+        roomLifeService.updateRoom(roomId, request);
+
+        return ResponseEntity.ok(RoomEventResponse.from(roomId, List.of(UPDATE)));
     }
 
     /**
      * 테스트방 참가자 입장
      */
-    @PatchMapping("/{id}/enter/{memberId}")
-    public ResponseEntity<RoomEventResponse> enterRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
-        roomIOService.enterRoom(id, memberId);
-        return ResponseEntity.ok(RoomEventResponse.from(id, List.of(ENTER)));
+    @PatchMapping("/{roomId}/enter")
+    public ResponseEntity<RoomEventResponse> enterRoom(@PathVariable("roomId") String roomId, @AuthenticationPrincipal UserDetails userDetails) {
+
+        roomIOService.enterRoom(roomId, userDetails.getUsername());
+
+        return ResponseEntity.ok(RoomEventResponse.from(roomId, List.of(ENTER)));
     }
 
     /**
      * 테스트방 참가자 퇴장
      */
-    @PatchMapping("/{id}/exit/{memberId}")
-    public ResponseEntity<RoomEventResponse> exitRoom(@PathVariable("id") String id, @PathVariable("memberId") Long memberId) {
+    @PatchMapping("/{roomId}/exit")
+    public ResponseEntity<RoomEventResponse> exitRoom(@PathVariable("roomId") String roomId, @AuthenticationPrincipal UserDetails userDetails) {
+
         List<RoomEvent> roomEvents = new ArrayList<>();
-        RoomEvent result = roomIOService.exitRoom(id, memberId);
+
+        RoomEvent result = roomIOService.exitRoom(roomId, userDetails.getUsername());
         roomEvents.add(result);
+
         if (result == CHANGE_HOST) {
             roomEvents.addFirst(EXIT);
         }
-        return ResponseEntity.ok(RoomEventResponse.from(id, roomEvents));
+
+        return ResponseEntity.ok(RoomEventResponse.from(roomId, roomEvents));
     }
 
     /**
      * 테스트방 삭제 - 자동 삭제
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<RoomEventResponse> deleteRoom(@PathVariable("id") String id) {
-        roomLifeService.deleteRoomById(id);
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<RoomEventResponse> deleteRoom(@PathVariable("roomId") String roomId) {
+
+        roomLifeService.deleteRoomById(roomId);
+
         return ResponseEntity.noContent().build();
     }
 }
