@@ -21,13 +21,13 @@ public class TestDataInitializer {
 
     @PostConstruct
     public void init() {
-        Member member1 = Member.builder().email("member1@gmail.com").nickname("member 1").password(passwordEncoder.encode("member1")).build();
-        Member member2 = Member.builder().email("member2@gmail.com").nickname("member 2").password(passwordEncoder.encode("member2")).build();
-        Member member3 = Member.builder().email("member3@gmail.com").nickname("member 3").password(passwordEncoder.encode("member3")).build();
+        Member member1 = Member.builder().email("member1@gmail.com").nickname("member1").password(passwordEncoder.encode("member1")).build();
+        Member member2 = Member.builder().email("member2@gmail.com").nickname("member2").password(passwordEncoder.encode("member2")).build();
+        Member member3 = Member.builder().email("member3@gmail.com").nickname("member3").password(passwordEncoder.encode("member3")).build();
 
-        Problem problem1 = Problem.builder().title("problem 1").build();
-        Problem problem2 = Problem.builder().title("problem 2").build();
-        Problem problem3 = Problem.builder().title("problem 3").build();
+        Problem problem1 = Problem.builder().title("problem1").build();
+        Problem problem2 = Problem.builder().title("problem2").build();
+        Problem problem3 = Problem.builder().title("problem3").build();
 
         memberRepository.save(member1);
         memberRepository.save(member2);
