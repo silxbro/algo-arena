@@ -31,7 +31,6 @@ class MemberServiceTest {
     String email = "test@example.com";
     String nickname = "tester";
     String password = "password";
-    String imgUrl = "https://my-image.com/origin-image.png";
 
     @BeforeEach
     void setUp() {
@@ -39,7 +38,6 @@ class MemberServiceTest {
             .email(email)
             .nickname(nickname)
             .password(passwordEncoder.encode(password))
-            .imgUrl(imgUrl)
             .build();
         memberRepository.save(member);
     }
@@ -55,20 +53,6 @@ class MemberServiceTest {
 
         //then
         assertThat(members).containsExactly(member);
-    }
-
-    @Test
-    @DisplayName("회원의 프로필 이미지를 변경할 수 있다")
-    void updateImage() {
-        //given
-        String newImgUrl = "https://my-image.com/new-image.png";
-
-        //when
-        memberService.updateImage(member.getId(), newImgUrl);
-        Member updatedMember = memberService.findMemberById(member.getId());
-
-        //then
-        assertThat(updatedMember.getImgUrl()).isEqualTo(newImgUrl);
     }
 
     @Test

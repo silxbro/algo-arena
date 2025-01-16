@@ -65,10 +65,9 @@ public class RoomDetailResponse {
     @Builder
     public static class RoomHost {
         private String nickname;
-        private String imgUrl;
 
         public static RoomHost from(Member member) {
-            return RoomHost.builder().nickname(member.getNickname()).imgUrl(member.getImgUrl()).build();
+            return RoomHost.builder().nickname(member.getNickname()).build();
         }
     }
 
@@ -88,13 +87,11 @@ public class RoomDetailResponse {
     @Builder
     public static class RoomMemberResponse {
         private String nickname;
-        private String imgUrl;
         private Boolean isReady;
 
         public static RoomMemberResponse from(RoomMember roomMember) {
             return RoomMemberResponse.builder()
                 .nickname(roomMember.getMember().getNickname())
-                .imgUrl(roomMember.getMember().getImgUrl())
                 .isReady(roomMember.getIsReady())
                 .build();
         }

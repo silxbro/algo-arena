@@ -54,14 +54,14 @@ public class RedisRoom implements Serializable {
         List<RoomMember> roomMembers = redisRoom.getRoomMembers()
             .stream().map(each ->
                 RoomMember.builder()
-                    .member(Member.builder().nickname(each.getNickname()).imgUrl(each.getImgUrl()).build())
+                    .member(Member.builder().nickname(each.getNickname()).build())
                     .isReady(each.getIsReady())
                     .build()
             )
             .toList();
 
         RedisRoomHost redisRoomHost = redisRoom.getRoomHost();
-        Member host = Member.builder().nickname(redisRoomHost.getNickname()).imgUrl(redisRoomHost.getImgUrl()).build();
+        Member host = Member.builder().nickname(redisRoomHost.getNickname()).build();
 
         return Room.builder()
             .id(redisRoom.getId())
@@ -100,12 +100,10 @@ public class RedisRoom implements Serializable {
     @AllArgsConstructor
     public static class RedisRoomHost {
         private String nickname;
-        private String imgUrl;
 
         public static RedisRoomHost from(Member host) {
             return RedisRoomHost.builder()
                 .nickname(host.getNickname())
-                .imgUrl(host.getImgUrl())
                 .build();
         }
     }
@@ -116,14 +114,12 @@ public class RedisRoom implements Serializable {
     @AllArgsConstructor
     public static class RedisRoomMember {
         private String nickname;
-        private String imgUrl;
         private Boolean isReady;
 
         public static RedisRoomMember from(RoomMember roomMember) {
             Member member = roomMember.getMember();
             return RedisRoomMember.builder()
                 .nickname(member.getNickname())
-                .imgUrl(member.getImgUrl())
                 .build();
         }
     }
