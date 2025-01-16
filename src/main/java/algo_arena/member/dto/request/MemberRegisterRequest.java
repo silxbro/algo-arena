@@ -8,6 +8,7 @@ public class MemberRegisterRequest {
 
     private String email;
     private String password;
+    private String confirmPassword;
     private String nickname;
 
     public Member toEntity() {

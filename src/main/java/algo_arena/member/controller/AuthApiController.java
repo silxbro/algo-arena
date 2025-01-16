@@ -50,7 +50,7 @@ public class AuthApiController {
     @PostMapping("/register")
     public ResponseEntity<MemberRegisterResponse> register(@RequestBody MemberRegisterRequest request) {
 
-        Member newMember = authService.register(request.toEntity());
+        Member newMember = authService.register(request.toEntity(), request.getConfirmPassword());
 
         return ResponseEntity.ok(MemberRegisterResponse.from(newMember));
     }
