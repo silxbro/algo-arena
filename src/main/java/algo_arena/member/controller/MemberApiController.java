@@ -53,7 +53,7 @@ public class MemberApiController {
      * 회원 정보 조회 By MyProfile (본인 조회용)
      */
     @GetMapping("/profile")
-    public ResponseEntity<MemberProfileResponse> myProfile(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<MemberProfileResponse> findMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
 
         String username = userDetails.getUsername();
         Member member = memberService.findMemberByNickname(username);
@@ -81,6 +81,7 @@ public class MemberApiController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> withdraw(@PathVariable("id") Long id) {
         memberService.delete(id);
+
         return ResponseEntity.ok().build();
     }
 }
