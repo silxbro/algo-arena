@@ -21,25 +21,25 @@ public class RoomIOService {
     private final MemberService memberService;
 
     @Transactional
-    public void enterRoom(String id, Long memberId) {
-        Room room = getRoomFromDB(id);
+    public void enterRoom(String roomId, String memberNickname) {
+        Room room = getRoomFromDB(roomId);
         if (room.isFull()) {
             throw new RuntimeException();
         }
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.findMemberByNickname(memberNickname);
         room.enter(member);
     }
 
     @Transactional
-    public RoomEvent exitRoom(String id, Long memberId) {
-        Room room = getRoomFromDB(id);
-        if (room.isHost(memberId) && !room.existMembers()) {
-            return deleteRoom(id);
+    public RoomEvent exitRoom(String roomId, String memberNickname) {
+        Room room = getRoomFromDB(roomId);
+        if (room.isHost(memberNickname) && !room.existMembers()) {
+            return deleteRoom(roomId);
         }
-        if (room.isHost(memberId)) {
+        if (room.isHost(memberNickname)) {
             return changeRoomHost(room);
         }
-        return memberExitRoom(room, memberId);
+        return memberExitRoom(room, memberNickname);
     }
 
     private Room getRoomFromDB(String id) {
@@ -47,8 +47,8 @@ public class RoomIOService {
         return roomRepository.findById(id).orElseThrow();
     }
 
-    private RoomEvent memberExitRoom(Room room, Long memberId) {
-        room.exit(memberId);
+    private RoomEvent memberExitRoom(Room room, String memberNickname) {
+        room.exit(memberNickname);
         roomRedisRepository.save(room);
         return EXIT;
     }
