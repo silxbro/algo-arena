@@ -26,24 +26,13 @@ public class MemberService {
         return memberRepository.findById(id).orElseThrow();
     }
 
-    public Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow();
-    }
-
     public Member findMemberByNickname(String nickname) {
         return memberRepository.findByNickname(nickname).orElseThrow();
     }
 
     @Transactional
-    public Member updateImage(Long id, String imgUrl) {
-        Member member = memberRepository.findById(id).orElseThrow();
-        member.changeImage(imgUrl);
-        return member;
-    }
-
-    @Transactional
-    public Member changePassword(Long id, String password) {
-        Member member = memberRepository.findById(id).orElseThrow();
+    public Member changePassword(String nickname, String password) {
+        Member member = memberRepository.findByNickname(nickname).orElseThrow();
         String encodedPassword = passwordEncoder.encode(password);
         member.changePassword(encodedPassword);
         return member;
