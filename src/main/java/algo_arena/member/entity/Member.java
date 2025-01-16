@@ -22,15 +22,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
+@EqualsAndHashCode(of = {"id", "email", "nickname"}, callSuper = false)
 public class Member extends BaseEntity {
-
-    private static final String DEFAULT_IMAGE_URL = "";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(updatable = false)
