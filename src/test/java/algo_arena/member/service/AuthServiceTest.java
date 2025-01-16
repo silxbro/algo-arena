@@ -57,13 +57,14 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("이메일 인증이 완료된 상태일 경우, 회원 가입을 할 수 있다")
+    @DisplayName("이메일 인증이 완료된 상태이고 확인용 비밀번호가 일치할 경우, 회원 가입을 할 수 있다")
     void register_EmailVerified() {
         //given
-        codeAuthService.markAuthAsCompleted(email);
+        String confirmPassword = password;
+        completeEmailAuth(email, "code", 10000);
 
         //when
-        Member registeredMember = authService.register(member);
+        Member registeredMember = authService.register(member, confirmPassword);
 
         //then
         assertThat(registeredMember).isNotNull();
@@ -75,11 +76,27 @@ class AuthServiceTest {
     @DisplayName("이메일 인증이 완료되지 않을 경우, 회원 가입이 되지 않고 예외가 발생한다")
     void register_EmailNotVerified() {
         //given
+        String confirmPassword = password;
 
         //when
 
         //then
-        assertThatThrownBy(() -> authService.register(member))
+        assertThatThrownBy(() -> authService.register(member, confirmPassword))
+            .isInstanceOf(RuntimeException.class);
+        assertThat(memberRepository.findByEmail(email).orElse(null)).isNull();
+    }
+
+    @Test
+    @DisplayName("확인용 비밀번호가 일치하지 않을 경우, 회원 가입이 되지 않고 예외가 발생한다")
+    void register_PasswordNotMatch() {
+        //given
+        String confirmPassword = "password!!";
+        completeEmailAuth(email, "code", 10000);
+
+        //when
+
+        //then
+        assertThatThrownBy(() -> authService.register(member, confirmPassword))
             .isInstanceOf(RuntimeException.class);
         assertThat(memberRepository.findByEmail(email).orElse(null)).isNull();
     }
@@ -88,8 +105,8 @@ class AuthServiceTest {
     @DisplayName("올바른 인증정보, 즉 이메일과 비밀번호로 인증(로그인)할 경우 토큰이 발급된다")
     void login_CredentialsAreValid() {
         //given
-        codeAuthService.markAuthAsCompleted(email);
-        authService.register(member);
+        completeEmailAuth(email, "code", 10000);
+        authService.register(member, member.getPassword());
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(member.getNickname());
 
         //when
@@ -116,9 +133,8 @@ class AuthServiceTest {
     @DisplayName("틀린 비밀번호로 인증(로그인)을 시도할 경우 예외가 발생한다")
     void login_PasswordNotMatch() {
         //given
-        codeAuthService.markAuthAsCompleted(email);
-        authService.register(member);
-
+        completeEmailAuth(email, "code", 10000);
+        authService.register(member, member.getPassword());
         String wrongPassword = "wrongPassword!";
 
         //when
@@ -135,12 +151,10 @@ class AuthServiceTest {
 
         //when
         authService.sendAuthEmail(email);
-        String authCode = codeAuthService.getAuthCode(email);
-        boolean authCompleted = codeAuthService.isAuthCompleted(email);
 
         //then
-        assertThat(authCode).isNotNull();
-        assertThat(authCompleted).isFalse();
+        assertThat(codeAuthService.getAuthCode(email)).isNotNull();
+        assertThat(codeAuthService.isAuthCompleted(email)).isFalse();
     }
 
     @Test
@@ -152,10 +166,9 @@ class AuthServiceTest {
 
         //when
         authService.verifyAuthEmail(email, authCode);
-        boolean authCompleted = codeAuthService.isAuthCompleted(email);
 
         //then
-        assertThat(authCompleted).isTrue();
+        assertThat(codeAuthService.isAuthCompleted(email)).isTrue();
     }
 
     @Test
@@ -185,5 +198,10 @@ class AuthServiceTest {
         //then
         assertThatThrownBy(() -> authService.verifyAuthEmail(email, wrongAuthCode))
             .isInstanceOf(RuntimeException.class);
+    }
+
+    private void completeEmailAuth(String email, String code, long duration) {
+        codeAuthService.setAuthCodeAndExpiration(email, code, duration);
+        codeAuthService.markAuthAsCompleted(email);
     }
 }
