@@ -42,15 +42,21 @@ public class Member extends BaseEntity {
     @Column(updatable = false)
     private String nickname;
 
+    @Column(updatable = false)
     @Builder.Default
-    private String imgUrl = DEFAULT_IMAGE_URL;
-
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     private Role role = Role.USER;
 
     private long testCount; //참가 테스트 개수
-    private long problemCount; //정답 문제 개수
+    private long submissionCount; // 제출 문제 개수
+    private long rightCount; //정답 문제 개수
+    private long wrongCount; //오답 문제 개수
+    private long timeExceedCount; //시간 초과 문제 개수
+    private long memoryExceedCount; //메모리 초과 문제 개수
+    private long compileErrorCount; //컴파일 오류 문제 개수
+    private long runtimeErrorCount; //런타임 오류 문제 개수
+    private long outputExceedCount; //출력 초과 문제 개수
+    private long formatErrorCount; //출력 형식 오류 개수
 
     public boolean equalsId(Long id) {
         return this.id.equals(id);
@@ -58,9 +64,5 @@ public class Member extends BaseEntity {
 
     public void changePassword(String password) {
         this.password = password;
-    }
-
-    public void changeImage(String imageUrl) {
-        this.imgUrl = imageUrl;
     }
 }
