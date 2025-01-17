@@ -49,4 +49,13 @@ public class ProblemService {
             problem.changeLink(title);
         }
     }
+
+    @Transactional
+    public void deleteProblem(Long number, String memberName) {
+        Member member = memberService.findMemberByName(memberName);
+        if (!member.isAdmin()) {
+            throw new RuntimeException("문제 삭제 권한이 없습니다. 관리자에게 문의하세요.");
+        }
+        problemRepository.deleteByNumber(number);
+    }
 }
