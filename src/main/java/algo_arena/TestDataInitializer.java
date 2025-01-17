@@ -1,5 +1,7 @@
 package algo_arena;
 
+import static algo_arena.member.enums.Role.ADMIN;
+
 import algo_arena.member.entity.Member;
 import algo_arena.member.repository.MemberRepository;
 import algo_arena.problem.entity.Problem;
@@ -24,6 +26,7 @@ public class TestDataInitializer {
         Member member1 = Member.builder().email("member1@gmail.com").name("member1").password(passwordEncoder.encode("member1")).build();
         Member member2 = Member.builder().email("member2@gmail.com").name("member2").password(passwordEncoder.encode("member2")).build();
         Member member3 = Member.builder().email("member3@gmail.com").name("member3").password(passwordEncoder.encode("member3")).build();
+        Member admin = Member.builder().email("silbroeh@gmail.com").name("ADMIN").password(passwordEncoder.encode("admin")).role(ADMIN).build();
 
         Problem problem1 = Problem.builder().title("problem1").build();
         Problem problem2 = Problem.builder().title("problem2").build();
@@ -32,6 +35,7 @@ public class TestDataInitializer {
         memberRepository.save(member1);
         memberRepository.save(member2);
         memberRepository.save(member3);
+        memberRepository.save(admin);
 
         problemRepository.save(problem1);
         problemRepository.save(problem2);
