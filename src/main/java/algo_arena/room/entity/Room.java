@@ -99,7 +99,7 @@ public class Room extends BaseEntity implements Serializable {
     public void exit(String memberName) {
         for (RoomMember roomMember : roomMembers) {
             Member member = roomMember.getMember();
-            if (member.isName(memberName)) {
+            if (member.matchesName(memberName)) {
                 roomMembers.remove(roomMember);
                 return;
             }
