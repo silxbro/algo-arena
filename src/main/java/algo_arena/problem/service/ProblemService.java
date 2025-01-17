@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +33,20 @@ public class ProblemService {
 
     public Problem findProblemByNumber(Long id) {
         return problemRepository.findByNumber(id).orElseThrow();
+    }
+
+    @Transactional
+    public void updateProblem(Long number, String title, String link, String memberName) {
+        Member member = memberService.findMemberByName(memberName);
+        if (!member.isAdmin()) {
+            throw new RuntimeException("문제 수정 권한이 없습니다. 관리자에게 문의하세요.");
+        }
+        Problem problem = findProblemByNumber(number);
+        if (StringUtils.hasText(title)) {
+            problem.changeTitle(title);
+        }
+        if (StringUtils.hasText(link)) {
+            problem.changeLink(title);
+        }
     }
 }
