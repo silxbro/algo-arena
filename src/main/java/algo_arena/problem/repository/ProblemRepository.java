@@ -10,4 +10,6 @@ public interface ProblemRepository extends JpaRepository<Problem, Long>, Problem
 
     Optional<Problem> findByNumber(Long number);
 
+    void deleteByNumber(Long number);
+
 }
