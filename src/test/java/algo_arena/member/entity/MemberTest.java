@@ -26,8 +26,8 @@ class MemberTest {
         //given
 
         //when
-        boolean equalResult = member.isName(member.getName());
-        boolean notEqualResult = member.isName("name");
+        boolean equalResult = member.matchesName(member.getName());
+        boolean notEqualResult = member.matchesName("name");
 
         //then
         assertThat(equalResult).isTrue();

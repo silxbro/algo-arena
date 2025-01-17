@@ -36,8 +36,8 @@ class SubmissionServiceTest {
 
     @BeforeEach
     void setUP() {
-        member1 = Member.builder().nickname("member1").build();
-        member2 = Member.builder().nickname("member2").build();
+        member1 = Member.builder().name("member1").build();
+        member2 = Member.builder().name("member2").build();
 
         memberRepository.save(member1);
         memberRepository.save(member2);
@@ -75,7 +75,7 @@ class SubmissionServiceTest {
 
         SubmissionSearchRequest request1 = SubmissionSearchRequest.builder().problemNumber(1L).build();
         SubmissionSearchRequest request2 = SubmissionSearchRequest.builder().resultDescription("정답").build();
-        SubmissionSearchRequest request3 = SubmissionSearchRequest.builder().memberNickname("member2").languageName("Kotlin").build();
+        SubmissionSearchRequest request3 = SubmissionSearchRequest.builder().memberName("member2").languageName("Kotlin").build();
 
         //when
         List<Submission> submissions1 = submissionService.findAll(request1);
