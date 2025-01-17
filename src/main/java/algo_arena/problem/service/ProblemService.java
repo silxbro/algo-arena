@@ -41,7 +41,7 @@ public class ProblemService {
             problem.changeTitle(title);
         }
         if (StringUtils.hasText(link)) {
-            problem.changeLink(title);
+            problem.changeLink(link);
         }
     }
 
