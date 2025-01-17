@@ -1,5 +1,7 @@
 package algo_arena.member.entity;
 
+import static algo_arena.member.enums.Role.ADMIN;
+
 import algo_arena.common.entity.BaseEntity;
 import algo_arena.member.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -55,11 +57,11 @@ public class Member extends BaseEntity {
     private long outputExceedCount; //출력 초과 문제 개수
     private long formatErrorCount; //출력 형식 오류 개수
 
-    public boolean isName(String memberName) {
+    public boolean matchesName(String memberName) {
         return name.equals(memberName);
     }
 
-    public void changePassword(String password) {
-        this.password = password;
+    public void changePassword(String newPassword) {
+        password = newPassword;
     }
 }
