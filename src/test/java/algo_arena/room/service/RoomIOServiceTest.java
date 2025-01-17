@@ -57,7 +57,7 @@ class RoomIOServiceTest {
         //given
 
         //when
-        roomIOService.enterRoom(room.getId(), member.getId());
+        roomIOService.enterRoom(room.getId(), member.getName());
         List<Member> members = room.getRoomMembers().stream().map(RoomMember::getMember).toList();
 
         //then
@@ -77,7 +77,7 @@ class RoomIOServiceTest {
         //when
 
         //then
-        assertThatThrownBy(() -> roomIOService.enterRoom(room.getId(), member2.getId()))
+        assertThatThrownBy(() -> roomIOService.enterRoom(room.getId(), member2.getName()))
             .isInstanceOf(RuntimeException.class);
 
         List<Member> members = room.getRoomMembers().stream().map(RoomMember::getMember).toList();
@@ -91,7 +91,7 @@ class RoomIOServiceTest {
         String roomId = room.getId();
 
         //when
-        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), host.getId());
+        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), host.getName());
 
         //then
         assertThat(roomEvent).isEqualTo(DELETE);
@@ -110,7 +110,7 @@ class RoomIOServiceTest {
         room.enter(member2);
 
         //when
-        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), host.getId());
+        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), host.getName());
 
         //then
         assertThat(roomEvent).isEqualTo(CHANGE_HOST);
@@ -125,15 +125,15 @@ class RoomIOServiceTest {
         room.enter(member);
 
         //when
-        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), member.getId());
+        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), member.getName());
 
         //then
         assertThat(roomEvent).isEqualTo(EXIT);
-        assertThat(room.isMember(member.getId())).isFalse();
+        assertThat(room.isMember(member.getName())).isFalse();
     }
 
     private Member createMember(String nickname) {
-        Member member = Member.builder().nickname(nickname).build();
+        Member member = Member.builder().name(nickname).build();
         return memberRepository.save(member);
     }
 

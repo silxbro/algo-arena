@@ -68,7 +68,7 @@ class SystemMessageFactoryTest {
         //given
         Member newHost = Mockito.mock(Member.class);
         Mockito.when(room.getHost()).thenReturn(newHost);
-        Mockito.when(newHost.getNickname()).thenReturn("John");
+        Mockito.when(newHost.getName()).thenReturn("John");
 
         //when
         String result = systemMessageFactory.create(CHANGE_HOST, room, null);

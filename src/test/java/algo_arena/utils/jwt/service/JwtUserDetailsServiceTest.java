@@ -35,8 +35,8 @@ class JwtUserDetailsServiceTest {
         //given
         String nickname = "jwt member";
         String password = "jwt!!!";
-        Member member = Member.builder().nickname(nickname).password(password).build();
-        when(memberService.findMemberByNickname(nickname)).thenReturn(member);
+        Member member = Member.builder().name(nickname).password(password).build();
+        when(memberService.findMemberByName(nickname)).thenReturn(member);
 
         //when
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(nickname);
@@ -44,6 +44,6 @@ class JwtUserDetailsServiceTest {
         //then
         assertThat(userDetails.getUsername()).isEqualTo(nickname);
         assertThat(userDetails.getPassword()).isEqualTo(password);
-        verify(memberService).findMemberByNickname(nickname);
+        verify(memberService).findMemberByName(nickname);
     }
 }

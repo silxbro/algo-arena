@@ -41,8 +41,8 @@ class SubmissionRepositoryTest {
         problemRepository.save(problem1);
         problemRepository.save(problem2);
 
-        Member member1 = Member.builder().nickname("member1").build();
-        Member member2 = Member.builder().nickname("member2").build();
+        Member member1 = Member.builder().name("member1").build();
+        Member member2 = Member.builder().name("member2").build();
 
         memberRepository.save(member1);
         memberRepository.save(member2);
@@ -61,7 +61,7 @@ class SubmissionRepositoryTest {
     void findSubmission_SearchCondition() {
         //given
         SubmissionSearchRequest request1 = SubmissionSearchRequest.builder()
-            .memberNickname("member1")
+            .memberName("member1")
             .languageName("Java")
             .build();
         SubmissionSearchRequest request2 = SubmissionSearchRequest.builder()
