@@ -27,7 +27,9 @@ public class Problem extends BaseEntity {
     @Column(name = "problem_id")
     private Long id;
 
+    @Column(updatable = false)
     private Long number;
+
     private String title;
     private String link;
 
