@@ -57,6 +57,10 @@ public class Member extends BaseEntity {
     private long outputExceedCount; //출력 초과 문제 개수
     private long formatErrorCount; //출력 형식 오류 개수
 
+    public boolean isAdmin() {
+        return role == ADMIN;
+    }
+
     public boolean matchesName(String memberName) {
         return name.equals(memberName);
     }
