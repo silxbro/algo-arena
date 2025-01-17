@@ -33,4 +33,11 @@ public class Problem extends BaseEntity {
     private String title;
     private String link;
 
+    public void changeTitle(String newTitle) {
+        title = newTitle;
+    }
+
+    public void changeLink(String newLink) {
+        link = newLink;
+    }
 }
