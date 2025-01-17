@@ -17,7 +17,7 @@ public class MemberListResponse {
     public static MemberListResponse from(Collection<Member> members) {
         return MemberListResponse.builder()
             .number(members.size())
-            .memberList(members.stream().map(MemberBasicResponse::from).collect(Collectors.toList()))
+            .memberList(members.stream().map(MemberBasicResponse::from).toList())
             .build();
     }
 
