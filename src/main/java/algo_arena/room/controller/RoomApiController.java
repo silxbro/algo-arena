@@ -4,16 +4,13 @@ import static algo_arena.room.enums.RoomEvent.*;
 
 import algo_arena.room.dto.request.RoomCreateRequest;
 import algo_arena.room.dto.request.RoomSearchRequest;
-import algo_arena.room.dto.request.RoomUpdateRequest;
 import algo_arena.room.dto.response.RoomDetailResponse;
-import algo_arena.room.enums.RoomEvent;
 import algo_arena.room.dto.response.RoomEventResponse;
 import algo_arena.room.dto.response.RoomListResponse;
 import algo_arena.room.entity.Room;
 import algo_arena.room.service.RoomFindService;
 import algo_arena.room.service.RoomIOService;
 import algo_arena.room.service.RoomLifeService;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,46 +66,6 @@ public class RoomApiController {
         List<Room> rooms = roomFindService.findRoomsBySearch(request);
 
         return ResponseEntity.ok(RoomListResponse.from(rooms));
-    }
-
-    /**
-     * 테스트방 정보 수정 - 방장
-     */
-    @PatchMapping("/{roomId}")
-    public ResponseEntity<RoomEventResponse> updateRoom(@PathVariable("roomId") String roomId, @RequestBody RoomUpdateRequest request) {
-
-        roomLifeService.updateRoom(roomId, request);
-
-        return ResponseEntity.ok(RoomEventResponse.from(roomId, List.of(UPDATE)));
-    }
-
-    /**
-     * 테스트방 참가자 입장
-     */
-    @PatchMapping("/{roomId}/enter")
-    public ResponseEntity<RoomEventResponse> enterRoom(@PathVariable("roomId") String roomId, @AuthenticationPrincipal UserDetails userDetails) {
-
-        roomIOService.enterRoom(roomId, userDetails.getUsername());
-
-        return ResponseEntity.ok(RoomEventResponse.from(roomId, List.of(ENTER)));
-    }
-
-    /**
-     * 테스트방 참가자 퇴장
-     */
-    @PatchMapping("/{roomId}/exit")
-    public ResponseEntity<RoomEventResponse> exitRoom(@PathVariable("roomId") String roomId, @AuthenticationPrincipal UserDetails userDetails) {
-
-        List<RoomEvent> roomEvents = new ArrayList<>();
-
-        RoomEvent result = roomIOService.exitRoom(roomId, userDetails.getUsername());
-        roomEvents.add(result);
-
-        if (result == CHANGE_HOST) {
-            roomEvents.addFirst(EXIT);
-        }
-
-        return ResponseEntity.ok(RoomEventResponse.from(roomId, roomEvents));
     }
 
     /**
