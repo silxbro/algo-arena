@@ -4,10 +4,10 @@ import static algo_arena.room.enums.RoomEvent.*;
 
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
-import algo_arena.room.enums.RoomEvent;
 import algo_arena.room.entity.Room;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
+import algo_arena.room.service.result.RoomEventResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,25 +21,29 @@ public class RoomIOService {
     private final MemberService memberService;
 
     @Transactional
-    public void enterRoom(String roomId, String memberName) {
+    public RoomEventResult enterRoom(String roomId, String memberName) {
         Room room = getRoomFromDB(roomId);
         if (room.isFull()) {
             throw new RuntimeException();
         }
         Member member = memberService.findMemberByName(memberName);
         room.enter(member);
+        return RoomEventResult.from(CREATE, room);
     }
 
     @Transactional
-    public RoomEvent exitRoom(String roomId, String memberName) {
+    public RoomEventResult exitRoom(String roomId, String memberName) {
         Room room = getRoomFromDB(roomId);
         if (room.isHost(memberName) && !room.existMembers()) {
-            return deleteRoom(roomId);
+            deleteRoom(roomId);
+            return RoomEventResult.from(DELETE, null);
         }
         if (room.isHost(memberName)) {
-            return changeRoomHost(room);
+            changeRoomHost(room);
+            return RoomEventResult.from(CHANGE_HOST, room);
         }
-        return memberExitRoom(room, memberName);
+        memberExitRoom(room, memberName);
+        return RoomEventResult.from(EXIT, room);
     }
 
     private Room getRoomFromDB(String id) {
@@ -47,21 +51,18 @@ public class RoomIOService {
         return roomRepository.findById(id).orElseThrow();
     }
 
-    private RoomEvent memberExitRoom(Room room, String memberName) {
+    private void memberExitRoom(Room room, String memberName) {
         room.exit(memberName);
         roomRedisRepository.save(room);
-        return EXIT;
     }
 
-    private RoomEvent changeRoomHost(Room room) {
+    private void changeRoomHost(Room room) {
         room.changeHost();
         roomRedisRepository.save(room);
-        return CHANGE_HOST;
     }
 
-    private RoomEvent deleteRoom(String roomId) {
+    private void deleteRoom(String roomId) {
         roomRepository.deleteById(roomId);
         roomRedisRepository.deleteById(roomId);
-        return DELETE;
     }
 }
