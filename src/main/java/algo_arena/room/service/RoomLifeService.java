@@ -1,5 +1,7 @@
 package algo_arena.room.service;
 
+import static algo_arena.room.enums.RoomEvent.UPDATE;
+
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
 import algo_arena.problem.entity.Problem;
@@ -9,6 +11,7 @@ import algo_arena.room.dto.request.RoomUpdateRequest;
 import algo_arena.room.entity.Room;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
+import algo_arena.room.service.result.RoomEventResult;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,10 +34,14 @@ public class RoomLifeService {
     }
 
     @Transactional
-    public void updateRoom(String id, RoomUpdateRequest request) {
+    public RoomEventResult updateRoom(String id, RoomUpdateRequest request, String memberName) {
         Room room = getRoomFromDB(id);
+        if (!room.isHost(memberName)) {
+            throw new RuntimeException("권한이 없습니다. 관리자에게 문의하세요.");
+        }
         List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
         updateExistingRoom(room, request, problems);
+        return RoomEventResult.from(UPDATE, room);
     }
 
     @Transactional
