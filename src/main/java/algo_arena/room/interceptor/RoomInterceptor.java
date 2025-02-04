@@ -1,7 +1,8 @@
-package algo_arena.chat.handler;
+package algo_arena.room.interceptor;
 
 import static org.springframework.messaging.simp.stomp.StompCommand.CONNECT;
 
+import algo_arena.room.service.RoomIOService;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +16,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class StompHandler implements ChannelInterceptor {
+public class RoomInterceptor implements ChannelInterceptor {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService jwtUserDetailsService;
+    private final RoomIOService roomIOService;
 
     @Override
     // WebSocket 을 통해 들어온 요청이 처리되기 전에 실행됨
@@ -28,14 +30,16 @@ public class StompHandler implements ChannelInterceptor {
 
         if (isConnectCommand(command)) {
             String jwtToken = getJwtToken(accessor);
-            validateToken(jwtToken);
+            validateUser(jwtToken);
         }
         return message;
     }
 
-    private void validateToken(String token) {
+    private void validateUser(String token) {
         String username = jwtTokenUtil.extractUsername(token);
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+
+        //토큰 유효성 검사
         jwtTokenUtil.validateToken(token, userDetails);
     }
 
