@@ -9,7 +9,6 @@ import algo_arena.room.dto.response.RoomEventResponse;
 import algo_arena.room.dto.response.RoomListResponse;
 import algo_arena.room.entity.Room;
 import algo_arena.room.service.RoomFindService;
-import algo_arena.room.service.RoomIOService;
 import algo_arena.room.service.RoomLifeService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +30,6 @@ public class RoomApiController {
 
     private final RoomLifeService roomLifeService;
     private final RoomFindService roomFindService;
-    private final RoomIOService roomIOService;
 
     /**
      * 테스트방 생성
@@ -43,11 +41,11 @@ public class RoomApiController {
         String username = userDetails.getUsername();
         Room createdRoom = roomLifeService.createRoom(request, username);
 
-        return ResponseEntity.ok(RoomEventResponse.from(createdRoom.getId(), List.of(CREATE)));
+        return ResponseEntity.ok(RoomEventResponse.from(createdRoom.getId(), List.of(CREATE), createdRoom));
     }
 
     /**
-     * 테스트방 조회(입장 시)
+     * 테스트방 상세 조회
      */
     @GetMapping("/{roomId}")
     public ResponseEntity<RoomDetailResponse> findRoom(@PathVariable("roomId") String roomId) {
