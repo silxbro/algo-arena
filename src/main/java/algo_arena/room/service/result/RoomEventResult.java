@@ -12,6 +12,12 @@ public class RoomEventResult {
     RoomEvent roomEvent;
     Room roomResult;
 
+    public static RoomEventResult from(RoomEvent roomEvent) {
+        return RoomEventResult.builder()
+            .roomEvent(roomEvent)
+            .build();
+    }
+
     public static RoomEventResult from(RoomEvent roomEvent, Room roomResult) {
         return RoomEventResult.builder()
             .roomEvent(roomEvent)

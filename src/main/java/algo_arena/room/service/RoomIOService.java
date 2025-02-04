@@ -28,7 +28,7 @@ public class RoomIOService {
         }
         Member member = memberService.findMemberByName(memberName);
         room.enter(member);
-        return RoomEventResult.from(CREATE, room);
+        return RoomEventResult.from(ENTER, room);
     }
 
     @Transactional
@@ -36,7 +36,7 @@ public class RoomIOService {
         Room room = getRoomFromDB(roomId);
         if (room.isHost(memberName) && !room.existMembers()) {
             deleteRoom(roomId);
-            return RoomEventResult.from(DELETE, null);
+            return RoomEventResult.from(DELETE);
         }
         if (room.isHost(memberName)) {
             changeRoomHost(room);
