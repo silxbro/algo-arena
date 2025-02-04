@@ -23,6 +23,9 @@ public class RoomIOService {
     @Transactional
     public RoomEventResult enterRoom(String roomId, String memberName) {
         Room room = getRoomFromDB(roomId);
+        if (room.isMember(memberName)) {
+            throw new RuntimeException();
+        }
         if (room.isFull()) {
             throw new RuntimeException();
         }
@@ -34,6 +37,9 @@ public class RoomIOService {
     @Transactional
     public RoomEventResult exitRoom(String roomId, String memberName) {
         Room room = getRoomFromDB(roomId);
+        if (!room.isMember(memberName)) {
+            throw new RuntimeException();
+        }
         if (room.isHost(memberName) && !room.existMembers()) {
             deleteRoom(roomId);
             return RoomEventResult.from(DELETE);
