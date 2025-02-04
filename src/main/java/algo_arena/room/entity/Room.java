@@ -119,7 +119,7 @@ public class Room extends BaseEntity implements Serializable {
     }
 
     public boolean isMember(String name) {
-        return roomMembers.stream()
+        return isHost(name) || roomMembers.stream()
             .map(roomMember -> roomMember.getMember().getName())
             .anyMatch(memberName -> memberName.equals(name));
     }
