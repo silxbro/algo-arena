@@ -41,6 +41,8 @@ public class RoomInterceptor implements ChannelInterceptor {
 
         //토큰 유효성 검사
         jwtTokenUtil.validateToken(token, userDetails);
+        //타 테스트룸 소속 확인
+        roomIOService.checkAlreadyEntrance(username);
     }
 
     private String getJwtToken(StompHeaderAccessor accessor) {
