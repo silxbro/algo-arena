@@ -52,6 +52,14 @@ public class RoomIOService {
         return RoomEventResult.from(EXIT, room);
     }
 
+    public void checkAlreadyEntrance(String memberName) {
+        boolean isAlreadyEntered = roomRepository.findAll().stream()
+            .anyMatch(room -> room.isMember(memberName));
+        if (isAlreadyEntered) {
+            throw new RuntimeException();
+        }
+    }
+
     private Room getRoomFromDB(String id) {
         roomRedisRepository.deleteById(id);
         return roomRepository.findById(id).orElseThrow();
