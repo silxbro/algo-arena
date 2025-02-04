@@ -1,5 +1,6 @@
 package algo_arena.room.dto.response;
 
+import algo_arena.room.entity.Room;
 import algo_arena.room.enums.RoomEvent;
 import java.util.List;
 import lombok.Builder;
@@ -11,7 +12,7 @@ public class RoomEventResponse {
 
     private String roomId;
     private List<RoomEvent> events;
-    private RoomDetailResponse eventResult;
+    private RoomDetailResponse roomResult;
 
     public static RoomEventResponse from(String roomId, List<RoomEvent> roomEvents) {
         return RoomEventResponse.builder()
@@ -20,11 +21,11 @@ public class RoomEventResponse {
             .build();
     }
 
-    public static RoomEventResponse from(String roomId, List<RoomEvent> roomEvents, RoomDetailResponse roomDetails) {
+    public static RoomEventResponse from(String roomId, List<RoomEvent> roomEvents, Room room) {
         return RoomEventResponse.builder()
             .roomId(roomId)
             .events(roomEvents)
-            .eventResult(roomDetails)
+            .roomResult(RoomDetailResponse.from(room))
             .build();
     }
 }

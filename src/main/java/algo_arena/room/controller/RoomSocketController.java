@@ -3,7 +3,6 @@ package algo_arena.room.controller;
 import static algo_arena.room.enums.RoomEvent.*;
 
 import algo_arena.room.dto.request.RoomUpdateRequest;
-import algo_arena.room.dto.response.RoomDetailResponse;
 import algo_arena.room.dto.response.RoomEventResponse;
 import algo_arena.room.entity.Room;
 import algo_arena.room.enums.RoomEvent;
@@ -78,8 +77,7 @@ public class RoomSocketController {
     private RoomEventResponse getRoomEventResponse(RoomEventResult result) {
         RoomEvent resultEvent = result.getRoomEvent();
         Room resultRoom = result.getRoomResult();
-        return RoomEventResponse.from(resultRoom.getId(), getRoomEvents(resultEvent),
-            RoomDetailResponse.from(getResultRoom(resultEvent, resultRoom)));
+        return RoomEventResponse.from(resultRoom.getId(), getRoomEvents(resultEvent), resultRoom);
     }
 
     private List<RoomEvent> getRoomEvents(RoomEvent resultEvent) {
@@ -91,23 +89,5 @@ public class RoomSocketController {
         events.add(resultEvent);
 
         return Collections.unmodifiableList(events);
-    }
-
-    private Room getResultRoom(RoomEvent resultEvent, Room resultRoom) {
-        if (resultEvent.isChangeHost() || resultEvent.isEnter() || resultEvent.isExit()) {
-            return Room.builder()
-                .host(resultRoom.getHost())
-                .roomMembers(resultRoom.getRoomMembers())
-                .build();
-        }
-        if (resultEvent.isUpdate()) {
-            return Room.builder()
-                .maxRoomMembers(resultRoom.getMaxRoomMembers())
-                .roomProblems(resultRoom.getRoomProblems())
-                .language(resultRoom.getLanguage())
-                .timeLimit(resultRoom.getTimeLimit())
-                .build();
-        }
-        return Room.builder().build();
     }
 }
