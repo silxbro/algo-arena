@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import algo_arena.member.entity.Member;
 import algo_arena.problem.entity.Problem;
-import algo_arena.room.dto.request.RoomUpdateRequest;
-import algo_arena.submission.entity.Language;
+import algo_arena.submission.enums.Language;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,14 +17,20 @@ class RoomTest {
 
     Room room;
 
+    Problem problem1, problem2;
+
+    Member host;
+
     @BeforeEach
     void init() {
-        List<RoomProblem> roomProblems = getRoomProblems(1L, 2L);
+        problem1 = createProblem(1L);
+        problem2 = createProblem(2L);
+        host = createMember(1L, "host");
         room = Room.builder()
-            .name("코딩테스트")
+            .name("코딩테스트방")
             .maxRoomMembers(3)
-            .roomProblems(roomProblems)
-            .host(Member.builder().id(1L).build())
+            .roomProblems(getRoomProblems(room, problem1, problem2))
+            .host(host)
             .language(Language.KOTLIN)
             .timeLimit(60)
             .build();
@@ -35,14 +40,14 @@ class RoomTest {
     @DisplayName("테스트방 정보를 변경할 수 있다")
     void update() {
         //given
-        RoomUpdateRequest request = RoomUpdateRequest.builder()
+        Room updateInfo = Room.builder()
             .maxRoomMembers(20)
-            .languageName("C++")
+            .language(Language.C_PP)
             .timeLimit(30)
             .build();
 
         //when
-        room.update(request.toEntity());
+        room.update(updateInfo);
 
         //then
         assertThat(room.getMaxRoomMembers()).isEqualTo(20);
@@ -54,29 +59,30 @@ class RoomTest {
     @DisplayName("테스트방의 문제를 변경할 수 있다")
     void setProblems() {
         //given: 1,2번 -> 1,3번 문제 변경
+        Problem problem3 = createProblem(3L);
         List<Problem> problems = new ArrayList<>();
-        problems.add(Problem.builder().id(1L).build()); // 기존 유지
-        problems.add(Problem.builder().id(3L).build()); // 새로 추가
+        problems.add(problem1); // 기존 유지
+        problems.add(problem3); // 새로 추가
 
         //when
         room.setProblems(problems);
-        List<Long> actualProblemIds = room.getRoomProblems().stream()
-            .map(rp -> rp.getProblem().getId())
+        List<Problem> resultProblems = room.getRoomProblems().stream()
+            .map(RoomProblem::getProblem)
             .toList();
 
         //then
-        assertThat(actualProblemIds.size()).isEqualTo(2);
-        assertThat(actualProblemIds).contains(1L);
-        assertThat(actualProblemIds).contains(3L);
+        assertThat(resultProblems.size()).isEqualTo(2);
+        assertThat(resultProblems).contains(problem1);
+        assertThat(resultProblems).contains(problem3);
     }
 
     @Test
     @DisplayName("참가자 중 가장 먼저 입장한 사람이 자동으로 방장으로 변경된다")
     void changeHost() {
         //given
-        room.enter(createTestMember(2L));
-        room.enter(createTestMember(3L));
-        room.enter(createTestMember(4L));
+        room.enter(createMember(2L, "second"));
+        room.enter(createMember(3L, "third"));
+        room.enter(createMember(4L, "fourth"));
 
         //when
         room.changeHost();
@@ -89,33 +95,39 @@ class RoomTest {
     @DisplayName("테스트방에 참가자가 입장할 수 있다")
     void enter() {
         //given
-        room.enter(createTestMember(100L));
-        room.enter(createTestMember(200L));
+        Member member1 = createMember(100L, "member1");
+        Member member2 = createMember(200L, "member2");
 
         //when
-        List<RoomMember> roomMembers = room.getRoomMembers();
+        room.enter(member1);
+        room.enter(member2);
+
+        List<Member> members = room.getRoomMembers().stream()
+            .map(RoomMember::getMember).toList();
 
         //then
-        assertThat(roomMembers.size()).isEqualTo(2);
-        assertThat(room.isMember(100L)).isTrue();
-        assertThat(room.isMember(200L)).isTrue();
+        assertThat(members.size()).isEqualTo(2);
+        assertThat(members).containsExactly(member1, member2);
     }
 
     @Test
     @DisplayName("테스트방에서 참가자가 퇴장할 수 있다")
     void exit() {
         //given
-        room.enter(createTestMember(100L));
-        room.enter(createTestMember(200L));
+        Member member1 = createMember(100L, "member1");
+        Member member2 = createMember(200L, "member2");
+        room.enter(member1);
+        room.enter(member2);
 
         //when
-        room.exit(200L);
-        List<RoomMember> roomMembers = room.getRoomMembers();
+        room.exit("member2");
+
+        List<Member> members = room.getRoomMembers().stream()
+            .map(RoomMember::getMember).toList();
 
         //then
-        assertThat(roomMembers.size()).isEqualTo(1);
-        assertThat(room.isMember(100L)).isTrue();
-        assertThat(room.isMember(200L)).isFalse();
+        assertThat(members.size()).isEqualTo(1);
+        assertThat(members).containsExactly(member1);
     }
 
     @Test
@@ -134,7 +146,7 @@ class RoomTest {
     @DisplayName("테스트방에 참가자가 존재할 경우, 이를 조회할 수 있다")
     void existMembers_true() {
         //given
-        room.enter(createTestMember(1L));
+        room.enter(createMember(2L, "member"));
 
         //when
         boolean result = room.existMembers();
@@ -147,7 +159,7 @@ class RoomTest {
     @DisplayName("테스트방에 참가자가 최대 정원보다 적은 경우, 이를 조회할 수 있다")
     void isFull_no() {
         //given
-        room.enter(createTestMember(1L));
+        room.enter(createMember(2L, "member"));
 
         //when
         boolean result = room.isFull();
@@ -160,9 +172,9 @@ class RoomTest {
     @DisplayName("테스트방에 참가자가 최대 정원인 경우, 이를 조회할 수 있다")
     void isFull_yes() {
         //given
-        room.enter(createTestMember(1L));
-        room.enter(createTestMember(2L));
-        room.enter(createTestMember(3L));
+        room.enter(createMember(2L, "second"));
+        room.enter(createMember(3L, "third"));
+        room.enter(createMember(4L, "fourth"));
 
         //when
         boolean result = room.isFull();
@@ -172,13 +184,27 @@ class RoomTest {
     }
 
     @Test
-    @DisplayName("회원 ID로 테스트방의 방장여부를 조회할 수 있다")
+    @DisplayName("회원 이름으로 테스트방의 방장여부를 조회할 수 있다")
     void isHost() {
         //given
 
         //when
-        boolean result1 = room.isHost(1L);
-        boolean result2 = room.isHost(100L);
+        boolean result = room.isHost(host.getName());
+
+        //then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("회원 이름으로 테스트방의 멤버 여부를 조회할 수 있다")
+    void isMember_notHost() {
+        //given
+        String memberName = "member";
+        room.enter(createMember(2L, memberName));
+
+        //when
+        boolean result1 = room.isMember(memberName);
+        boolean result2 = room.isMember("wrongName");
 
         //then
         assertThat(result1).isTrue();
@@ -186,28 +212,28 @@ class RoomTest {
     }
 
     @Test
-    @DisplayName("회원 ID로 테스트방의 참가자여부를 조회할 수 있다")
-    void isMember() {
+    @DisplayName("호스트의 경우도 테스트방의 멤버로 간주한다")
+    void isMember_host() {
         //given
-        room.enter(createTestMember(1L));
-        room.enter(createTestMember(2L));
 
         //when
-        boolean result1 = room.isMember(1L);
-        boolean result2 = room.isMember(10L);
+        boolean result = room.isMember(host.getName());
 
         //then
-        assertThat(result1).isTrue();
-        assertThat(result2).isFalse();
+        assertThat(result).isTrue();
     }
 
-    private Member createTestMember(Long memberId) {
-        return Member.builder().id(memberId).build();
+    private Member createMember(Long memberId, String memberName) {
+        return Member.builder().id(memberId).name(memberName).build();
     }
 
-    private List<RoomProblem> getRoomProblems(Long... problemIds) {
-        return Arrays.stream(problemIds).map(problemId ->
-                RoomProblem.from(null, Problem.builder().id(problemId).build()))
+    private Problem createProblem(Long problemNumber) {
+        return Problem.builder().number(problemNumber).build();
+    }
+
+    private List<RoomProblem> getRoomProblems(Room room, Problem... problems) {
+        return Arrays.stream(problems)
+            .map(problem -> RoomProblem.from(room, problem))
             .collect(Collectors.toList());
     }
 }

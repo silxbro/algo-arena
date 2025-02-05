@@ -5,45 +5,44 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import algo_arena.member.entity.Member;
-import algo_arena.member.service.MemberService;
-import org.junit.jupiter.api.BeforeEach;
+import algo_arena.member.repository.MemberRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class JwtUserDetailsServiceTest {
 
     @InjectMocks
     JwtUserDetailsService jwtUserDetailsService;
 
     @Mock
-    MemberService memberService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    MemberRepository memberRepository;
 
     @Test
     @DisplayName("닉네임을 기준으로 유저 정보를 정상적으로 로드한다")
     void loadUserByUsername_Success() {
         //given
-        String nickname = "jwt member";
+        String name = "jwt member";
         String password = "jwt!!!";
-        Member member = Member.builder().name(nickname).password(password).build();
-        when(memberService.findMemberByName(nickname)).thenReturn(member);
+        Member member = createMember(name, password);
+        when(memberRepository.findByName(name)).thenReturn(Optional.of(member));
 
         //when
-        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(nickname);
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(name);
 
         //then
-        assertThat(userDetails.getUsername()).isEqualTo(nickname);
+        assertThat(userDetails.getUsername()).isEqualTo(name);
         assertThat(userDetails.getPassword()).isEqualTo(password);
-        verify(memberService).findMemberByName(nickname);
+        verify(memberRepository).findByName(name);
+    }
+
+    private Member createMember(String name, String password) {
+        return Member.builder().name(name).password(password).build();
     }
 }

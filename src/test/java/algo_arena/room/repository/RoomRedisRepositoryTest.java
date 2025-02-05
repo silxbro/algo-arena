@@ -3,11 +3,9 @@ package algo_arena.room.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import algo_arena.config.redis.RedisConfig;
-import algo_arena.problem.entity.Problem;
+import algo_arena.member.entity.Member;
 import algo_arena.room.entity.Room;
-import algo_arena.submission.entity.Language;
-import java.util.Arrays;
-import java.util.List;
+import algo_arena.submission.enums.Language;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +25,8 @@ class RoomRedisRepositoryTest {
 
     @BeforeEach
     void init() {
-        room = createRoom("코딩테스트 타파!!", 5, Arrays.asList(1L), Language.JAVA, 30);
+        Member host = Member.builder().name("host").build();
+        room = createRoom("코딩테스트 타파!!", 5, host, Language.JAVA, 30);
         roomRedisRepository.save(room);
     }
 
@@ -63,14 +62,14 @@ class RoomRedisRepositoryTest {
         assertThat(findRoom).isNull();
     }
 
-    private Room createRoom(String roomName, int maxRoomMembers, List<Long> problemIds, Language language, int timeLimit) {
+    private Room createRoom(String roomName, int maxRoomMembers, Member host, Language language, int timeLimit) {
         Room room = Room.builder()
             .name(roomName)
             .maxRoomMembers(maxRoomMembers)
+            .host(host)
             .language(language)
             .timeLimit(timeLimit)
             .build();
-        room.setProblems(problemIds.stream().map(problemId -> Problem.builder().id(problemId).build()).toList());
         return room;
     }
 }

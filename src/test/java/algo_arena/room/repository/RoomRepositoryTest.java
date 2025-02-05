@@ -6,7 +6,7 @@ import algo_arena.problem.entity.Problem;
 import algo_arena.problem.repository.ProblemRepository;
 import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.entity.Room;
-import algo_arena.submission.entity.Language;
+import algo_arena.submission.enums.Language;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,11 +33,11 @@ class RoomRepositoryTest {
     @BeforeAll
     void setUp() {
         problemRepository.saveAll(List.of(
-            Problem.builder().build(),
-            Problem.builder().build(),
-            Problem.builder().build(),
-            Problem.builder().build(),
-            Problem.builder().build())
+            Problem.builder().number(1L).build(),
+            Problem.builder().number(2L).build(),
+            Problem.builder().number(3L).build(),
+            Problem.builder().number(4L).build(),
+            Problem.builder().number(5L).build())
         );
 
         room1 = createRoom("드루와 드루와", 5, Arrays.asList(1L, 2L, 3L), Language.PYTHON, 60);
@@ -56,8 +56,7 @@ class RoomRepositoryTest {
         List<Room> findRooms = roomRepository.findRoomsBySearch(noCondition);
 
         // then
-        assertThat(findRooms.size()).isEqualTo(4);
-        assertThat(findRooms).contains(room1, room2, room3, room4);
+        assertThat(findRooms).containsOnly(room1, room2, room3, room4);
     }
 
     @Test
@@ -75,8 +74,7 @@ class RoomRepositoryTest {
 
         // then
         assertThat(findRooms1).containsOnly(room4);
-        assertThat(findRooms2.size()).isEqualTo(2);
-        assertThat(findRooms2).contains(room2, room3);
+        assertThat(findRooms2).containsOnly(room2, room3);
         assertThat(findRooms3).isEmpty();
     }
 
@@ -92,10 +90,8 @@ class RoomRepositoryTest {
         List<Room> findRooms2 = roomRepository.findRoomsBySearch(timeLimitCond);
 
         // then
-        assertThat(findRooms1.size()).isEqualTo(3);
-        assertThat(findRooms2.size()).isEqualTo(3);
-        assertThat(findRooms1).contains(room1, room2, room3);
-        assertThat(findRooms2).contains(room1, room3, room4);
+        assertThat(findRooms1).containsOnly(room1, room2, room3);
+        assertThat(findRooms2).containsOnly(room1, room3, room4);
     }
 
     @Test
@@ -110,10 +106,8 @@ class RoomRepositoryTest {
         List<Room> findRooms2 = roomRepository.findRoomsBySearch(complexCond2);
 
         // then
-        assertThat(findRooms1.size()).isEqualTo(1);
-        assertThat(findRooms2.size()).isEqualTo(2);
         assertThat(findRooms1).containsOnly(room4);
-        assertThat(findRooms2).contains(room2, room3);
+        assertThat(findRooms2).containsOnly(room2, room3);
     }
 
     private Room createRoom(String roomName, int maxRoomMembers, List<Long> problemIds, Language language, int timeLimit) {
@@ -123,7 +117,8 @@ class RoomRepositoryTest {
             .language(language)
             .timeLimit(timeLimit)
             .build();
-        room.setProblems(problemRepository.findAllById(problemIds));
+        List<Problem> problems = problemRepository.findAllById(problemIds);
+        room.setProblems(problems);
         return roomRepository.save(room);
     }
 }

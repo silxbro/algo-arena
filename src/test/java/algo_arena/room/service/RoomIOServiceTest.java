@@ -7,12 +7,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import algo_arena.member.entity.Member;
 import algo_arena.member.repository.MemberRepository;
 import algo_arena.member.service.MemberService;
-import algo_arena.room.enums.RoomEvent;
 import algo_arena.room.entity.Room;
 import algo_arena.room.entity.RoomMember;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
-import algo_arena.submission.entity.Language;
+import algo_arena.room.service.result.RoomEventResult;
+import algo_arena.submission.enums.Language;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,8 +46,8 @@ class RoomIOServiceTest {
 
     @BeforeEach
     void setUp() {
-        host = createMember("host-member");
-        member = createMember("room-member");
+        host = createMember("host");
+        member = createMember("member");
         room = createRoom("test-room", 2, host, Language.PYTHON, 60);
     }
 
@@ -71,17 +71,17 @@ class RoomIOServiceTest {
         Member member1 = createMember("member1");
         Member member2 = createMember("member2");
 
-        room.enter(member);
         room.enter(member1);
+        room.enter(member2);
 
         //when
 
         //then
-        assertThatThrownBy(() -> roomIOService.enterRoom(room.getId(), member2.getName()))
+        assertThatThrownBy(() -> roomIOService.enterRoom(room.getId(), member.getName()))
             .isInstanceOf(RuntimeException.class);
 
         List<Member> members = room.getRoomMembers().stream().map(RoomMember::getMember).toList();
-        assertThat(members).containsExactly(member, member1);
+        assertThat(members).containsExactly(member1, member2);
     }
 
     @Test
@@ -91,10 +91,10 @@ class RoomIOServiceTest {
         String roomId = room.getId();
 
         //when
-        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), host.getName());
+        RoomEventResult result = roomIOService.exitRoom(room.getId(), host.getName());
 
         //then
-        assertThat(roomEvent).isEqualTo(DELETE);
+        assertThat(result.getRoomEvent()).isEqualTo(DELETE);
         assertThat(roomRepository.findById(roomId)).isEqualTo(Optional.empty());
         assertThat(roomRedisRepository.findById(roomId)).isEqualTo(Optional.empty());
     }
@@ -110,10 +110,10 @@ class RoomIOServiceTest {
         room.enter(member2);
 
         //when
-        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), host.getName());
+        RoomEventResult result = roomIOService.exitRoom(room.getId(), host.getName());
 
         //then
-        assertThat(roomEvent).isEqualTo(CHANGE_HOST);
+        assertThat(result.getRoomEvent()).isEqualTo(CHANGE_HOST);
         assertThat(room.getHost()).isEqualTo(member1);
         assertThat(room.getRoomMembers().size()).isEqualTo(1);
     }
@@ -125,10 +125,10 @@ class RoomIOServiceTest {
         room.enter(member);
 
         //when
-        RoomEvent roomEvent = roomIOService.exitRoom(room.getId(), member.getName());
+        RoomEventResult result = roomIOService.exitRoom(room.getId(), member.getName());
 
         //then
-        assertThat(roomEvent).isEqualTo(EXIT);
+        assertThat(result.getRoomEvent()).isEqualTo(EXIT);
         assertThat(room.isMember(member.getName())).isFalse();
     }
 
@@ -148,5 +148,4 @@ class RoomIOServiceTest {
         roomRedisRepository.save(room);
         return roomRepository.save(room);
     }
-
 }
