@@ -5,7 +5,7 @@ import algo_arena.problem.entity.Problem;
 import algo_arena.room.entity.Room;
 import algo_arena.room.entity.RoomMember;
 import algo_arena.room.entity.RoomProblem;
-import algo_arena.submission.entity.Language;
+import algo_arena.submission.enums.Language;
 import jakarta.persistence.Id;
 import java.io.Serializable;
 import java.util.List;

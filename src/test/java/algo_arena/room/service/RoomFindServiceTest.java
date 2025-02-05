@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import algo_arena.room.entity.Room;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
-import algo_arena.submission.entity.Language;
+import algo_arena.submission.enums.Language;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
