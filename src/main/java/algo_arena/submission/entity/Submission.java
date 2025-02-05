@@ -28,6 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class Submission extends BaseEntity {
 
     @Id
@@ -37,12 +38,15 @@ public class Submission extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @EqualsAndHashCode.Include
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "problem_id")
+    @EqualsAndHashCode.Include
     private Problem problem;
 
+    @EqualsAndHashCode.Include
     private Long index;
 
     @Enumerated(EnumType.STRING)
