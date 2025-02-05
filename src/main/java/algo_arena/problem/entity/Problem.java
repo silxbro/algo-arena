@@ -23,11 +23,11 @@ public class Problem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @EqualsAndHashCode.Include
     @Column(name = "problem_id")
     private Long id;
 
     @Column(updatable = false)
+    @EqualsAndHashCode.Include
     private Long number;
 
     private String title;

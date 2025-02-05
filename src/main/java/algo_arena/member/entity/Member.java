@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
-@EqualsAndHashCode(of = {"id", "email", "name"}, callSuper = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
 public class Member extends BaseEntity {
 
     @Id
@@ -33,12 +33,14 @@ public class Member extends BaseEntity {
     private Long id;
 
     @Column(updatable = false)
+    @EqualsAndHashCode.Include
     private String email;
 
     @JsonIgnore
     private String password;
 
     @Column(updatable = false)
+    @EqualsAndHashCode.Include
     private String name;
 
     @Column(updatable = false)
