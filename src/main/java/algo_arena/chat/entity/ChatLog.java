@@ -18,8 +18,8 @@ import org.springframework.data.redis.core.RedisHash;
 @Getter
 @Builder
 @RedisHash("chatLog")
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ChatLog implements Serializable {
 
