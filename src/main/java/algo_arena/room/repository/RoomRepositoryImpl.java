@@ -4,7 +4,7 @@ import static algo_arena.room.entity.QRoom.room;
 
 import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.entity.Room;
-import algo_arena.submission.entity.Language;
+import algo_arena.submission.enums.Language;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

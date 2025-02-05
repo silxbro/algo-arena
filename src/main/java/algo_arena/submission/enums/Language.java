@@ -1,4 +1,4 @@
-package algo_arena.submission.entity;
+package algo_arena.submission.enums;
 
 import java.util.Arrays;
 

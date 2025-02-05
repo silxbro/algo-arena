@@ -1,7 +1,7 @@
 package algo_arena.room.dto.request;
 
 import algo_arena.room.entity.Room;
-import algo_arena.submission.entity.Language;
+import algo_arena.submission.enums.Language;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
