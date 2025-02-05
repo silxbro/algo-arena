@@ -3,7 +3,7 @@ package algo_arena.room.entity;
 import algo_arena.common.entity.BaseEntity;
 import algo_arena.member.entity.Member;
 import algo_arena.problem.entity.Problem;
-import algo_arena.submission.entity.Language;
+import algo_arena.submission.enums.Language;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,10 +16,9 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -73,10 +72,10 @@ public class Room extends BaseEntity implements Serializable {
         this.timeLimit = updateInfo.getTimeLimit();
     }
 
-    public void setProblems(List<Problem> problems) {
-        Set<RoomProblem> newRoomProblems = problems.stream()
+    public void setProblems(Collection<Problem> problems) {
+        List<RoomProblem> newRoomProblems = problems.stream()
             .map(problem -> RoomProblem.from(this, problem))
-            .collect(Collectors.toSet());
+            .toList();
 
         roomProblems.removeIf(existing -> !newRoomProblems.contains(existing));
 
