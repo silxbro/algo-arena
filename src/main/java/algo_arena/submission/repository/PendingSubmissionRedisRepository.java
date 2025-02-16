@@ -49,6 +49,11 @@ public class PendingSubmissionRedisRepository {
         return findOne(roomId, problemNumber, memberName).isPresent();
     }
 
+    public boolean hasSubmittedCorrectly(String roomId, Long problemNumber, String memberName) {
+        PendingSubmission pendingSubmission = findOne(roomId, problemNumber, memberName).orElse(null);
+        return pendingSubmission != null && pendingSubmission.isCorrectResult();
+    }
+
     public void deleteByRoomProblem(String roomId, Long problemNumber) {
         String key = generateKey(roomId, problemNumber);
         redisTemplate.delete(key);

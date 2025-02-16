@@ -1,5 +1,7 @@
 package algo_arena.submission.entity;
 
+import static algo_arena.submission.enums.SubmissionResult.CORRECT;
+
 import algo_arena.common.entity.BaseEntity;
 import jakarta.persistence.Lob;
 import java.io.Serializable;
@@ -37,4 +39,8 @@ public class PendingSubmission extends BaseEntity implements Serializable {
 
     @Builder.Default
     private Boolean isApproved = false;
+
+    public boolean isCorrectResult() {
+        return resultDescription.equals(CORRECT.getDescription()) && isApproved;
+    }
 }
