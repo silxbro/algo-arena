@@ -30,6 +30,13 @@ public class PendingSubmissionRedisRepository {
         return opsListOperation.rightPush(key, pendingSubmission);
     }
 
+    public Long set(String roomId, PendingSubmission pendingSubmission) {
+        String key = generateKey(roomId, pendingSubmission.getProblemNumber());
+        long index = opsListOperation.indexOf(key, pendingSubmission);
+        opsListOperation.set(key, index, pendingSubmission);
+        return index;
+    }
+
     public List<PendingSubmission> findAllByRoomProblem(String roomId, Long problemNumber) {
         String key = generateKey(roomId, problemNumber);
         List<Object> pendingSubmissions = opsListOperation.range(key, 0, -1);

@@ -4,6 +4,8 @@ import static algo_arena.submission.enums.SubmissionResult.CORRECT;
 
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
+import algo_arena.problem.entity.Problem;
+import algo_arena.problem.service.ProblemService;
 import algo_arena.submission.dto.request.SubmissionSearchRequest;
 import algo_arena.submission.entity.PendingSubmission;
 import algo_arena.submission.entity.Submission;
@@ -22,6 +24,7 @@ public class SubmissionService {
     private final SubmissionRepository submissionRepository;
     private final PendingSubmissionRedisRepository pendingSubmissionRepository;
     private final MemberService memberService;
+    private final ProblemService problemService;
 
     @Transactional
     public Long submitSolution(String roomId, PendingSubmission pendingSubmission) {
@@ -31,6 +34,20 @@ public class SubmissionService {
             throw new RuntimeException();
         }
         return pendingSubmissionRepository.save(roomId, pendingSubmission);
+    }
+
+    @Transactional
+    public Long approveSubmission(String roomId, Long problemNumber, String memberName, String requestMemberName) {
+        PendingSubmission pendingSubmission = findPendingSubmission(roomId, problemNumber, memberName, requestMemberName);
+
+        Member member = memberService.findMemberByName(memberName);
+        Problem problem = problemService.findProblemByNumber(problemNumber);
+        Long index = submissionRepository.findLastIndex(member, problem).orElse(0L) + 1;
+
+        Submission submission = pendingSubmission.confirm(member, problem, index);
+        submissionRepository.save(submission);
+
+        return pendingSubmissionRepository.set(roomId, pendingSubmission);
     }
 
     public List<PendingSubmission> findPendingSubmissions(String roomId, Long problemNumber) {

@@ -3,6 +3,10 @@ package algo_arena.submission.entity;
 import static algo_arena.submission.enums.SubmissionResult.CORRECT;
 
 import algo_arena.common.entity.BaseEntity;
+import algo_arena.member.entity.Member;
+import algo_arena.problem.entity.Problem;
+import algo_arena.submission.enums.CodeLanguage;
+import algo_arena.submission.enums.SubmissionResult;
 import jakarta.persistence.Lob;
 import java.io.Serializable;
 import java.util.UUID;
@@ -42,5 +46,17 @@ public class PendingSubmission extends BaseEntity implements Serializable {
 
     public boolean isCorrectResult() {
         return resultDescription.equals(CORRECT.getDescription()) && isApproved;
+    }
+
+    public Submission confirm(Member member, Problem problem, Long index) {
+        isApproved = true;
+        return Submission.builder()
+            .member(member)
+            .problem(problem)
+            .index(index)
+            .language(CodeLanguage.fromName(languageName))
+            .result(SubmissionResult.fromDescription(resultDescription))
+            .solutionCode(solutionCode)
+            .build();
     }
 }
