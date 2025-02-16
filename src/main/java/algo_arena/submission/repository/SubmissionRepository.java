@@ -16,4 +16,6 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long>, S
     @Query("select count(s) > 0 from Submission s where s.problem = :problem and s.member = :member and s.result = :result")
     boolean existSubmission(@Param("problem") Problem problem, @Param("member") Member member, @Param("result") SubmissionResult result);
 
+    @Query("select max(s.index) from submission s where s.member = :member and s.problem = :problem")
+    Optional<Long> findLastIndex(@Param("member") Member member, @Param("problem") Problem problem);
 }
