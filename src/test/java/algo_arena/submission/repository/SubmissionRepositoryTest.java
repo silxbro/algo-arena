@@ -7,8 +7,8 @@ import algo_arena.member.repository.MemberRepository;
 import algo_arena.problem.entity.Problem;
 import algo_arena.problem.repository.ProblemRepository;
 import algo_arena.submission.dto.request.SubmissionSearchRequest;
-import algo_arena.submission.enums.JudgementResult;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
+import algo_arena.submission.enums.SubmissionResult;
 import algo_arena.submission.entity.Submission;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,9 +47,9 @@ class SubmissionRepositoryTest {
         memberRepository.save(member1);
         memberRepository.save(member2);
 
-        submission1 = createSubmission(problem1, member1, Language.JAVA, JudgementResult.RIGHT);
-        submission2 = createSubmission(problem1, member2, Language.PYTHON, JudgementResult.COMPILE_ERROR);
-        submission3 = createSubmission(problem2, member1, Language.JAVA, JudgementResult.TIME_EXCEEDED);
+        submission1 = createSubmission(problem1, member1, CodeLanguage.JAVA, SubmissionResult.CORRECT);
+        submission2 = createSubmission(problem1, member2, CodeLanguage.PYTHON, SubmissionResult.COMPILE_ERROR);
+        submission3 = createSubmission(problem2, member1, CodeLanguage.JAVA, SubmissionResult.TIME_EXCEEDED);
 
         submissionRepository.save(submission1);
         submissionRepository.save(submission2);
@@ -80,7 +80,7 @@ class SubmissionRepositoryTest {
         assertThat(all).containsExactly(submission1, submission2, submission3);
     }
 
-    private Submission createSubmission(Problem problem, Member member, Language language, JudgementResult result) {
+    private Submission createSubmission(Problem problem, Member member, CodeLanguage language, SubmissionResult result) {
         return Submission.builder()
             .problem(problem)
             .member(member)

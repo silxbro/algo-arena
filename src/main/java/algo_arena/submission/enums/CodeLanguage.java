@@ -2,7 +2,7 @@ package algo_arena.submission.enums;
 
 import java.util.Arrays;
 
-public enum Language {
+public enum CodeLanguage {
     PYTHON("Python"),
     JAVA("Java"),
     C_PP("C++"),
@@ -18,11 +18,11 @@ public enum Language {
 
     private final String name;
 
-    Language(String name) {
+    CodeLanguage(String name) {
         this.name = name;
     }
 
-    public static Language fromName(String name) {
+    public static CodeLanguage fromName(String name) {
         return Arrays.stream(values())
             .filter(language -> language.name.equals(name))
             .findAny().orElse(null);

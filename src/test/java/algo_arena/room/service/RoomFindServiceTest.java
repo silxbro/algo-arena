@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import algo_arena.room.entity.Room;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ class RoomFindServiceTest {
 
     @BeforeEach
     void setUp() {
-        room = createRoom("test-room", 5, Language.PYTHON, 60);
+        room = createRoom("test-room", 5, CodeLanguage.PYTHON, 60);
     }
 
     @Test
@@ -87,7 +87,7 @@ class RoomFindServiceTest {
             .isInstanceOf(NoSuchElementException.class);
     }
 
-    private Room createRoom(String roomName, int maxRoomMembers, Language language, int timeLimit) {
+    private Room createRoom(String roomName, int maxRoomMembers, CodeLanguage language, int timeLimit) {
         return Room.builder()
             .name(roomName)
             .maxRoomMembers(maxRoomMembers)

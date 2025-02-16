@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import algo_arena.member.entity.Member;
 import algo_arena.problem.entity.Problem;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,7 @@ class RoomTest {
             .maxRoomMembers(3)
             .roomProblems(getRoomProblems(room, problem1, problem2))
             .host(host)
-            .language(Language.KOTLIN)
+            .language(CodeLanguage.KOTLIN)
             .timeLimit(60)
             .build();
     }
@@ -42,7 +42,7 @@ class RoomTest {
         //given
         Room updateInfo = Room.builder()
             .maxRoomMembers(20)
-            .language(Language.C_PP)
+            .language(CodeLanguage.C_PP)
             .timeLimit(30)
             .build();
 
@@ -51,7 +51,7 @@ class RoomTest {
 
         //then
         assertThat(room.getMaxRoomMembers()).isEqualTo(20);
-        assertThat(room.getLanguage()).isEqualTo(Language.C_PP);
+        assertThat(room.getLanguage()).isEqualTo(CodeLanguage.C_PP);
         assertThat(room.getTimeLimit()).isEqualTo(30);
     }
 

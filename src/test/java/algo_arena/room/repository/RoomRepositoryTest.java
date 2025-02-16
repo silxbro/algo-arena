@@ -6,7 +6,7 @@ import algo_arena.problem.entity.Problem;
 import algo_arena.problem.repository.ProblemRepository;
 import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.entity.Room;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,10 +40,10 @@ class RoomRepositoryTest {
             Problem.builder().number(5L).build())
         );
 
-        room1 = createRoom("드루와 드루와", 5, Arrays.asList(1L, 2L, 3L), Language.PYTHON, 60);
-        room2 = createRoom("코딩왕", 10, Arrays.asList(1L, 2L, 3L, 4L, 5L), Language.PYTHON, 30);
-        room3 = createRoom("코딩왕 코딩왕", 15, Arrays.asList(1L, 2L, 3L), Language.C_SHARP, 60);
-        room4 = createRoom("CODING TEST", 20, Arrays.asList(1L, 2L), Language.PYTHON, 100);
+        room1 = createRoom("드루와 드루와", 5, Arrays.asList(1L, 2L, 3L), CodeLanguage.PYTHON, 60);
+        room2 = createRoom("코딩왕", 10, Arrays.asList(1L, 2L, 3L, 4L, 5L), CodeLanguage.PYTHON, 30);
+        room3 = createRoom("코딩왕 코딩왕", 15, Arrays.asList(1L, 2L, 3L), CodeLanguage.C_SHARP, 60);
+        room4 = createRoom("CODING TEST", 20, Arrays.asList(1L, 2L), CodeLanguage.PYTHON, 100);
     }
 
     @Test
@@ -110,7 +110,7 @@ class RoomRepositoryTest {
         assertThat(findRooms2).containsOnly(room2, room3);
     }
 
-    private Room createRoom(String roomName, int maxRoomMembers, List<Long> problemIds, Language language, int timeLimit) {
+    private Room createRoom(String roomName, int maxRoomMembers, List<Long> problemIds, CodeLanguage language, int timeLimit) {
         Room room = Room.builder()
             .name(roomName)
             .maxRoomMembers(maxRoomMembers)

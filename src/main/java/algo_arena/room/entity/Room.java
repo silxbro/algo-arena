@@ -3,7 +3,7 @@ package algo_arena.room.entity;
 import algo_arena.common.entity.BaseEntity;
 import algo_arena.member.entity.Member;
 import algo_arena.problem.entity.Problem;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,7 +58,7 @@ public class Room extends BaseEntity implements Serializable {
     private List<RoomMember> roomMembers = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private Language language;
+    private CodeLanguage language;
 
     private Integer timeLimit; //분 단위
 

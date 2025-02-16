@@ -4,7 +4,7 @@ import static algo_arena.room.entity.QRoom.room;
 
 import algo_arena.room.dto.request.RoomSearchRequest;
 import algo_arena.room.entity.Room;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -56,7 +56,7 @@ public class RoomRepositoryImpl implements RoomQueryRepository {
     }
 
     private BooleanExpression languageEq(String languageName) {
-        Language language = Language.fromName(languageName);
+        CodeLanguage language = CodeLanguage.fromName(languageName);
         if (language == null) {
             return null;
         }

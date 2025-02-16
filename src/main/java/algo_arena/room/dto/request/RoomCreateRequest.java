@@ -2,7 +2,7 @@ package algo_arena.room.dto.request;
 
 import algo_arena.member.entity.Member;
 import algo_arena.room.entity.Room;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class RoomCreateRequest {
             .name(name)
             .maxRoomMembers(maxRoomMembers)
             .host(host)
-            .language(Language.fromName(languageName))
+            .language(CodeLanguage.fromName(languageName))
             .timeLimit(timeLimit)
             .build();
     }

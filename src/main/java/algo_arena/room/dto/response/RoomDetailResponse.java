@@ -1,7 +1,7 @@
 package algo_arena.room.dto.response;
 
 import algo_arena.room.entity.Room;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ public class RoomDetailResponse {
     private RoomHostResponse roomHost;
     private RoomMemberListResponse roomMembers;
     private Integer timeLimit;
-    private Language language;
+    private CodeLanguage language;
 
     public static RoomDetailResponse from(Room room) {
         return RoomDetailResponse.builder()

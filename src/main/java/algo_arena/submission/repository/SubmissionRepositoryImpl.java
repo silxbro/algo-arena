@@ -5,8 +5,8 @@ import static algo_arena.problem.entity.QProblem.problem;
 import static algo_arena.submission.entity.QSubmission.submission;
 
 import algo_arena.submission.dto.request.SubmissionSearchRequest;
-import algo_arena.submission.enums.JudgementResult;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
+import algo_arena.submission.enums.SubmissionResult;
 import algo_arena.submission.entity.Submission;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -53,7 +53,7 @@ public class SubmissionRepositoryImpl implements SubmissionQueryRepository {
     }
 
     private BooleanExpression languageEq(String languageName) {
-        Language language = Language.fromName(languageName);
+        CodeLanguage language = CodeLanguage.fromName(languageName);
         if (language == null) {
             return null;
         }
@@ -61,7 +61,7 @@ public class SubmissionRepositoryImpl implements SubmissionQueryRepository {
     }
 
     private BooleanExpression resultEq(String resultDescription) {
-        JudgementResult result = JudgementResult.fromDescription(resultDescription);
+        SubmissionResult result = SubmissionResult.fromDescription(resultDescription);
         if (result == null) {
             return null;
         }
