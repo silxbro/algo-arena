@@ -1,9 +1,7 @@
 package algo_arena.submission.service;
 
-import algo_arena.submission.dto.request.SubmissionSearchRequest;
-import algo_arena.submission.entity.Submission;
-import algo_arena.submission.repository.SubmissionRepository;
-import java.util.List;
+import algo_arena.submission.entity.PendingSubmission;
+import algo_arena.submission.repository.PendingSubmissionRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,18 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SubmissionService {
 
-    private final SubmissionRepository submissionRepository;
+    private final PendingSubmissionRedisRepository pendingSubmissionRepository;
 
     @Transactional
-    public Submission create(Submission submission) {
-        return submissionRepository.save(submission);
-    }
-
-    public Submission findOneById(Long id) {
-        return submissionRepository.findById(id).orElseThrow();
-    }
-
-    public List<Submission> findAll(SubmissionSearchRequest request) {
-        return submissionRepository.findSubmissions(request);
+    public Long submitSolution(String roomId, PendingSubmission pendingSubmission) {
+        Long problemNumber = pendingSubmission.getProblemNumber();
+        String memberName = pendingSubmission.getMemberName();
+        if (pendingSubmissionRepository.hasSubmitted(roomId, problemNumber, memberName)) {
+            throw new RuntimeException();
+        }
+        return pendingSubmissionRepository.save(roomId, pendingSubmission);
     }
 }
