@@ -44,6 +44,19 @@ public class PendingSubmission extends BaseEntity implements Serializable {
     @Builder.Default
     private Boolean isApproved = false;
 
+    public static PendingSubmission create(
+        Long problemNumber, String memberName, String languageName, String resultDescription, String resultLink, String solutionCode) {
+
+        return PendingSubmission.builder()
+            .problemNumber(problemNumber)
+            .memberName(memberName)
+            .languageName(languageName)
+            .resultDescription(resultDescription)
+            .resultLink(resultLink)
+            .solutionCode(solutionCode)
+            .build();
+    }
+
     public boolean isCorrectResult() {
         return resultDescription.equals(CORRECT.getDescription()) && isApproved;
     }
