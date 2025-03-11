@@ -2,9 +2,9 @@ package algo_arena.submission.enums;
 
 import java.util.Arrays;
 
-public enum JudgementResult {
+public enum SubmissionResult {
 
-    RIGHT("정답"),
+    CORRECT("정답"),
     WRONG("오답"),
     TIME_EXCEEDED("시간 초과"),
     MEMORY_EXCEEDED("메모리 초과"),
@@ -16,11 +16,11 @@ public enum JudgementResult {
 
     private final String description;
 
-    JudgementResult(String description) {
+    SubmissionResult(String description) {
         this.description = description;
     }
 
-    public static JudgementResult fromDescription(String description) {
+    public static SubmissionResult fromDescription(String description) {
         return Arrays.stream(values())
             .filter(result -> result.description.equals(description))
             .findAny().orElse(null);

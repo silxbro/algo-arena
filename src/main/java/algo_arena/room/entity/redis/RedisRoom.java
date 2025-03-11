@@ -5,7 +5,7 @@ import algo_arena.problem.entity.Problem;
 import algo_arena.room.entity.Room;
 import algo_arena.room.entity.RoomMember;
 import algo_arena.room.entity.RoomProblem;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import jakarta.persistence.Id;
 import java.io.Serializable;
 import java.util.List;
@@ -31,7 +31,7 @@ public class RedisRoom implements Serializable {
     private List<RedisRoomProblem> roomProblems;
     private RedisRoomHost roomHost;
     private List<RedisRoomMember> roomMembers;
-    private Language language;
+    private CodeLanguage language;
     private Integer timeLimit; // 분 단위
 
     public static RedisRoom from(Room room) {

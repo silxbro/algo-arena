@@ -12,7 +12,7 @@ import algo_arena.room.entity.RoomMember;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
 import algo_arena.room.service.result.RoomEventResult;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ class RoomIOServiceTest {
     void setUp() {
         host = createMember("host");
         member = createMember("member");
-        room = createRoom("test-room", 2, host, Language.PYTHON, 60);
+        room = createRoom("test-room", 2, host, CodeLanguage.PYTHON, 60);
     }
 
     @Test
@@ -137,7 +137,7 @@ class RoomIOServiceTest {
         return memberRepository.save(member);
     }
 
-    private Room createRoom(String roomName, int maxRoomMembers, Member host, Language language, int timeLimit) {
+    private Room createRoom(String roomName, int maxRoomMembers, Member host, CodeLanguage language, int timeLimit) {
         Room room = Room.builder()
             .name(roomName)
             .maxRoomMembers(maxRoomMembers)

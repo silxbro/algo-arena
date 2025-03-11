@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import algo_arena.config.redis.RedisConfig;
 import algo_arena.member.entity.Member;
 import algo_arena.room.entity.Room;
-import algo_arena.submission.enums.Language;
+import algo_arena.submission.enums.CodeLanguage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ class RoomRedisRepositoryTest {
     @BeforeEach
     void init() {
         Member host = Member.builder().name("host").build();
-        room = createRoom("코딩테스트 타파!!", 5, host, Language.JAVA, 30);
+        room = createRoom("코딩테스트 타파!!", 5, host, CodeLanguage.JAVA, 30);
         roomRedisRepository.save(room);
     }
 
@@ -62,7 +62,7 @@ class RoomRedisRepositoryTest {
         assertThat(findRoom).isNull();
     }
 
-    private Room createRoom(String roomName, int maxRoomMembers, Member host, Language language, int timeLimit) {
+    private Room createRoom(String roomName, int maxRoomMembers, Member host, CodeLanguage language, int timeLimit) {
         Room room = Room.builder()
             .name(roomName)
             .maxRoomMembers(maxRoomMembers)
