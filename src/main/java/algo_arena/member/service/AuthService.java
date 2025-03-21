@@ -6,7 +6,7 @@ import algo_arena.utils.auth.service.CodeAuthService;
 import algo_arena.utils.auth.service.CodeGenerator;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
-import algo_arena.utils.mail.MailService;
+import algo_arena.utils.mail.service.MailService;
 import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;

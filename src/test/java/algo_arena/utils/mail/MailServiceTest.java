@@ -2,6 +2,7 @@ package algo_arena.utils.mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import algo_arena.utils.mail.service.MailService;
 import jakarta.mail.Address;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Arrays;
