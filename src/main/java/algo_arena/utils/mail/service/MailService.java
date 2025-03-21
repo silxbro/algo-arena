@@ -1,4 +1,4 @@
-package algo_arena.utils.mail;
+package algo_arena.utils.mail.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

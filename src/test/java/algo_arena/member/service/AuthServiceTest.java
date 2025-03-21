@@ -8,7 +8,7 @@ import algo_arena.member.repository.MemberRepository;
 import algo_arena.utils.auth.service.CodeAuthService;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
-import algo_arena.utils.mail.MailService;
+import algo_arena.utils.mail.service.MailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
