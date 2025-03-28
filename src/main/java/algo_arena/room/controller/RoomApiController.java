@@ -10,6 +10,7 @@ import algo_arena.room.dto.response.RoomListResponse;
 import algo_arena.room.entity.Room;
 import algo_arena.room.service.RoomFindService;
 import algo_arena.room.service.RoomLifeService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class RoomApiController {
      */
     @PostMapping
     public ResponseEntity<RoomEventResponse> createRoom(@AuthenticationPrincipal UserDetails userDetails,
-        @RequestBody RoomCreateRequest request) {
+        @Valid @RequestBody RoomCreateRequest request) {
 
         String username = userDetails.getUsername();
         Room createdRoom = roomLifeService.createRoom(request, username);
@@ -48,9 +49,11 @@ public class RoomApiController {
      * 테스트방 상세 조회
      */
     @GetMapping("/{roomId}")
-    public ResponseEntity<RoomDetailResponse> findRoom(@PathVariable("roomId") String roomId) {
+    public ResponseEntity<RoomDetailResponse> findRoom(@AuthenticationPrincipal UserDetails userDetails,
+        @PathVariable("roomId") String roomId) {
 
-        Room room = roomFindService.findRoomById(roomId);
+        String username = userDetails.getUsername();
+        Room room = roomFindService.findRoomById(roomId, username);
 
         return ResponseEntity.ok(RoomDetailResponse.from(room));
     }
@@ -59,7 +62,7 @@ public class RoomApiController {
      * 테스트방 검색(목록 조회)
      */
     @GetMapping
-    public ResponseEntity<RoomListResponse> findRoomsBySearch(@RequestBody RoomSearchRequest request) {
+    public ResponseEntity<RoomListResponse> findRoomsBySearch(@Valid @RequestBody RoomSearchRequest request) {
 
         List<Room> rooms = roomFindService.findRoomsBySearch(request);
 
