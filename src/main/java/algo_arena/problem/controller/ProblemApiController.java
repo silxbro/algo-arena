@@ -7,6 +7,7 @@ import algo_arena.problem.dto.response.ProblemListResponse;
 import algo_arena.problem.dto.response.ProblemRegisterResponse;
 import algo_arena.problem.entity.Problem;
 import algo_arena.problem.service.ProblemService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class ProblemApiController {
      */
     @PostMapping
     public ResponseEntity<ProblemRegisterResponse> registerProblem(@AuthenticationPrincipal UserDetails userDetails,
-        @RequestBody ProblemRegisterRequest request) {
+        @Valid @RequestBody ProblemRegisterRequest request) {
 
         String username = userDetails.getUsername();
         Problem newProblem = problemService.registerProblem(request.toEntity(), username);
@@ -44,7 +45,7 @@ public class ProblemApiController {
      * 테스트문제 검색(조회)
      */
     @GetMapping
-    public ResponseEntity<ProblemListResponse> searchProblems(@RequestBody ProblemSearchRequest request) {
+    public ResponseEntity<ProblemListResponse> searchProblems(@Valid @RequestBody ProblemSearchRequest request) {
 
         List<Problem> problems = problemService.findProblemsBySearch(
             request.getMinNumber(), request.getMaxNumber(), request.getTitle());
