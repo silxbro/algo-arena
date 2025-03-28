@@ -8,6 +8,7 @@ import algo_arena.member.dto.response.MemberRegisterResponse;
 import algo_arena.member.dto.response.MemberAuthResponse;
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +27,7 @@ public class AuthApiController {
      * 인증코드 이메일 전송
      */
     @PostMapping("/email/send")
-    public ResponseEntity<Void> sendAuthEmail(@RequestBody AuthEmailSendRequest request) {
+    public ResponseEntity<Void> sendAuthEmail(@Valid @RequestBody AuthEmailSendRequest request) {
 
         authService.sendAuthEmail(request.getEmail());
 
@@ -37,7 +38,7 @@ public class AuthApiController {
      * 인증코드 확인(이메일 인증)
      */
     @PostMapping("/email/verify")
-    public ResponseEntity<Void> verifyAuthEmail(@RequestBody AuthEmailVerifyRequest request) {
+    public ResponseEntity<Void> verifyAuthEmail(@Valid @RequestBody AuthEmailVerifyRequest request) {
 
         authService.verifyAuthEmail(request.getEmail(), request.getAuthCode());
 
@@ -48,7 +49,7 @@ public class AuthApiController {
      * 회원 가입
      */
     @PostMapping("/register")
-    public ResponseEntity<MemberRegisterResponse> register(@RequestBody MemberRegisterRequest request) {
+    public ResponseEntity<MemberRegisterResponse> register(@Valid @RequestBody MemberRegisterRequest request) {
 
         Member newMember = authService.register(request.toEntity(), request.getConfirmPassword());
 
@@ -59,7 +60,7 @@ public class AuthApiController {
      * 로그인
      */
     @PostMapping("/login")
-    public ResponseEntity<MemberAuthResponse> login(@RequestBody MemberAuthRequest request) {
+    public ResponseEntity<MemberAuthResponse> login(@Valid @RequestBody MemberAuthRequest request) {
 
         final String token = authService.login(request.getEmail(), request.getPassword());
 
