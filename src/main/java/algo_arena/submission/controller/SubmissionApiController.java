@@ -5,6 +5,7 @@ import algo_arena.submission.dto.response.SubmissionDetailResponse;
 import algo_arena.submission.dto.response.SubmissionListResponse;
 import algo_arena.submission.entity.Submission;
 import algo_arena.submission.service.SubmissionService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class SubmissionApiController {
      * 문제풀이 제출 목록 (목록 검색)
      */
     @GetMapping
-    public ResponseEntity<SubmissionListResponse> findSubmissionsBySearch(@RequestBody SubmissionSearchRequest request) {
+    public ResponseEntity<SubmissionListResponse> findSubmissionsBySearch(@Valid @RequestBody SubmissionSearchRequest request) {
 
         List<Submission> submissions = submissionService.findSubmissionsBySearch(request);
 
