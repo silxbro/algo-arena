@@ -9,6 +9,7 @@ import algo_arena.submission.dto.response.PendingSubmissionDetailResponse;
 import algo_arena.submission.entity.PendingSubmission;
 import algo_arena.submission.service.SubmissionService;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
@@ -30,9 +31,9 @@ public class SubmissionSocketController {
      * 문제풀이 코드 제출
      */
     @MessageMapping("/rooms/{roomId}/submit")
-    @SendTo("/sub/rooms/{roomId}")
+    @SendTo("/sub/rooms/{roomId}/submit")
     public PendingSubmissionCreateResponse submitSolution(@DestinationVariable("roomId") String roomId, @Header("token") String token,
-        @RequestBody PendingSubmissionCreateRequest request) {
+        @Valid @RequestBody PendingSubmissionCreateRequest request) {
 
         String memberName = jwtTokenUtil.extractUsername(token);
         Long problemNumber = request.getProblemNumber();
@@ -47,9 +48,9 @@ public class SubmissionSocketController {
      * 문제풀이 코드 상세 조회
      */
     @MessageMapping("/rooms/{roomId}/submission")
-    @SendTo("/sub/rooms/{roomId}")
+    @SendTo("/sub/rooms/{roomId}/submission")
     public PendingSubmissionDetailResponse findPendingSubmission(@DestinationVariable("roomId") String roomId, @Header("token") String token,
-        @RequestBody PendingSubmissionFindRequest request) {
+        @Valid @RequestBody PendingSubmissionFindRequest request) {
 
         Long problemNumber = request.getProblemNumber();
         String memberName = request.getMemberName();
@@ -64,9 +65,9 @@ public class SubmissionSocketController {
      * 문제풀이 코드 승인
      */
     @MessageMapping("/rooms/{roomId}/submission/approve")
-    @SendTo("/sub/rooms/{roomId}")
+    @SendTo("/sub/rooms/{roomId}/approve")
     public PendingSubmissionApproveResponse approveSubmission(@DestinationVariable("roomId") String roomId, @Header("token") String token,
-        @RequestBody PendingSubmissionApproveRequest request) {
+        @Valid @RequestBody PendingSubmissionApproveRequest request) {
 
         Long problemNumber = request.getProblemNumber();
         String memberName = request.getMemberName();
