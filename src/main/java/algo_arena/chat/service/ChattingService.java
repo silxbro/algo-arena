@@ -3,7 +3,6 @@ package algo_arena.chat.service;
 import algo_arena.chat.dto.ChatMessage;
 import algo_arena.chat.entity.ChatLog;
 import algo_arena.chat.enums.MessageType;
-import algo_arena.room.entity.Room;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -20,10 +19,10 @@ public class ChattingService {
     /**
      * Room 에 message 발송
      */
-    public void send(MessageType type, Room room, String senderName, String message) {
-        Long index = saveChatLog(type, room.getId(), senderName, message);
+    public void send(MessageType type, String roomId, String senderName, String message) {
+        Long index = saveChatLog(type, roomId, senderName, message);
 
-        ChatMessage chatMessage = ChatMessage.create(type, room.getId(), index, senderName, message);
+        ChatMessage chatMessage = ChatMessage.create(type, roomId, index, senderName, message);
 
         sendToRedis(chatMessage);
     }

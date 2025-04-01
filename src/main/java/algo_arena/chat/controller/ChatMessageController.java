@@ -34,7 +34,7 @@ public class ChatMessageController {
         Room room = roomFindService.findRoomById(roomId, senderName);
         String message = getMessageByType(type, room, senderName, request.getMessage());
 
-        chattingService.send(type, room, senderName, message);
+        chattingService.send(type, room.getId(), senderName, message);
     }
 
     private String getMessageByType(MessageType type, Room room, String senderName, String message) {
