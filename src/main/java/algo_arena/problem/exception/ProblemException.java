@@ -1,15 +1,23 @@
 package algo_arena.problem.exception;
 
 import algo_arena.common.exception.BaseException;
-import algo_arena.common.exception.enums.ErrorStatus;
+import algo_arena.common.exception.enums.ErrorType;
 
 public class ProblemException extends BaseException {
 
-    public ProblemException(ErrorStatus errorStatus, String message) {
-        super(errorStatus, message);
+    public ProblemException(ErrorType errorType) {
+        super(errorType);
     }
 
-    public ProblemException(ErrorStatus errorStatus, String message, Throwable cause) {
-        super(errorStatus, message, cause);
+    public ProblemException(ErrorType errorType, String errorMessage) {
+        super(errorType, errorMessage);
+    }
+
+    public ProblemException(ErrorType errorType, Throwable cause) {
+        super(errorType, cause);
+    }
+
+    public ProblemException(ErrorType errorType, String errorMessage, Throwable cause) {
+        super(errorType, errorMessage, cause);
     }
 }
