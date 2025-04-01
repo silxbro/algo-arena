@@ -1,15 +1,23 @@
 package algo_arena.room.exception;
 
 import algo_arena.common.exception.BaseException;
-import algo_arena.common.exception.enums.ErrorStatus;
+import algo_arena.common.exception.enums.ErrorType;
 
 public class RoomException extends BaseException {
 
-    public RoomException(ErrorStatus errorStatus, String message) {
-        super(errorStatus, message);
+    public RoomException(ErrorType errorType) {
+        super(errorType);
     }
 
-    public RoomException(ErrorStatus errorStatus, String message, Throwable cause) {
-        super(errorStatus, message, cause);
+    public RoomException(ErrorType errorType, String errorMessage) {
+        super(errorType, errorMessage);
+    }
+
+    public RoomException(ErrorType errorType, Throwable cause) {
+        super(errorType, cause);
+    }
+
+    public RoomException(ErrorType errorType, String errorMessage, Throwable cause) {
+        super(errorType, errorMessage, cause);
     }
 }

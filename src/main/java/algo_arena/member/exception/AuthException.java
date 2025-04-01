@@ -1,15 +1,23 @@
 package algo_arena.member.exception;
 
 import algo_arena.common.exception.BaseException;
-import algo_arena.common.exception.enums.ErrorStatus;
+import algo_arena.common.exception.enums.ErrorType;
 
 public class AuthException extends BaseException {
 
-    public AuthException(ErrorStatus errorStatus, String message) {
-        super(errorStatus, message);
+    public AuthException(ErrorType errorType) {
+        super(errorType);
     }
 
-    public AuthException(ErrorStatus errorStatus, String message, Throwable cause) {
-        super(errorStatus, message, cause);
+    public AuthException(ErrorType errorType, String errorMessage) {
+        super(errorType, errorMessage);
+    }
+
+    public AuthException(ErrorType errorType, Throwable cause) {
+        super(errorType, cause);
+    }
+
+    public AuthException(ErrorType errorType, String errorMessage, Throwable cause) {
+        super(errorType, errorMessage, cause);
     }
 }
