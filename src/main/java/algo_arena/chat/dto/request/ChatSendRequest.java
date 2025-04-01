@@ -1,5 +1,6 @@
 package algo_arena.chat.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -7,6 +8,7 @@ import lombok.Getter;
 @Builder
 public class ChatSendRequest {
 
+    @NotBlank(message = "채팅 메시지를 입력해 주세요.")
     private String message;
 
 }

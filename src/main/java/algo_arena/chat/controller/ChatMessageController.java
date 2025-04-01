@@ -7,12 +7,14 @@ import algo_arena.chat.service.ChattingService;
 import algo_arena.room.entity.Room;
 import algo_arena.room.service.RoomFindService;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,13 +27,11 @@ public class ChatMessageController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @MessageMapping("/rooms/{roomId}/chat")
-    public void chat(ChatSendRequest request,
-        @DestinationVariable("roomId") String roomId,
-        @Header("type") MessageType type,
-        @Header("token") String token) {
+    public void chat(@Valid @RequestBody ChatSendRequest request, @DestinationVariable("roomId") String roomId,
+        @Header("type") MessageType type, @Header("token") String token) {
 
-        Room room = roomFindService.findRoomById(roomId);
         String senderName = jwtTokenUtil.extractUsername(token);
+        Room room = roomFindService.findRoomById(roomId, senderName);
         String message = getMessageByType(type, room, senderName, request.getMessage());
 
         chattingService.send(type, room, senderName, message);
