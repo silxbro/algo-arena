@@ -1,8 +1,11 @@
 package algo_arena.room.interceptor;
 
-import static org.springframework.messaging.simp.stomp.StompCommand.CONNECT;
+import static algo_arena.common.exception.enums.ErrorType.*;
+import static org.springframework.messaging.simp.stomp.StompCommand.*;
 
-import algo_arena.room.service.RoomIOService;
+import algo_arena.chat.enums.MessageType;
+import algo_arena.room.exception.WebSocketException;
+import algo_arena.room.repository.RoomRepository;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,8 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -20,7 +25,14 @@ public class RoomInterceptor implements ChannelInterceptor {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService jwtUserDetailsService;
-    private final RoomIOService roomIOService;
+    private final AntPathMatcher antPathMatcher;
+    private final RoomRepository roomRepository;
+
+    /**
+     * 참여 조건: accessToken, roomId, username
+     * 토큰 유효성, 방 유효성, 사용자 유효성 검사
+     * 현재 방에 참여하지 않은 상태인 사용자만 연결 가능
+     */
 
     @Override
     // WebSocket 을 통해 들어온 요청이 처리되기 전에 실행됨
@@ -28,28 +40,64 @@ public class RoomInterceptor implements ChannelInterceptor {
         final StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         final StompCommand command = accessor.getCommand();
 
-        if (isConnectCommand(command)) {
-            String jwtToken = getJwtToken(accessor);
-            validateUser(jwtToken);
+        String token = accessor.getFirstNativeHeader("token");
+        String roomId = accessor.getFirstNativeHeader("roomId");
+        String username = accessor.getFirstNativeHeader("username");
+        String destination = accessor.getDestination();
+
+        validateUser(token, username);
+        validateDestination(destination);
+        validateRoom(roomId);
+
+        if (command == CONNECT) {
+            if (roomRepository.isMemberInAnyRoom(username)) {
+                throw new WebSocketException(ALREADY_IN_ROOM);
+            }
+        }
+
+        if (command == SEND) {
+            String type = accessor.getFirstNativeHeader("type");
+            if (!StringUtils.hasText(type) || !MessageType.isValidType(type)) {
+                throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+            }
         }
         return message;
     }
 
-    private void validateUser(String token) {
+    private void validateUser(String token, String accessorUsername) {
+        // 토큰 및 사용자이름 정보 누락 검사
+        if (!StringUtils.hasText(token) || !StringUtils.hasText(accessorUsername)) {
+            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+        }
+
+        // 토큰과 사용자이름 일치 여부 검사
         String username = jwtTokenUtil.extractUsername(token);
+        if (!username.equals(accessorUsername)) {
+            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+        }
+
+        // 토큰 유효성 검사
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
-
-        //토큰 유효성 검사
         jwtTokenUtil.validateToken(token, userDetails);
-        //타 테스트룸 소속 확인
-        roomIOService.checkAlreadyEntrance(username);
     }
 
-    private String getJwtToken(StompHeaderAccessor accessor) {
-        return accessor.getFirstNativeHeader("token");
+    private void validateDestination(String destination) {
+        if (!StringUtils.hasText(destination)) {
+            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+        }
+
+        if (!antPathMatcher.match("/**/rooms/**/**", destination)) {
+            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+        }
     }
 
-    private boolean isConnectCommand(StompCommand command) {
-        return command == CONNECT;
+    private void validateRoom(String roomId) {
+        if (!StringUtils.hasText(roomId)) {
+            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+        }
+
+        if (!roomRepository.existsById(roomId)) {
+            throw new WebSocketException(ROOM_NOT_FOUND);
+        }
     }
 }
