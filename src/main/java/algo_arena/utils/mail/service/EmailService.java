@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class MailService {
+public class EmailService {
 
     private final JavaMailSender emailSender;
 
@@ -26,11 +26,8 @@ public class MailService {
     public void sendEmail(String toEmail, String title, String content)
         throws MessagingException, UnsupportedEncodingException {
         MimeMessage email = createEmail(toEmail, title, content);
-        try {
-            emailSender.send(email);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Unable to send email: " + toEmail);
-        }
+
+        emailSender.send(email);
     }
 
     //이메일 생성
