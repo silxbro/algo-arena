@@ -9,7 +9,7 @@ import lombok.Data;
 public class ErrorResponse {
 
     private int status;
-    private String content;
+    private String detail;
     private String message;
     private String path;
     private Timestamp timestamp;
