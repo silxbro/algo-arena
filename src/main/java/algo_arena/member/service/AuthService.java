@@ -6,7 +6,7 @@ import algo_arena.utils.auth.service.CodeAuthService;
 import algo_arena.utils.auth.service.CodeGenerator;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
-import algo_arena.utils.mail.service.MailService;
+import algo_arena.utils.mail.service.EmailService;
 import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final JwtTokenUtil jwtTokenUtil;
     private final JwtUserDetailsService jwtUserDetailsService;
-    private final MailService mailService;
+    private final EmailService mailService;
     private final CodeAuthService codeAuthService;
     private final CodeGenerator codeGenerator;
     private final PasswordEncoder passwordEncoder;
@@ -65,7 +65,8 @@ public class AuthService {
     @Transactional
     public void sendAuthEmail(String email) {
         String authCode = codeGenerator.generateAuthCode(authCodeLength);
-        codeAuthService.setAuthCodeAndExpiration(email, authCode, authCodeExpirationMillis);
+        codeAuthService.setAuthCode(email, authCode);
+
         String emailTitle = "[Algo-Arena] 이메일 인증코드 발송 메일입니다.";
         String emailContent = "인증 코드: " + authCode;
         try {
