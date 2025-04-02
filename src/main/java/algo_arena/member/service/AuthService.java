@@ -7,8 +7,6 @@ import algo_arena.utils.auth.service.CodeGenerator;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
 import algo_arena.utils.mail.service.EmailService;
-import jakarta.mail.MessagingException;
-import java.io.UnsupportedEncodingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +29,9 @@ public class AuthService {
     private final CodeGenerator codeGenerator;
     private final PasswordEncoder passwordEncoder;
 
+    private static final String AUTH_EMAIL_TITLE = "[Algo-Arena] 이메일 인증코드 발송 메일입니다.";
+    private static final String AUTH_EMAIL_CONTENT_FORMAT = "인증 코드: %s";
+
     @Value("${spring.mail.auth-code-length}")
     private int authCodeLength;
 
@@ -52,13 +53,10 @@ public class AuthService {
 
     public String login(String email, String password) {
         Member member = memberRepository.findByEmail(email).orElse(null);
-        if (member == null) {
-            throw new RuntimeException("가입되지 않은 이메일입니다.");
+        if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
+            throw new RuntimeException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(member.getName());
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new RuntimeException("패스워드가 일치하지 않습니다.");
-        }
         return jwtTokenUtil.generateToken(userDetails);
     }
 
@@ -67,18 +65,10 @@ public class AuthService {
         String authCode = codeGenerator.generateAuthCode(authCodeLength);
         codeAuthService.setAuthCode(email, authCode);
 
-        String emailTitle = "[Algo-Arena] 이메일 인증코드 발송 메일입니다.";
-        String emailContent = "인증 코드: " + authCode;
         try {
-            mailService.sendEmail(email, emailTitle, emailContent);
-        } catch (MessagingException e) {
-            log.error("MessagingException: 이메일 발송 실패 - 이메일 서버와의 통신 오류. 이메일 주소: {}", email, e);
-            throw new RuntimeException("이메일 발송 중 서버 통신 오류가 발생했습니다.");
-        } catch (UnsupportedEncodingException e) {
-            log.error("UnsupportedEncodingException: 이메일 발송 실패 - 잘못된 문자 인코딩. 이메일 주소: {}", email, e);
-            throw new RuntimeException("이메일 발송 중 인코딩 오류가 발생했습니다.");
+            mailService.sendEmail(email, AUTH_EMAIL_TITLE, String.format(AUTH_EMAIL_CONTENT_FORMAT, authCode));
         } catch (Exception e) {
-            log.error("Exception: 이메일 발송 실패 - 알 수 없는 오류. 이메일 주소: {}", email, e);
+            log.error("이메일 발송 실패. 이메일 주소: {}, ERROR 타입: {}", email, e.getClass().getName(), e);
             throw new RuntimeException("이메일 발송에 실패했습니다. 다시 시도해 주세요.");
         }
     }
