@@ -1,11 +1,16 @@
 package algo_arena.member.service;
 
+import static algo_arena.common.exception.enums.ErrorType.*;
+
 import algo_arena.member.entity.Member;
+import algo_arena.member.exception.AuthException;
+import algo_arena.member.exception.MemberException;
 import algo_arena.member.repository.MemberRepository;
 import algo_arena.utils.auth.service.CodeAuthService;
 import algo_arena.utils.auth.service.CodeGenerator;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
+import algo_arena.utils.mail.exception.EmailException;
 import algo_arena.utils.mail.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,10 +46,16 @@ public class AuthService {
     @Transactional
     public Member register(Member member, String confirmPassword) {
         if (!codeAuthService.isAuthCompleted(member.getEmail())) {
-            throw new RuntimeException("인증되지 않은 이메일 입니다. 이메일 인증을 완료해주세요.");
+            throw new AuthException(EMAIL_AUTH_NOT_COMPLETED);
         }
         if (!member.getPassword().equals(confirmPassword)) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다. 다시 입력해 주세요.");
+            throw new AuthException(CONFIRM_PASSWORD_MISMATCH);
+        }
+        if (memberRepository.existsByEmail(member.getEmail())) {
+            throw new MemberException(EMAIL_ALREADY_REGISTERED);
+        }
+        if (memberRepository.existsByName(member.getName())) {
+            throw new MemberException(NAME_DUPLICATED);
         }
         String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.changePassword(encodedPassword);
@@ -54,7 +65,7 @@ public class AuthService {
     public String login(String email, String password) {
         Member member = memberRepository.findByEmail(email).orElse(null);
         if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
-            throw new RuntimeException("이메일 또는 비밀번호가 일치하지 않습니다.");
+            throw new AuthException(LOGIN_FAILED);
         }
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(member.getName());
         return jwtTokenUtil.generateToken(userDetails);
@@ -69,18 +80,21 @@ public class AuthService {
             mailService.sendEmail(email, AUTH_EMAIL_TITLE, String.format(AUTH_EMAIL_CONTENT_FORMAT, authCode));
         } catch (Exception e) {
             log.error("이메일 발송 실패. 이메일 주소: {}, ERROR 타입: {}", email, e.getClass().getName(), e);
-            throw new RuntimeException("이메일 발송에 실패했습니다. 다시 시도해 주세요.");
+            throw new EmailException(EMAIL_SENDING_ERROR);
         }
     }
 
     @Transactional
     public void verifyAuthEmail(String email, String enteredCode) {
+        if (codeAuthService.isAuthExpired(email, authCodeExpirationMillis)) {
+            throw new AuthException(EMAIL_AUTH_TIME_OUT);
+        }
         String code = codeAuthService.getAuthCode(email);
         if (code == null) {
-            throw new RuntimeException("이메일 인증을 시도해 주세요.");
+            throw new AuthException(EMAIL_AUTH_NOT_FOUND);
         }
         if (!code.equals(enteredCode)) {
-            throw new RuntimeException("이메일 인증코드가 일치하지 않습니다.");
+            throw new AuthException(WRONG_EMAIL_AUTH_CODE);
         }
         codeAuthService.markAuthAsCompleted(email);
     }
