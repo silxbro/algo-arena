@@ -27,14 +27,17 @@ public class CodeAuthService {
         return authStatus != null && authStatus.equals(COMPLETED.name());
     }
 
+    public boolean isAuthExpired(String key, long duration) {
+        return redisTemplate.expire(key, Duration.ofMillis(duration));
+    }
+
     public String getAuthCode(String key) {
         return hashOperations.get(key, CODE.name());
     }
 
-    public void setAuthCodeAndExpiration(String key, String code, long duration) {
+    public void setAuthCode(String key, String code) {
         hashOperations.put(key, CODE.name(), code);
         hashOperations.put(key, STATUS.name(), INCOMPLETE.name());
-        redisTemplate.expire(key, Duration.ofMillis(duration));
     }
 
     public void markAuthAsCompleted(String key) {
