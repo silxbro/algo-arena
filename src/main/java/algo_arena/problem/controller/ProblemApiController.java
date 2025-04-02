@@ -58,7 +58,7 @@ public class ProblemApiController {
      */
     @PostMapping("/{problemNumber}")
     public ResponseEntity<Void> updateProblem(@AuthenticationPrincipal UserDetails userDetails,
-        @PathVariable("problemNumber") Long problemNumber, @RequestBody ProblemUpdateRequest request) {
+        @PathVariable(value = "problemNumber", required = false) Long problemNumber, @RequestBody ProblemUpdateRequest request) {
 
         String username = userDetails.getUsername();
         problemService.updateProblem(problemNumber, request.getTitle(), request.getLink(), username);
@@ -71,7 +71,7 @@ public class ProblemApiController {
      */
     @DeleteMapping("/{problemNumber}")
     public ResponseEntity<Void> deleteProblem(@AuthenticationPrincipal UserDetails userDetails,
-        @PathVariable("problemNumber") Long problemNumber) {
+        @PathVariable(value = "problemNumber", required = false) Long problemNumber) {
 
         String username = userDetails.getUsername();
         problemService.deleteProblem(problemNumber, username);
