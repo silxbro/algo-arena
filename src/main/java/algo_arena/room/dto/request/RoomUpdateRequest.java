@@ -4,6 +4,7 @@ import algo_arena.room.entity.Room;
 import algo_arena.submission.enums.CodeLanguage;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public class RoomUpdateRequest {
     @Size(min = 2, max = 10, message = "테스트방 최대 인원은 2~10명이 가능합니다.")
     private Integer maxRoomMembers;
 
+    @NotEmpty(message = "테스트 문제는 최소 1개 이상 지정해야 합니다.")
     @Size(max = 20, message = "테스트 문제는 최대 20개까지 지정 가능합니다.")
     private List<Long> problemIds;
 

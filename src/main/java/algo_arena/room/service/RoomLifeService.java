@@ -1,21 +1,25 @@
 package algo_arena.room.service;
 
+import static algo_arena.common.exception.enums.ErrorType.*;
 import static algo_arena.room.enums.RoomEvent.UPDATE;
 
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
 import algo_arena.problem.entity.Problem;
-import algo_arena.problem.repository.ProblemRepository;
+import algo_arena.problem.service.ProblemService;
 import algo_arena.room.dto.request.RoomCreateRequest;
 import algo_arena.room.dto.request.RoomUpdateRequest;
 import algo_arena.room.entity.Room;
+import algo_arena.room.exception.RoomException;
 import algo_arena.room.repository.RoomRedisRepository;
 import algo_arena.room.repository.RoomRepository;
 import algo_arena.room.service.result.RoomEventResult;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +27,16 @@ public class RoomLifeService {
 
     private final RoomRepository roomRepository;
     private final RoomRedisRepository roomRedisRepository;
-    private final ProblemRepository problemRepository;
+    private final ProblemService problemService;
     private final MemberService memberService;
 
     @Transactional
-    public Room createRoom(RoomCreateRequest request, String hostName) {
-        Member host = memberService.findMemberByName(hostName);
-        List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
+    public Room createRoom(RoomCreateRequest request, String memberName) {
+        if (roomRepository.isMemberInAnyRoom(memberName)) {
+            throw new RoomException(ALREADY_IN_ROOM);
+        }
+        Member host = memberService.findMemberByName(memberName);
+        List<Problem> problems = findAllProblems(request.getProblemIds());
         return createNewRoom(request, host, problems);
     }
 
@@ -37,17 +44,26 @@ public class RoomLifeService {
     public RoomEventResult updateRoom(String id, RoomUpdateRequest request, String memberName) {
         Room room = getRoomFromDB(id);
         if (!room.isHost(memberName)) {
-            throw new RuntimeException("권한이 없습니다. 관리자에게 문의하세요.");
+            throw new RoomException(INVALID_ROLE);
         }
-        List<Problem> problems = problemRepository.findAllById(request.getProblemIds());
+        List<Problem> problems = findAllProblems(request.getProblemIds());
         updateExistingRoom(room, request, problems);
         return RoomEventResult.from(UPDATE, room);
     }
 
+    private List<Problem> findAllProblems(List<Long> problemIds) {
+        return problemIds.stream()
+            .map(problemService::findProblemById)
+            .collect(Collectors.toList());
+    }
+
     @Transactional
     public void deleteRoomById(String id) {
-        roomRepository.deleteById(id);
+        if (!StringUtils.hasText(id)) {
+            throw new RoomException(NULL_VALUE);
+        }
         roomRedisRepository.deleteById(id);
+        roomRepository.deleteById(id);
     }
 
     private Room getRoomFromDB(String id) {

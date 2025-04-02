@@ -39,7 +39,9 @@ public class RoomRedisRepository {
 
     public void deleteById(String id) {
         String key = generateKey(id);
-        redisTemplate.delete(key);
+        if (redisTemplate.hasKey(key)) {
+            redisTemplate.delete(key);
+        }
     }
 
     public void clear() {

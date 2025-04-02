@@ -35,6 +35,14 @@ public class ProblemService {
         return problemRepository.findProblemsBySearch(minNumber, maxNumber, title);
     }
 
+    public Problem findProblemById(Long id) {
+        if (id == null) {
+            throw new ProblemException(NULL_VALUE);
+        }
+        return problemRepository.findById(id)
+            .orElseThrow(() -> new ProblemException(PROBLEM_NOT_FOUND));
+    }
+
     public Problem findProblemByNumber(Long number) {
         if (number == null) {
             throw new ProblemException(NULL_VALUE);
