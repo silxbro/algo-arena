@@ -29,7 +29,7 @@ public class PendingSubmissionDetailResponse {
             .resultDescription(pendingSubmission.getResultDescription())
             .resultLink(pendingSubmission.getResultLink())
             .solutionCode(pendingSubmission.getSolutionCode())
-            .isConfirmed(pendingSubmission.getIsConfirmed())
+            .isConfirmed(pendingSubmission.getIsApproved())
             .build();
     }
 }
