@@ -6,6 +6,7 @@ import algo_arena.member.dto.response.MemberPerformanceResponse;
 import algo_arena.member.dto.response.MemberProfileResponse;
 import algo_arena.member.entity.Member;
 import algo_arena.member.service.MemberService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class MemberApiController {
      * 회원 정보 조회 (검색)
      */
     @GetMapping
-    public ResponseEntity<MemberListResponse> findMembersByName(@RequestParam("memberName") String memberName) {
+    public ResponseEntity<MemberListResponse> findMembersByName(@RequestParam(value = "memberName", required = false) String memberName) {
 
         List<Member> members = memberService.findMembersByName(memberName);
 
@@ -41,8 +42,8 @@ public class MemberApiController {
     /**
      * 회원 정보 조회 By Name (타인 조회용)
      */
-    @GetMapping("/{memberName}")
-    public ResponseEntity<MemberPerformanceResponse> findMember(@PathVariable("memberName") String memberName) {
+    @GetMapping({"", "/{memberName}"})
+    public ResponseEntity<MemberPerformanceResponse> findMember(@PathVariable(value = "memberName", required = false) String memberName) {
 
         Member member = memberService.findMemberByName(memberName);
 
@@ -66,7 +67,7 @@ public class MemberApiController {
      */
     @PostMapping("/password")
     public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetails userDetails,
-        @RequestBody PasswordChangeRequest request) {
+        @Valid @RequestBody PasswordChangeRequest request) {
 
         String username = userDetails.getUsername();
         memberService.changePassword(username, request.getCurrentPassword(),
