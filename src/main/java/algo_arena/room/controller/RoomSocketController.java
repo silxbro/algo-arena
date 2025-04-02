@@ -33,7 +33,7 @@ public class RoomSocketController {
     private final JwtTokenUtil jwtTokenUtil;
 
     /**
-     * StompHeaderAccessor의 필수 헤더
+     * StompHeaderAccessor 의 필수 헤더
      * {@code @Header} token: 인증 accessToken
      * {@code @Header} roomId: 요청 roomId
      */
@@ -42,7 +42,7 @@ public class RoomSocketController {
      * 테스트방 정보 업데이트 - 방장 권한
      */
     @MessageMapping("/rooms/{roomId}/update")
-    @SendTo("/sub/rooms/{roomId}/update")
+    @SendTo("/sub/rooms/{roomId}")
     public RoomEventResponse updateRoom(@Valid @RequestBody RoomUpdateRequest request,
         @DestinationVariable("roomId") String roomId, @Header("token") String token) {
 
@@ -57,7 +57,7 @@ public class RoomSocketController {
      * 테스트방 참가자 입장
      */
     @MessageMapping("/rooms/{roomId}/enter")
-    @SendTo("/sub/rooms/{roomId}/enter")
+    @SendTo("/sub/rooms/{roomId}")
     public RoomEventResponse enterRoom(@DestinationVariable("roomId") String roomId, @Header("token") String token) {
 
         String memberName = jwtTokenUtil.extractUsername(token);
@@ -71,7 +71,7 @@ public class RoomSocketController {
      * 테스트방 참가자 퇴장
      */
     @MessageMapping("/rooms/{roomId}/exit")
-    @SendTo("/sub/rooms/{roomId}/exit")
+    @SendTo("/sub/rooms/{roomId}")
     public RoomEventResponse exitRoom(@DestinationVariable("roomId") String roomId, @Header("token") String token) {
 
         String memberName = jwtTokenUtil.extractUsername(token);
