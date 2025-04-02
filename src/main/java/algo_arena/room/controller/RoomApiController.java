@@ -50,7 +50,7 @@ public class RoomApiController {
      */
     @GetMapping("/{roomId}")
     public ResponseEntity<RoomDetailResponse> findRoom(@AuthenticationPrincipal UserDetails userDetails,
-        @PathVariable("roomId") String roomId) {
+        @PathVariable(value = "roomId", required = false) String roomId) {
 
         String username = userDetails.getUsername();
         Room room = roomFindService.findRoomById(roomId, username);
@@ -73,7 +73,7 @@ public class RoomApiController {
      * 테스트방 삭제 - 자동 삭제
      */
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<RoomEventResponse> deleteRoom(@PathVariable("roomId") String roomId) {
+    public ResponseEntity<RoomEventResponse> deleteRoom(@PathVariable(value = "roomId", required = false) String roomId) {
 
         roomLifeService.deleteRoomById(roomId);
 
