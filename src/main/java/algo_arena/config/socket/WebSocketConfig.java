@@ -1,5 +1,6 @@
 package algo_arena.config.socket;
 
+import algo_arena.room.exception.handler.RoomInterceptorErrorHandler;
 import algo_arena.room.interceptor.RoomInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final RoomInterceptor roomInterceptor;
+    private final RoomInterceptorErrorHandler roomInterceptorErrorHandler;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -29,6 +31,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .withSockJS(); // SockJS 사용 (브라우저 호환성)
         registry.addEndpoint("/ws-stomp") // 클라이언트에서 연결할 엔드포인트
             .setAllowedOriginPatterns("*"); // CORS 허용
+        registry.setErrorHandler(roomInterceptorErrorHandler);
     }
 
     @Override
