@@ -4,6 +4,7 @@ import static algo_arena.common.exception.enums.ErrorType.*;
 import static org.springframework.messaging.simp.stomp.StompCommand.*;
 
 import algo_arena.chat.enums.MessageType;
+import algo_arena.room.exception.RoomException;
 import algo_arena.room.exception.WebSocketException;
 import algo_arena.room.repository.RoomRepository;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
@@ -51,14 +52,17 @@ public class RoomInterceptor implements ChannelInterceptor {
 
         if (command == CONNECT) {
             if (roomRepository.isMemberInAnyRoom(username)) {
-                throw new WebSocketException(ALREADY_IN_ROOM);
+                throw new RoomException(ALREADY_IN_ROOM);
             }
         }
 
         if (command == SEND) {
             String type = accessor.getFirstNativeHeader("type");
-            if (!StringUtils.hasText(type) || !MessageType.isValidType(type)) {
-                throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+            if (!StringUtils.hasText(type)) {
+                throw new WebSocketException(NULL_VALUE);
+            }
+            if (!MessageType.isValidType(type)) {
+                throw new WebSocketException(INVALID_VALUE);
             }
         }
         return message;
@@ -67,13 +71,13 @@ public class RoomInterceptor implements ChannelInterceptor {
     private void validateUser(String token, String accessorUsername) {
         // 토큰 및 사용자이름 정보 누락 검사
         if (!StringUtils.hasText(token) || !StringUtils.hasText(accessorUsername)) {
-            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+            throw new WebSocketException(NULL_VALUE);
         }
 
         // 토큰과 사용자이름 일치 여부 검사
         String username = jwtTokenUtil.extractUsername(token);
         if (!username.equals(accessorUsername)) {
-            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+            throw new WebSocketException(INVALID_VALUE);
         }
 
         // 토큰 유효성 검사
@@ -83,21 +87,21 @@ public class RoomInterceptor implements ChannelInterceptor {
 
     private void validateDestination(String destination) {
         if (!StringUtils.hasText(destination)) {
-            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+            throw new WebSocketException(NULL_VALUE);
         }
 
         if (!antPathMatcher.match("/**/rooms/**/**", destination)) {
-            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+            throw new WebSocketException(INVALID_VALUE);
         }
     }
 
     private void validateRoom(String roomId) {
         if (!StringUtils.hasText(roomId)) {
-            throw new WebSocketException(WEB_SOCKET_CONNECT_FAILED);
+            throw new WebSocketException(NULL_VALUE);
         }
 
         if (!roomRepository.existsById(roomId)) {
-            throw new WebSocketException(ROOM_NOT_FOUND);
+            throw new RoomException(ROOM_NOT_FOUND);
         }
     }
 }
