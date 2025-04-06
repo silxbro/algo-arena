@@ -1,6 +1,6 @@
 package algo_arena.utils.pubsub;
 
-import algo_arena.chat.dto.ChatMessage;
+import algo_arena.domain.chat.dto.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

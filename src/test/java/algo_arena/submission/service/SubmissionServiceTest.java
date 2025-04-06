@@ -2,14 +2,15 @@ package algo_arena.submission.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import algo_arena.member.entity.Member;
-import algo_arena.member.repository.MemberRepository;
-import algo_arena.problem.entity.Problem;
-import algo_arena.problem.repository.ProblemRepository;
-import algo_arena.submission.dto.request.SubmissionSearchRequest;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.member.repository.MemberRepository;
+import algo_arena.domain.problem.entity.Problem;
+import algo_arena.domain.problem.repository.ProblemRepository;
+import algo_arena.domain.submission.dto.request.SubmissionSearchRequest;
+import algo_arena.domain.submission.service.SubmissionService;
 import algo_arena.submission.enums.JudgementResult;
 import algo_arena.submission.enums.Language;
-import algo_arena.submission.entity.Submission;
+import algo_arena.domain.submission.entity.Submission;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

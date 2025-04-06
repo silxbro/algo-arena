@@ -2,7 +2,8 @@ package algo_arena.chat.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import algo_arena.chat.enums.MessageType;
+import algo_arena.domain.chat.entity.ChatLog;
+import algo_arena.domain.chat.enums.MessageType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

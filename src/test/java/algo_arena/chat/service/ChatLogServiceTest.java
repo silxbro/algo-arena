@@ -5,9 +5,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import algo_arena.chat.entity.ChatLog;
-import algo_arena.chat.enums.MessageType;
-import algo_arena.chat.repository.ChatLogRedisRepository;
+import algo_arena.domain.chat.entity.ChatLog;
+import algo_arena.domain.chat.enums.MessageType;
+import algo_arena.domain.chat.repository.ChatLogRedisRepository;
+import algo_arena.domain.chat.service.ChatLogService;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

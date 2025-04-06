@@ -1,13 +1,14 @@
 package algo_arena.problem.service;
 
-import static algo_arena.member.enums.Role.ADMIN;
+import static algo_arena.domain.member.enums.Role.ADMIN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import algo_arena.member.entity.Member;
-import algo_arena.member.repository.MemberRepository;
-import algo_arena.problem.entity.Problem;
-import algo_arena.problem.repository.ProblemRepository;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.member.repository.MemberRepository;
+import algo_arena.domain.problem.entity.Problem;
+import algo_arena.domain.problem.repository.ProblemRepository;
+import algo_arena.domain.problem.service.ProblemService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

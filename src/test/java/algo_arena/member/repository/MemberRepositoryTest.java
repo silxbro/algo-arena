@@ -3,7 +3,8 @@ package algo_arena.member.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import algo_arena.member.entity.Member;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.member.repository.MemberRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayName;

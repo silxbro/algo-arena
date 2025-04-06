@@ -6,10 +6,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import algo_arena.room.entity.Room;
-import algo_arena.room.repository.RoomRedisRepository;
-import algo_arena.room.repository.RoomRepository;
-import algo_arena.submission.enums.CodeLanguage;
+import algo_arena.domain.room.entity.Room;
+import algo_arena.domain.room.repository.RoomRedisRepository;
+import algo_arena.domain.room.repository.RoomRepository;
+import algo_arena.domain.room.service.RoomFindService;
+import algo_arena.domain.submission.enums.CodeLanguage;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

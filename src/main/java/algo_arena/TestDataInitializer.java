@@ -1,11 +1,11 @@
 package algo_arena;
 
-import static algo_arena.member.enums.Role.ADMIN;
+import static algo_arena.domain.member.enums.Role.ADMIN;
 
-import algo_arena.member.entity.Member;
-import algo_arena.member.repository.MemberRepository;
-import algo_arena.problem.entity.Problem;
-import algo_arena.problem.repository.ProblemRepository;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.member.repository.MemberRepository;
+import algo_arena.domain.problem.entity.Problem;
+import algo_arena.domain.problem.repository.ProblemRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

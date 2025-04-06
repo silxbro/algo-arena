@@ -2,11 +2,12 @@ package algo_arena.room.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import algo_arena.problem.entity.Problem;
-import algo_arena.problem.repository.ProblemRepository;
-import algo_arena.room.dto.request.RoomSearchRequest;
-import algo_arena.room.entity.Room;
-import algo_arena.submission.enums.CodeLanguage;
+import algo_arena.domain.problem.entity.Problem;
+import algo_arena.domain.problem.repository.ProblemRepository;
+import algo_arena.domain.room.dto.request.RoomSearchRequest;
+import algo_arena.domain.room.entity.Room;
+import algo_arena.domain.room.repository.RoomRepository;
+import algo_arena.domain.submission.enums.CodeLanguage;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
