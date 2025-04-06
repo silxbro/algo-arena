@@ -1,11 +1,11 @@
 package algo_arena.chat.factory;
 
-import static algo_arena.chat.enums.MessageType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import algo_arena.member.entity.Member;
-import algo_arena.room.entity.Room;
+import algo_arena.domain.chat.factory.SystemMessageFactory;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.room.entity.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

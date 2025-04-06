@@ -1,7 +1,7 @@
 package algo_arena.config.socket;
 
-import algo_arena.room.exception.handler.RoomInterceptorErrorHandler;
-import algo_arena.room.interceptor.RoomInterceptor;
+import algo_arena.domain.room.exception.handler.RoomInterceptorErrorHandler;
+import algo_arena.domain.room.interceptor.RoomInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;

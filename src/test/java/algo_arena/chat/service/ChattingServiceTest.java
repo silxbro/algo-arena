@@ -6,10 +6,12 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import algo_arena.chat.dto.ChatMessage;
-import algo_arena.chat.entity.ChatLog;
-import algo_arena.chat.enums.MessageType;
-import algo_arena.room.entity.Room;
+import algo_arena.domain.chat.dto.ChatMessage;
+import algo_arena.domain.chat.entity.ChatLog;
+import algo_arena.domain.chat.enums.MessageType;
+import algo_arena.domain.chat.service.ChatLogService;
+import algo_arena.domain.chat.service.ChattingService;
+import algo_arena.domain.room.entity.Room;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

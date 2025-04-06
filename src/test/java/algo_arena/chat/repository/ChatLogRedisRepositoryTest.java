@@ -2,8 +2,9 @@ package algo_arena.chat.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import algo_arena.chat.entity.ChatLog;
+import algo_arena.domain.chat.entity.ChatLog;
 import algo_arena.config.redis.RedisConfig;
+import algo_arena.domain.chat.repository.ChatLogRedisRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,18 +1,18 @@
 package algo_arena.room.service;
 
-import static algo_arena.room.enums.RoomEvent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import algo_arena.member.entity.Member;
-import algo_arena.member.repository.MemberRepository;
-import algo_arena.member.service.MemberService;
-import algo_arena.room.entity.Room;
-import algo_arena.room.entity.RoomMember;
-import algo_arena.room.repository.RoomRedisRepository;
-import algo_arena.room.repository.RoomRepository;
-import algo_arena.room.service.result.RoomEventResult;
-import algo_arena.submission.enums.CodeLanguage;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.member.repository.MemberRepository;
+import algo_arena.domain.member.service.MemberService;
+import algo_arena.domain.room.entity.Room;
+import algo_arena.domain.room.entity.RoomMember;
+import algo_arena.domain.room.repository.RoomRedisRepository;
+import algo_arena.domain.room.repository.RoomRepository;
+import algo_arena.domain.room.service.RoomIOService;
+import algo_arena.domain.room.service.result.RoomEventResult;
+import algo_arena.domain.submission.enums.CodeLanguage;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

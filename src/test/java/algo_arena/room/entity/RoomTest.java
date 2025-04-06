@@ -2,9 +2,12 @@ package algo_arena.room.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import algo_arena.member.entity.Member;
-import algo_arena.problem.entity.Problem;
-import algo_arena.submission.enums.CodeLanguage;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.problem.entity.Problem;
+import algo_arena.domain.room.entity.Room;
+import algo_arena.domain.room.entity.RoomMember;
+import algo_arena.domain.room.entity.RoomProblem;
+import algo_arena.domain.submission.enums.CodeLanguage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

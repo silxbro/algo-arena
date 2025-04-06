@@ -1,7 +1,7 @@
 package algo_arena.utils.jwt.service;
 
-import algo_arena.member.entity.Member;
-import algo_arena.member.repository.MemberRepository;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.member.repository.MemberRepository;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;

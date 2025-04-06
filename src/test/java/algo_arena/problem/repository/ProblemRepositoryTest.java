@@ -2,7 +2,8 @@ package algo_arena.problem.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import algo_arena.problem.entity.Problem;
+import algo_arena.domain.problem.entity.Problem;
+import algo_arena.domain.problem.repository.ProblemRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
