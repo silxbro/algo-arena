@@ -3,9 +3,10 @@ package algo_arena.room.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import algo_arena.config.redis.RedisConfig;
-import algo_arena.member.entity.Member;
-import algo_arena.room.entity.Room;
-import algo_arena.submission.enums.CodeLanguage;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.room.entity.Room;
+import algo_arena.domain.room.repository.RoomRedisRepository;
+import algo_arena.domain.submission.enums.CodeLanguage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

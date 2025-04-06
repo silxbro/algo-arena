@@ -3,8 +3,9 @@ package algo_arena.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import algo_arena.member.entity.Member;
-import algo_arena.member.repository.MemberRepository;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.member.repository.MemberRepository;
+import algo_arena.domain.member.service.AuthService;
 import algo_arena.utils.auth.service.CodeAuthService;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;

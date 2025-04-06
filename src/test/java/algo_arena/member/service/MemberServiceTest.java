@@ -3,8 +3,9 @@ package algo_arena.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import algo_arena.member.entity.Member;
-import algo_arena.member.repository.MemberRepository;
+import algo_arena.domain.member.entity.Member;
+import algo_arena.domain.member.repository.MemberRepository;
+import algo_arena.domain.member.service.MemberService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
