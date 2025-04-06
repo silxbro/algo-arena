@@ -1,6 +1,6 @@
 package algo_arena.common.exception.dto;
 
-import java.sql.Timestamp;
+import algo_arena.common.exception.enums.ErrorType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,10 +8,13 @@ import lombok.Data;
 @AllArgsConstructor
 public class ErrorResponse {
 
-    private int status;
+    private int code;
     private String detail;
     private String message;
-    private String path;
-    private Timestamp timestamp;
 
+    public ErrorResponse(ErrorType errorType) {
+        this.code = errorType.getCode();
+        this.detail = errorType.getDetail();
+        this.message = errorType.getMessage();
+    }
 }
