@@ -1,6 +1,7 @@
 package algo_arena.domain.problem.repository;
 
-import static algo_arena.problem.entity.QProblem.problem;
+
+import static algo_arena.domain.problem.entity.QProblem.problem;
 
 import algo_arena.domain.problem.entity.Problem;
 import com.querydsl.core.types.dsl.BooleanExpression;
