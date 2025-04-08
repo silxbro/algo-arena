@@ -1,5 +1,6 @@
 package algo_arena.room.service;
 
+import static algo_arena.domain.room.enums.RoomEvent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

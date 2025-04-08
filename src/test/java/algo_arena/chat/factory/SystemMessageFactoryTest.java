@@ -1,5 +1,6 @@
 package algo_arena.chat.factory;
 
+import static algo_arena.domain.chat.enums.MessageType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

@@ -101,7 +101,7 @@ class CodeAuthServiceTest {
         //given
 
         //when
-        codeAuthService.setAuthCodeAndExpiration(key, code, duration);
+        codeAuthService.setAuthCode(key, code);
 
         String storedCode = (String) stringRedisTemplate.opsForHash().get(key, "CODE");
         String status = (String) stringRedisTemplate.opsForHash().get(key, "STATUS");
@@ -118,7 +118,7 @@ class CodeAuthServiceTest {
     @DisplayName("키를 지정하여 인증 상태를 완료할 수 있다")
     void markAuthAsCompleted_ExistKey() {
         //given
-        codeAuthService.setAuthCodeAndExpiration(key, code, duration);
+        codeAuthService.setAuthCode(key, code);
 
         //when
         codeAuthService.markAuthAsCompleted(key);
@@ -144,7 +144,7 @@ class CodeAuthServiceTest {
     @DisplayName("인증 이력을 모두 삭제할 수 있다")
     void clearAuthHistory() {
         //given
-        codeAuthService.setAuthCodeAndExpiration(key, code, duration);
+        codeAuthService.setAuthCode(key, code);
 
         //when
         codeAuthService.clearAuthHistory(key);

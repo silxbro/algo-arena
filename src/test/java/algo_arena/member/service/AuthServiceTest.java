@@ -9,7 +9,7 @@ import algo_arena.domain.member.service.AuthService;
 import algo_arena.utils.auth.service.CodeAuthService;
 import algo_arena.utils.jwt.service.JwtTokenUtil;
 import algo_arena.utils.jwt.service.JwtUserDetailsService;
-import algo_arena.utils.mail.service.MailService;
+import algo_arena.utils.mail.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +42,7 @@ class AuthServiceTest {
     JwtUserDetailsService jwtUserDetailsService;
 
     @Autowired
-    MailService mailService;
+    EmailService emailService;
 
     Member member;
     String email = "tester@example.com";
@@ -163,7 +163,7 @@ class AuthServiceTest {
     void verifyAuthEmail_CodeMatch() {
         //given
         String authCode = "authCode12";
-        codeAuthService.setAuthCodeAndExpiration(email, authCode, 10000);
+        codeAuthService.setAuthCode(email, authCode);
 
         //when
         authService.verifyAuthEmail(email, authCode);
@@ -191,7 +191,7 @@ class AuthServiceTest {
     void verifyAuthEmail_CodeNotMatch() {
         //given
         String authCode = "authCode12";
-        codeAuthService.setAuthCodeAndExpiration(email, authCode, 10000);
+        codeAuthService.setAuthCode(email, authCode);
 
         //when
         String wrongAuthCode = "wrongAuthCode";
@@ -202,7 +202,7 @@ class AuthServiceTest {
     }
 
     private void completeEmailAuth(String email, String code, long duration) {
-        codeAuthService.setAuthCodeAndExpiration(email, code, duration);
+        codeAuthService.setAuthCode(email, code);
         codeAuthService.markAuthAsCompleted(email);
     }
 }

@@ -2,7 +2,7 @@ package algo_arena.utils.mail;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import algo_arena.utils.mail.service.MailService;
+import algo_arena.utils.mail.service.EmailService;
 import jakarta.mail.Address;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Arrays;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 class MailServiceTest {
 
     @Autowired
-    MailService mailService;
+    EmailService emailService;
 
     @Autowired
     JavaMailSender mailSender;
@@ -35,7 +35,7 @@ class MailServiceTest {
         String content = "This is a test email";
 
         //when
-        MimeMessage email = mailService.createEmail(recipient, title, content);
+        MimeMessage email = emailService.createEmail(recipient, title, content);
 
         List<String> recipients = Arrays.stream(email.getAllRecipients()).map(Address::toString).toList();
         String emailSubject = email.getSubject();

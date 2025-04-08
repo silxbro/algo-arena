@@ -57,7 +57,7 @@ class ChattingServiceTest {
         when(chatLogService.saveChatLog(eq(roomId), any(ChatLog.class))).thenReturn(chatLogIndex);
 
         //when
-        chattingService.send(type, room, senderName, message);
+        chattingService.send(type, room.getId(), senderName, message);
 
         //then
         //ChatLog 검증
