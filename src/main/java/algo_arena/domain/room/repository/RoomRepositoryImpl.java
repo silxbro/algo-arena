@@ -1,6 +1,6 @@
 package algo_arena.domain.room.repository;
 
-import static algo_arena.room.entity.QRoom.room;
+import static algo_arena.domain.room.entity.QRoom.room;
 
 import algo_arena.domain.room.dto.request.RoomSearchRequest;
 import algo_arena.domain.room.entity.Room;

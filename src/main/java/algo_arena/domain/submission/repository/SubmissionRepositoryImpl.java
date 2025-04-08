@@ -1,8 +1,8 @@
 package algo_arena.domain.submission.repository;
 
-import static algo_arena.member.entity.QMember.member;
-import static algo_arena.problem.entity.QProblem.problem;
-import static algo_arena.submission.entity.QSubmission.submission;
+import static algo_arena.domain.member.entity.QMember.member;
+import static algo_arena.domain.problem.entity.QProblem.problem;
+import static algo_arena.domain.submission.entity.QSubmission.submission;
 
 import algo_arena.domain.submission.dto.request.SubmissionSearchRequest;
 import algo_arena.domain.submission.entity.Submission;
