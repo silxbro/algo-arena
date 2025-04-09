@@ -47,6 +47,7 @@ public class Submission extends BaseEntity {
     private Problem problem;
 
     @EqualsAndHashCode.Include
+    @Column(name = "submission_index")
     private Long index;
 
     @Enumerated(EnumType.STRING)
