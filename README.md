@@ -32,9 +32,4 @@ Messaging : WebSocket
 <img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=Gradle&logoColor=white"/> <img src="https://img.shields.io/badge/JPA-59666C?style=flat&logo=Hibernate&logoColor=white"/>
 <img src="https://img.shields.io/badge/QueryDSL-009688?style=flat&logo=CodeFactor&logoColor=white"/> <img src="https://img.shields.io/badge/WebSocket-000000?style=flat&logo=Socket.IO&logoColor=white"/>
 <img src="https://img.shields.io/badge/JWT-000000?style=flat&logo=JSON%20Web%20Tokens&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=white"/>
-<br/><br/>
-
-## 🗺️ Service Architecture
-
-## 🎲 ERD
-
+<br/>
